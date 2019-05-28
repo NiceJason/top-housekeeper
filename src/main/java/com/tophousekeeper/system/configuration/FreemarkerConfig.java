@@ -71,7 +71,7 @@ public class FreemarkerConfig {
         }
         String[] includes = autoInclude.split(";");
         for (String s : includes) {
-            System.out.println(s);
+            System.out.println("freemarker中incelude的类："+s);
         }
         List list = new ArrayList<String>(Arrays.asList(includes));
         configuration.setAutoIncludes(list);
