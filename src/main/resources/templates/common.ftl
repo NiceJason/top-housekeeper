@@ -40,6 +40,8 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
     <#--在这里插入需要引用的样式或者脚本-->
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://www.jq22.com/jquery/jquery-ui-1.11.0.js"></script>
     <#nested>
     <#--在这里插入页面主体内容-->
     </body>

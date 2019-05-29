@@ -1,3 +1,7 @@
 .myCarouselCss>div{
     height: 349px;
 }
+
+.myCarouselCss>div>img{
+    width:100%;
+}

@@ -1,18 +1,18 @@
 <#--导航栏模板-->
-<nav class="navbar navbar-default" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">菜鸟教程</a>
         </div>
         <div>
 
-            <ul class="nav nav-pills center-block navbar-left">
+            <ul class="nav nav-pills  navbar-left" style="margin-top:5px;">
                 <li class="active "><a data-toggle="tab" href="#home">首页</a></li>
                 <li ><a data-toggle="tab" href="#menu1">菜单 1</a></li>
                 <li><a data-toggle="tab" href="#menu2">菜单 2</a></li>
                 <li><a data-toggle="tab" href="#menu3">菜单 3</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <a href="#" class="dropdown-t oggle" data-toggle="dropdown">
                         Java
                         <b class="caret"></b>
                     </a>
@@ -42,22 +42,3 @@
 
     </div>
 </nav>
-
-<div class="tab-content">
-    <div id="home" class="tab-pane fade in active">
-        <h3>首页</h3>
-        <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-    </div>
-    <div id="menu1" class="tab-pane fade">
-        <h3>菜单 1</h3>
-        <p>这是菜单 1 显示的内容。这是菜单 1 显示的内容。这是菜单 1 显示的内容。</p>
-    </div>
-    <div id="menu2" class="tab-pane fade">
-        <h3>菜单 2</h3>
-        <p>这是菜单 2 显示的内容。这是菜单 2 显示的内容。这是菜单 2 显示的内容。</p>
-    </div>
-    <div id="menu3" class="tab-pane fade">
-        <h3>菜单 3</h3>
-        <p>这是菜单 3 显示的内容。这是菜单 3 显示的内容。这是菜单 3 显示的内容。</p>
-    </div>
-</div>

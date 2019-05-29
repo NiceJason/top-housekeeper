@@ -1,15 +1,18 @@
 <@comm.page>
     <@comm.head>
     <link href="css/welcome.css" rel="stylesheet" type="text/css"/>
+
     </@comm.head>
     <@comm.body>
+        <#include "/navegation.ftl" encoding="UTF-8">
+<#--        <#include "/registered.ftl" encoding="UTF-8">-->
         <div id="myCarousel" class="carousel slide">
             <!-- 轮播（Carousel）指标 -->
-            <ol class="carousel-indicators">
-                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                <li data-target="#myCarousel" data-slide-to="1"></li>
-                <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol>
+<#--            <ol class="carousel-indicators">-->
+<#--                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>-->
+<#--                <li data-target="#myCarousel" data-slide-to="1"></li>-->
+<#--                <li data-target="#myCarousel" data-slide-to="2"></li>-->
+<#--            </ol>-->
             <!-- 轮播（Carousel）项目 -->
             <div class="carousel-inner myCarouselCss">
                 <div class="item active">
@@ -32,6 +35,58 @@
                 <span class="sr-only">Next</span>
             </a>
         </div>
-        你好呀
+
+        <div class="tab-content">
+            <div id="home" class="tab-pane fade in active">
+                <h3>首页</h3>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+            </div>
+            <div id="menu1" class="tab-pane fade">
+                <h3>菜单 1</h3>
+                <p>这是菜单 1 显示的内容。这是菜单 1 显示的内容。这是菜单 1 显示的内容。</p>
+            </div>
+            <div id="menu2" class="tab-pane fade">
+                <h3>菜单 2</h3>
+                <p>这是菜单 2 显示的内容。这是菜单 2 显示的内容。这是菜单 2 显示的内容。</p>
+            </div>
+            <div id="menu3" class="tab-pane fade">
+                <h3>菜单 3</h3>
+                <p>这是菜单 3 显示的内容。这是菜单 3 显示的内容。这是菜单 3 显示的内容。</p>
+            </div>
+        </div>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Launch demo modal
+        </button>
+
+
+        <!-- this is a modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" draggable="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <script type="text/javascript">
+            $(function(){
+                $(".modal-dialog").draggable();
+            })
+        </script>
+
+        <#include "/footer.ftl" encoding="UTF-8">
     </@comm.body>
 </@comm.page>
