@@ -2,13 +2,13 @@
 <footer class="footer ">
     <div class="container">
         <div class="row footer-top">
-            <div class="col-md-6 col-lg-3 col-lg-offset-2">
+            <div class="col-md-6 col-lg-2 col-lg-offset-2">
                 <h4>
                     <span class="glyphicon glyphicon-scissors" aria-hidden="true">&nbsp;省时省力</span>
                 </h4>
                 <p>顶上管家，方便你我他</p>
             </div>
-            <div class="col-md-6  col-lg-5 col-lg-offset-2">
+            <div class="col-md-6  col-lg-6 col-lg-offset-2">
                 <div class="row about">
                     <div class="col-sm-3">
                         <h4>关于</h4>
