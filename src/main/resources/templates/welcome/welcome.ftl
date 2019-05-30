@@ -56,19 +56,19 @@
         </div>
 
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registeredModal">
             Launch demo modal
         </button>
 
 
-        <!-- this is a modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" draggable="true">
+        <!-- 注册 modal -->
+        <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="myModalLabel">注册</h4>
                 </div>
                 <div class="modal-body">
                     ...
@@ -84,6 +84,7 @@
         <script type="text/javascript">
             $(function(){
                 $(".modal-dialog").draggable();
+                console.debug("函数被执行了");
             })
         </script>
 

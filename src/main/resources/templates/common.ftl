@@ -21,14 +21,17 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
 -->
 <#macro head>
     <head>
+        <#--bootstrap要求的3项-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <#--meat标签的Keywords的的信息参数，代表说明网站的关键词是什么-->
         <meta name="Keywords"content="顶上管家，生活，理发，预约"/>
         <#--meta标签的Description的信息参数，代表说明网站的主要内容，概况是什么。 -->
         <meta name="Description"content="信息参数"/>
         <#--网页过期期限-->
         <meta http-equiv="Expires" content="0">
-        <#--显示字符集的设定-->
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
         <#--在这里插入需要引用的样式或者脚本-->
         <#nested>
         <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
