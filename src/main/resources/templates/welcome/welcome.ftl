@@ -5,7 +5,7 @@
     </@comm.head>
     <@comm.body>
         <#include "/navegation.ftl" encoding="UTF-8">
-<#--        <#include "/registered.ftl" encoding="UTF-8">-->
+        <#include "register.ftl" encoding="UTF-8">
         <div id="myCarousel" class="carousel slide">
             <!-- 轮播（Carousel）指标 -->
 <#--            <ol class="carousel-indicators">-->
@@ -55,33 +55,9 @@
             </div>
         </div>
 
-        <!-- Button trigger modal -->
-        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#registeredModal">
-            Launch demo modal
-        </button>
-
-
-        <!-- 注册 modal -->
-        <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title" id="myModalLabel">注册</h4>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-        </div>
-
         <script type="text/javascript">
+
+
             $(function(){
                 $(".modal-dialog").draggable();
                 console.debug("函数被执行了");
