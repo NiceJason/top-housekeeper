@@ -1,3 +1,4 @@
+
 <!-- 注册 modal -->
 <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
     <div class="modal-dialog" role="document">
@@ -29,8 +30,17 @@
 
 <script>
     // $('#registeredModal').on('show.bs.modal', centerModals('#registeredModal'));
-        //$('body').modal('hide');
-        $('#registeredModal').on('show.bs.modal', adjustBody_beforeShow);
-        $('#registeredModal').on('hidden.bs.modal', adjustBody_afterShow);
+
+    // 重点，以下JS是为了防导航栏在模态框出现的时候不会偏移
+    // （因为那时候浏览器滚动条会被取消，导致多出的空间会使固定在顶端的导航栏鬼畜）
+    $('#registeredModal').on('show.bs.modal',
+        function(e){
+            $('nav').css("position","static");
+        }
+    );
+    $('#registeredModal').on('hiden.bs.modal', function (e) {
+        $('nav').css("position","fixed");
+    });
+
 
 </script>
