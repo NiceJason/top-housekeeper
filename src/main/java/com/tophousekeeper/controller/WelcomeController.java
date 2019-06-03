@@ -1,4 +1,4 @@
-package com.tophousekeeper.controller.welcome;
+package com.tophousekeeper.controller;
 
 import com.tophousekeeper.service.welcome.WelcomeService;
 import org.springframework.beans.factory.annotation.Autowired;
