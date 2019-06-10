@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @date 2019/6/3 19:02
  */
 @Controller
+@RequestMapping("/access")
 public class LoginController {
 
     @RequestMapping("/registered")
     public String registered(@RequestParam String email,@RequestParam String password){
-           return null;
+        System.out.println("进入注册入口");
+        return null;
     }
 }
