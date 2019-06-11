@@ -21,12 +21,12 @@ Query.create = function (url, paramMap, callback) {
  * 正式发送ajax
  * @private
  */
-Query._sendMessage = function (url,paramMap,callback) {
+var _sendMessage = function (url,paramMap,callback) {
     $.ajax(
         {
             url:url,
             dataType:"json",
-            data:paramMap,
+            data:{"email":123,"password":345},
             complete:callback
         }
     );

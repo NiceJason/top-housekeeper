@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/access")
 public class LoginController {
 
-    @RequestMapping("/registered")
-    public String registered(@RequestParam String email,@RequestParam String password){
+    @RequestMapping("/register")
+    public String register(@RequestParam String email,@RequestParam String password){
         System.out.println("进入注册入口");
         return null;
     }
