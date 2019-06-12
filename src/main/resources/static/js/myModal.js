@@ -8,8 +8,6 @@ function centerModals(modalId) {
     });
 };
 
-
-console.debug("执行了@@#￥@#");
 function adjustBody_beforeShow (){
     $('#navbar').css({
         'position' : 'static'});

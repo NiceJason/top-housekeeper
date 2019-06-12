@@ -4,6 +4,7 @@
 
     </@comm.head>
     <@comm.body>
+        <@comm.container>
         <#include "/navegation.ftl" encoding="UTF-8">
         <#include "register.ftl" encoding="UTF-8">
         <div id="myCarousel" class="carousel slide">
@@ -40,6 +41,14 @@
             <div id="home" class="tab-pane fade in active">
                 <h3>首页</h3>
                 <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
             </div>
             <div id="menu1" class="tab-pane fade">
                 <h3>菜单 1</h3>
@@ -57,13 +66,14 @@
 
         <script type="text/javascript">
 
-
             $(function(){
                 $(".modal-dialog").draggable();
-                console.debug("函数被执行了");
             })
+
+
         </script>
 
         <#include "/footer.ftl" encoding="UTF-8">
+        </@comm.container>
     </@comm.body>
 </@comm.page>

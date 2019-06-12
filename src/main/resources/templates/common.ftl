@@ -27,15 +27,15 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <#--meat标签的Keywords的的信息参数，代表说明网站的关键词是什么-->
-        <meta name="Keywords"content="顶上管家，生活，理发，预约"/>
+        <meta name="Keywords" content="顶上管家，生活，理发，预约"/>
         <#--meta标签的Description的信息参数，代表说明网站的主要内容，概况是什么。 -->
-        <meta name="Description"content="信息参数"/>
+        <meta name="Description" content="信息参数"/>
         <#--网页过期期限-->
         <meta http-equiv="Expires" content="0">
         <#--在这里插入需要引用的样式或者脚本-->
         <#nested>
         <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-<#--        <link rel="stylesheet" href="css/myModal.css">-->
+        <link rel="stylesheet" href="/css/common.css">
     </head>
 </#macro>
 
@@ -56,6 +56,16 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
     </body>
 </#macro>
 
+<#macro container>
+    <div class="thk-outer-container">
+        <div class="thk-inner-container">
+            <div class="thk-content">
+                <#--这里插入页面的内容-->
+                <#nested>
+            </div>
+        </div>
+    </div>
+</#macro>
 
 <#macro page>
     <!DOCTYPE html>

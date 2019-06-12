@@ -1,4 +1,4 @@
-<script src="/js/register.js"></script>
+<script src="/js/registered.js"></script>
 
 <!-- 注册 modal -->
 <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
@@ -13,7 +13,7 @@
                 <form id="registerInfo">
                     <div class="form-group">
                         <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="email1" placeholder="Email">
+                        <input type="email" class="form-control" id="emaill" placeholder="Email">
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
@@ -22,7 +22,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="new Register().submit()">确认</button>
+                <button type="button" class="btn btn-primary" onclick="new Registered().submit()">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>
@@ -36,12 +36,12 @@
     // （因为那时候浏览器滚动条会被取消，导致多出的空间会使固定在顶端的导航栏鬼畜）
     $('#registeredModal').on('show.bs.modal',
         function(e){
-            $('nav').css("position","static");
+            $('body').css("cssText",";overflow-y:auto !important;")
         }
     );
-    $('#registeredModal').on('hiden.bs.modal', function (e) {
-        $('nav').css("position","fixed");
-    });
 
+    // $('#registeredModal').on('hiden.bs.modal', function (e) {
+    //     $('nav').css("position","fixed");
+    // });
 
 </script>
