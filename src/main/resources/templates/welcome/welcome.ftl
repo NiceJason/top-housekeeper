@@ -4,7 +4,6 @@
 
     </@comm.head>
     <@comm.body>
-        <@comm.container>
         <#include "/navegation.ftl" encoding="UTF-8">
         <#include "register.ftl" encoding="UTF-8">
         <div id="myCarousel" class="carousel slide">
@@ -74,6 +73,5 @@
         </script>
 
         <#include "/footer.ftl" encoding="UTF-8">
-        </@comm.container>
     </@comm.body>
 </@comm.page>

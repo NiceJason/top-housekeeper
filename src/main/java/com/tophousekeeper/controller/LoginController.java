@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     @RequestMapping("/registered")
-    public String registered(@RequestParam String email,@RequestParam String password){
+    public String registered(@RequestParam String email,@RequestParam String password) throws Exception {
         System.out.println("进入注册入口");
-        return null;
+        throw new Exception();
+
     }
 }
