@@ -1,23 +1,24 @@
 package com.tophousekeeper.controller.system;
 
 import com.tophousekeeper.system.SystemException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.web.servlet.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @auther: NiceBin
- * @description: Controller增强，包括异常统一收集
+ * @description: Controller增强，包括
+ *               1.异常统一收集，自定义错误码100
+ *               2.ajax异常页面重定向
  * @date: 2019/6/13 21:00
  */
 @ControllerAdvice
+@RequestMapping("/system")
 public class SystemControllerAdvice {
     /**
      * 应用到所有@RequestMapping注解方法，在其执行之前初始化数据绑定器
@@ -43,14 +44,13 @@ public class SystemControllerAdvice {
      * @param ex
      * @return
      */
-    @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public Map errorHandler(Exception ex) {
-        Map map = new HashMap();
+    public ResponseEntity<Map<String,Object>> errorHandler(Exception ex){
+        Map<String,Object> map = new HashMap<String,Object>();
         map.put("code", 100);
         map.put("msg", ex.getMessage());
 
-        return map;
+        return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
 
     /**
@@ -58,13 +58,21 @@ public class SystemControllerAdvice {
      * @param ex
      * @return
      */
-    @ResponseBody
     @ExceptionHandler(value = SystemException.class)
-    public Map myErrorHandler(SystemException ex) {
-        Map map = new HashMap();
-        map.put("code", ex.getCode());
-        map.put("msg", ex.getMsg());
-        return map;
+    public ResponseEntity<Map<String,Object>> myErrorHandler(SystemException ex){
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("code", 100);
+        map.put("msg", ex.getMessage());
+
+        return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
 
+    @RequestMapping("/error/{code}/{msg}")
+    public ModelAndView errorPage(SystemException ex){
+           ModelAndView modelAndView=new ModelAndView();
+           modelAndView.setViewName("error");
+           modelAndView.addObject("code",ex.getCode());
+           modelAndView.addObject("msg",ex.getMsg());
+           return modelAndView;
+    }
 }

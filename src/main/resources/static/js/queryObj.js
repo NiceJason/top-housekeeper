@@ -1,3 +1,9 @@
+/*
+ * 以下为程序错误码
+ */
+//通用的请求失败，包括未知原因
+var EXPECTATION_FAILED=417;
+
 /**
  * 访问后台的对象，为ajax封装
  * @constructor
@@ -28,7 +34,7 @@ Query.create = function (url, paramMap, callback) {
 Query.prototype._convertParam = function(param){
 
      if(param instanceof Map){
-        this.param = JSON.stringify(param);
+        return JSON.stringify(param);
      }
 }
 
@@ -39,7 +45,12 @@ Query.prototype._convertParam = function(param){
  */
 Query.prototype._callback = function(query){
 
+      if(query.status == EXPECTATION_FAILED){
 
+          var error =query.responseJSON;
+          this.queryException = true;
+          window.location.href = "/system/error/"+error.code+"/"+error.msg;
+      }
 
       if(this.callback instanceof  Function){
           this.callback(query);

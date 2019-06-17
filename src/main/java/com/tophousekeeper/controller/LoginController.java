@@ -17,7 +17,7 @@ public class LoginController {
     @RequestMapping("/registered")
     public String registered(User user) throws Exception {
         System.out.println("进入注册入口");
-        throw new Exception();
+        throw new Exception("注册错误");
 
     }
 }

@@ -7,6 +7,7 @@ var Registered = function () {
 }
 
 Registered.prototype.submit = function () {
+
          var paramMap = new Map();
          paramMap.set("email",$('#emaill').val());
          paramMap.set("password",$('#password').val());
