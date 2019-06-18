@@ -16,13 +16,13 @@ public class LoginService {
        @Autowired
        private LoginDao loginDao;
 
-//       public void registered(User user){
-//           loginDao.insert(user);
-//       }
-//
-//
-//       public User login(User checkUser){
-//           User user =loginDao.selectOne(checkUser);
-//           return user;
-//       }
+       public void registered(User user){
+           loginDao.insert(user);
+       }
+
+
+       public User login(User checkUser){
+           User user =loginDao.selectOne(checkUser);
+           return user;
+       }
 }
