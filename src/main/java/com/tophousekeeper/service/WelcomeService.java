@@ -1,6 +1,6 @@
-package com.tophousekeeper.service.welcome;
+package com.tophousekeeper.service;
 
-import com.tophousekeeper.dao.funtionDao.welcome.WelcomeDao;
+import com.tophousekeeper.dao.WelcomeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -30,8 +30,6 @@
 </div>
 
 <script>
-    // $('#registeredModal').on('show.bs.modal', centerModals('#registeredModal'));
-
     // 重点，以下JS是为了防导航栏在模态框出现的时候不会偏移
     // （因为那时候浏览器滚动条会被取消，导致多出的空间会使固定在顶端的导航栏鬼畜）
     $('#registeredModal').on('show.bs.modal',
@@ -39,9 +37,4 @@
             $('body').css("cssText",";overflow-y:auto !important;")
         }
     );
-
-    // $('#registeredModal').on('hiden.bs.modal', function (e) {
-    //     $('nav').css("position","fixed");
-    // });
-
 </script>

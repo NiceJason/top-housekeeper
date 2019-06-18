@@ -1,10 +1,8 @@
-package com.tophousekeeper.dao.funtionDao.welcome;
+package com.tophousekeeper.dao;
 
-import com.tophousekeeper.dao.BaseDao;
-import com.tophousekeeper.entity.welcome.Welcome;
+import com.tophousekeeper.dao.system.BaseDao;
+import com.tophousekeeper.entity.Welcome;
 import org.springframework.stereotype.Repository;
-
-import javax.persistence.Table;
 
 /**
  * @author NiceBin

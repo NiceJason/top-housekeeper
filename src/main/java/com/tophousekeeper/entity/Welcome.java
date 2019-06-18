@@ -1,4 +1,4 @@
-package com.tophousekeeper.entity.welcome;
+package com.tophousekeeper.entity;
 
 import org.springframework.stereotype.Repository;
 

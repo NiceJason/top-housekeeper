@@ -1,13 +1,15 @@
+<!--登录注册的集合模板，用标签页将两个页面整合到一个模态框中-->
+
 <script src="/js/registered.js"></script>
 
-<!-- 注册 modal -->
+<!-- modal -->
 <div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span></button>
-                <h4 class="modal-title" id="myModalLabel">注册</h4>
+                <h4 class="modal-title" id="myModalLabel">欢迎</h4>
             </div>
             <div class="modal-body">
                 <form id="registerInfo">

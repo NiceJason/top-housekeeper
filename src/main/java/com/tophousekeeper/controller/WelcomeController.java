@@ -1,6 +1,6 @@
 package com.tophousekeeper.controller;
 
-import com.tophousekeeper.service.welcome.WelcomeService;
+import com.tophousekeeper.service.WelcomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

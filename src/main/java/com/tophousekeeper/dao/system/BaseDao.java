@@ -1,4 +1,4 @@
-package com.tophousekeeper.dao;
+package com.tophousekeeper.dao.system;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
