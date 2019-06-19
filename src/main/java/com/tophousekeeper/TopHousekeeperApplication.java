@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
-@MapperScan("com.tophousekeeper.dao.funtionDao")
+@MapperScan("com.tophousekeeper.dao.function")
 public class TopHousekeeperApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

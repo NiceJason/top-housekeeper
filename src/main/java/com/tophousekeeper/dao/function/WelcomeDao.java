@@ -1,6 +1,6 @@
-package com.tophousekeeper.dao;
+package com.tophousekeeper.dao.function;
 
-import com.tophousekeeper.dao.system.BaseDao;
+import com.tophousekeeper.dao.BaseDao;
 import com.tophousekeeper.entity.Welcome;
 import org.springframework.stereotype.Repository;
 
