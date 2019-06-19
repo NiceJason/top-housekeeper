@@ -29,4 +29,8 @@ public class SystemException extends RuntimeException{
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    public String toString(){
+        return "code="+this.code+" msg="+this.msg;
+    }
 }

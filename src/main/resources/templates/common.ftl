@@ -41,11 +41,13 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
 
 <#macro body>
     <body>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script
-            src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
-            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
-            crossorigin="anonymous"></script>
+    <script src="/js/lib/jquery-3.4.1.js"></script>
+    <script src="/js/lib/jquery-ui.min.js"></script>
+<#--    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>-->
+<#--    <script-->
+<#--            src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"-->
+<#--            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="-->
+<#--            crossorigin="anonymous"></script>-->
     <#--在这里插入需要引用的样式或者脚本-->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="/js/common.js"></script>

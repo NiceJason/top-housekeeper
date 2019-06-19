@@ -49,7 +49,7 @@ public class SystemControllerAdvice {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("code", 100);
         map.put("msg", ex.getMessage());
-
+        System.out.println(ex.getMessage());
         return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
 
@@ -67,12 +67,13 @@ public class SystemControllerAdvice {
         return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
 
-    @RequestMapping("/error/{code}/{msg}")
+    @RequestMapping("/error/{code}")
     public ModelAndView errorPage(SystemException ex){
+           System.out.println("进入了 "+ex.toString());
            ModelAndView modelAndView=new ModelAndView();
            modelAndView.setViewName("error");
            modelAndView.addObject("code",ex.getCode());
-           modelAndView.addObject("msg",ex.getMsg());
+           modelAndView.addObject("msg","处理过的错误提示");
            return modelAndView;
     }
 }

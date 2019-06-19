@@ -10,7 +10,7 @@ var EXPECTATION_FAILED=417;
  */
 var Query = function (url, param, callback) {
     this.url=url;
-    this.paramMap = this._convertParam(param);
+    this.param = this._convertParam(param);
     this.callback=callback;
 
     this._sendMessage();
@@ -34,7 +34,7 @@ Query.create = function (url, paramMap, callback) {
 Query.prototype._convertParam = function(param){
 
      if(param instanceof Map){
-        return JSON.stringify(param);
+        return strMap2Json(param);
      }
 }
 
@@ -49,7 +49,7 @@ Query.prototype._callback = function(query){
 
           var error =query.responseJSON;
           this.queryException = true;
-          window.location.href = "/system/error/"+error.code+"/"+error.msg;
+          window.location.href = "/system/error/"+error.code;
       }
 
       if(this.callback instanceof  Function){
@@ -64,10 +64,11 @@ Query.prototype._callback = function(query){
 Query.prototype._sendMessage = function () {
     $.ajax(
         {
+            type:"post",
             url:this.url,
-            dataType:"json",
+            contentType: 'application/json',
             data:this.param,
-            complete:this._callback
+            complete:this.callback
         }
     );
 }

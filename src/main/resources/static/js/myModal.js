@@ -8,14 +8,4 @@ function centerModals(modalId) {
     });
 };
 
-function adjustBody_beforeShow (){
-    $('#navbar').css({
-        'position' : 'static'});
-}
-
-function adjustBody_afterShow (){
-
-        $('#navbar').css({
-            'position' : 'fixed'});
-}
 

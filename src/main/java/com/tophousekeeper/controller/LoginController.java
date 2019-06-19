@@ -4,9 +4,12 @@ import com.tophousekeeper.entity.User;
 import com.tophousekeeper.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author NiceBin
@@ -21,7 +24,9 @@ public class LoginController {
     LoginService loginService;
 
     @RequestMapping("/registered")
-    public String registered(User user) throws Exception {
+    public String registered(@RequestBody User user, HttpServletRequest req) throws Exception {
+//        throw new Exception("测试错误");
+            req.getParameterMap();
            loginService.registered(user);
            return "/welcome/welcome";
     }
