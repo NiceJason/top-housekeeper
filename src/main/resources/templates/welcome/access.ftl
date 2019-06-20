@@ -1,9 +1,6 @@
 <!--登录注册的集合模板，用标签页将两个页面整合到一个模态框中-->
-
-<script src="/js/registered.js"></script>
-
 <!-- modal -->
-<div class="modal fade" id="registeredModal" tabindex="-1" role="dialog" aria-labelledby="registeredModalLabel" draggable="true">
+<div class="modal fade" id="accessModal" tabindex="-1" role="dialog"  draggable="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,16 +9,18 @@
                 <h4 class="modal-title" id="myModalLabel">欢迎</h4>
             </div>
             <div class="modal-body">
-                <form id="registerInfo">
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control" id="emaill" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password">
-                    </div>
-                </form>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" id="loginNav"><a href="#loginDiv" aria-controls="home" role="tab" data-toggle="tab">登录</a></li>
+                    <li role="presentation" id="registerNav"><a href="#registerDiv" aria-controls="profile" role="tab" data-toggle="tab">注册</a></li>
+                </ul>
+                <!--显示的内容-->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane" id="loginDiv"><#include "login.ftl" encoding="UTF-8"></div>
+                    <div role="tabpanel" class="tab-pane" id="registerDiv"><#include "register.ftl" encoding="UTF-8"></div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="new Registered().submit()">确认</button>
@@ -34,7 +33,7 @@
 <script>
     // 重点，以下JS是为了防导航栏在模态框出现的时候不会偏移
     // （因为那时候浏览器滚动条会被取消，导致多出的空间会使固定在顶端的导航栏鬼畜）
-    $('#registeredModal').on('show.bs.modal',
+    $('#accessModal').on('show.bs.modal',
         function(e){
             $('body').css("cssText",";overflow-y:auto !important;")
         }

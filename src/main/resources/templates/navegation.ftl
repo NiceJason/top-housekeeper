@@ -1,4 +1,6 @@
 <#--导航栏模板-->
+<script src = "/js/navegation.js" ></script>
+<#include "/welcome/access.ftl" encoding="UTF-8">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -29,8 +31,8 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a data-toggle="modal" href="#registeredModal"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                <li><a href="#" onclick="openAccessModal(openAccessModal.register);return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                <li><a href="#" onclick="openAccessModal(openAccessModal.login);return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
             </ul>
 
             <form class="navbar-form navbar-right" role="search">

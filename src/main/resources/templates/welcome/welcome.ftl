@@ -5,7 +5,6 @@
     </@comm.head>
     <@comm.body>
         <#include "/navegation.ftl" encoding="UTF-8">
-        <#include "register.ftl" encoding="UTF-8">
         <div id="myCarousel" class="carousel slide">
             <!-- 轮播（Carousel）指标 -->
 <#--            <ol class="carousel-indicators">-->

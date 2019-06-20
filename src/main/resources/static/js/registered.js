@@ -9,8 +9,8 @@ var Registered = function () {
 Registered.prototype.submit = function () {
 
          var paramMap = new Map();
-         paramMap.set("email",$('#emaill').val());
-         paramMap.set("password",$('#password').val());
+         paramMap.set("email",$('#register-emaill').val());
+         paramMap.set("password",$('#register-password').val());
 
          Query.create("/access/registered",paramMap,function (query) {
              console.debug("发送成功");
