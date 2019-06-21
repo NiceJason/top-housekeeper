@@ -1,4 +1,3 @@
-<script src="/js/registered.js"></script>
 <br/>
 <span>没有账号，注册一个！</span>
 <br/>

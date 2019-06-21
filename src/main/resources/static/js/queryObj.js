@@ -45,15 +45,22 @@ Query.prototype._convertParam = function(param){
  */
 Query.prototype._callback = function(query){
 
-      if(query.status == EXPECTATION_FAILED){
+      //记录请求是否有错误
+      var queryException = false;
+      var handleError;
 
+      if(query.status == EXPECTATION_FAILED){
           var error =query.responseJSON;
-          this.queryException = true;
-          window.location.href = "/system/error/"+error.code;
+          queryException = true;
       }
 
       if(this.callback instanceof  Function){
-          this.callback(query);
+          handleError=this.callback(query);
+      }
+
+      //如果出现了异常并且没有被处理，那么将进行默认错误处理
+      if(queryException&&!handleError){
+          window.location.href = "/system/error/"+error.code;
       }
 }
 
@@ -68,7 +75,19 @@ Query.prototype._sendMessage = function () {
             url:this.url,
             contentType: 'application/json',
             data:this.param,
-            complete:this.callback
+            // complete:this._callback,
+            success:this.callback
         }
     );
+}
+
+/**
+ * 获取后端返回的信息
+ */
+Query.prototype.getReponse = function(){
+
+}
+
+Query.prototype.getReponse2Json = function () {
+
 }

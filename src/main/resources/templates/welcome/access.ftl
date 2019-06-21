@@ -1,4 +1,5 @@
 <!--登录注册的集合模板，用标签页将两个页面整合到一个模态框中-->
+<script src="/js/access.js"></script>
 <!-- modal -->
 <div class="modal fade" id="accessModal" tabindex="-1" role="dialog"  draggable="true">
     <div class="modal-dialog" role="document">
@@ -23,7 +24,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="new Registered().submit()">确认</button>
+                <button type="button" class="btn btn-primary" onclick="new Access().submit()">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>
