@@ -3,6 +3,7 @@
  */
 //通用的请求失败，包括未知原因
 var EXPECTATION_FAILED=417;
+var EXPECTATION_QUERY=404;
 
 /**
  * 访问后台的对象，为ajax封装
@@ -13,7 +14,7 @@ var Query = function (url, param, callback) {
     this.param = this._convertParam(param);
     this.callback=callback;
 
-    this._sendMessage();
+    this._sendMessage(this);
 }
 
 /**
@@ -43,23 +44,25 @@ Query.prototype._convertParam = function(param){
  * @param callBack
  * @private
  */
-Query.prototype._callback = function(query){
+Query.prototype._callback = function(queryResult){
 
+      //Query对象
+      var self = queryResult.queryObj;
       //记录请求是否有错误
-      var queryException = false;
+      self.queryException = false;
       var handleError;
 
-      if(query.status == EXPECTATION_FAILED){
-          var error =query.responseJSON;
-          queryException = true;
+      if(queryResult.status == EXPECTATION_FAILED||queryResult.status == EXPECTATION_QUERY){
+          var error =query.responseText;
+          self.queryException = true;
       }
 
-      if(this.callback instanceof  Function){
-          handleError=this.callback(query);
+      if(self.callback instanceof  Function){
+          handleError=self.callback($.parseJSON(queryResult.responseText));
       }
 
       //如果出现了异常并且没有被处理，那么将进行默认错误处理
-      if(queryException&&!handleError){
+      if(self.queryException&&!handleError){
           window.location.href = "/system/error/"+error.code;
       }
 }
@@ -68,26 +71,21 @@ Query.prototype._callback = function(query){
  * 正式发送ajax
  * @private
  */
-Query.prototype._sendMessage = function () {
+Query.prototype._sendMessage = function (queryObj) {
     $.ajax(
         {
             type:"post",
             url:this.url,
             contentType: 'application/json',
             data:this.param,
-            // complete:this._callback,
-            success:this.callback
+            complete:this._callback,
         }
-    );
+    ).queryObj=queryObj;
 }
 
 /**
- * 获取后端返回的信息
+ * 检测是否有错误,返回ture有错误，或者false
  */
-Query.prototype.getReponse = function(){
-
-}
-
-Query.prototype.getReponse2Json = function () {
-
+Query.prototype.checkEception = function () {
+      return this.queryException;
 }

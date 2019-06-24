@@ -1,10 +1,15 @@
 package com.tophousekeeper.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.entity.User;
 import com.tophousekeeper.service.LoginService;
+import com.tophousekeeper.system.SystemException;
+import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,19 +30,17 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
+    @ResponseBody
     @RequestMapping("/registered")
-    public ModelAndView registered(@RequestBody User user, Model model) throws Exception {
+    public String registered(@RequestBody User user) throws Exception {
         loginService.registered(user);
-        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("/welcome/welcome");
-        modelAndView.addObject("testInfo", "kakak");
-        return modelAndView;
+        return Tool.quickJson(SystemStaticValue.ACTION_RESULT,"注册成功");
     }
 
     @ResponseBody
     @RequestMapping("/login")
     public User login(User checkUser) {
-
         return loginService.login(checkUser);
+
     }
 }

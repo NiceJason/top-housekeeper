@@ -31,8 +31,8 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" onclick="openAccessModal(openAccessModal.register);return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                <li><a href="#" onclick="openAccessModal(openAccessModal.login);return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                <li><a href="#" onclick="openRegisterModal();return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
+                <li><a href="#" onclick="openLoginModal();return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
             </ul>
 
             <form class="navbar-form navbar-right" role="search">

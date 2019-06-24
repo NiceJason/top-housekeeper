@@ -24,7 +24,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="new Access().submit()">确认</button>
+                <button type="button" class="btn btn-primary" onclick="Access.getAccess().submit()">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>
