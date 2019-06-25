@@ -48,6 +48,7 @@ Query.prototype._callback = function(queryResult){
 
       //Query对象
       var self = queryResult.queryObj;
+      var data = $.parseJSON(queryResult.responseText);
       //记录请求是否有错误
       self.queryException = false;
       var handleError;
@@ -58,12 +59,17 @@ Query.prototype._callback = function(queryResult){
       }
 
       if(self.callback instanceof  Function){
-          handleError=self.callback($.parseJSON(queryResult.responseText));
+          handleError=self.callback(data);
       }
 
       //如果出现了异常并且没有被处理，那么将进行默认错误处理
       if(self.queryException&&!handleError){
           window.location.href = "/system/error/"+error.code;
+      }
+
+      //如果需要跳转，则进行跳转
+      if(data.redirect_url){
+          window.location.href = data.redirect_url;
       }
 }
 

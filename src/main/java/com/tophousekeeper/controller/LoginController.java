@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author NiceBin
@@ -39,8 +40,11 @@ public class LoginController {
 
     @ResponseBody
     @RequestMapping("/login")
-    public User login(User checkUser) {
-        return loginService.login(checkUser);
-
+    public String login(@RequestBody User checkUser,HttpServletRequest request) {
+        User user=loginService.login(checkUser);
+        HttpSession session=request.getSession(true);
+        session.setAttribute("user",user);
+        return Tool.quickJson(SystemStaticValue.ACTION_RESULT,"登录成功",
+                SystemStaticValue.REDIRECT_URL,"/welcome/welcome");
     }
 }

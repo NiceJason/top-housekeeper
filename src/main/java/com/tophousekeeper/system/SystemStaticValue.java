@@ -8,4 +8,6 @@ package com.tophousekeeper.system;
 public class SystemStaticValue {
     //ajax请求返回操作Key值
     public static final String ACTION_RESULT = "action_result";
+    //ajax需要跳转的界面
+    public static final String REDIRECT_URL = "redirect_url";
 }

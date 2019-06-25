@@ -1,5 +1,5 @@
 <#--导航栏模板-->
-<script src = "/js/navegation.js" ></script>
+<script src="/js/navegation.js"></script>
 <#include "/welcome/access.ftl" encoding="UTF-8">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -10,7 +10,7 @@
 
             <ul class="nav nav-pills  navbar-left" style="margin-top:5px;">
                 <li class="active "><a data-toggle="tab" href="#home">首页</a></li>
-                <li ><a data-toggle="tab" href="#menu1">菜单 1</a></li>
+                <li><a data-toggle="tab" href="#menu1">菜单 1</a></li>
                 <li><a data-toggle="tab" href="#menu2">菜单 2</a></li>
                 <li><a data-toggle="tab" href="#menu3">菜单 3</a></li>
                 <li class="dropdown">
@@ -30,9 +30,16 @@
                 </li>
             </ul>
 
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" onclick="openRegisterModal();return false;"><span class="glyphicon glyphicon-user"></span> 注册</a></li>
-                <li><a href="#" onclick="openLoginModal();return false;"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+            <ul id="noLogin" class="nav navbar-nav navbar-right">
+                <li><a href="#" onclick="openRegisterModal();return false;"><span
+                                class="glyphicon glyphicon-user"></span> 注册</a></li>
+                <li><a href="#" onclick="openLoginModal();return false;"><span
+                                class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+            </ul>
+
+            <ul id="alreadyLogin" class="nav navbar-nav navbar-right">
+                <li><a href="#" onclick="openRegisterModal();return false;"><span
+                                class="glyphicon glyphicon-user"></span>${userName!}</a></li>
             </ul>
 
             <form class="navbar-form navbar-right" role="search">
@@ -42,5 +49,5 @@
                 <button type="submit" class="btn btn-default">提交</button>
             </form>
 
-    </div>
+        </div>
 </nav>

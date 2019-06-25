@@ -59,6 +59,7 @@ Access.prototype.submit = function () {
          }else {
              paramMap.set("email",$('#login-emaill').val());
              paramMap.set("password",$('#login-password').val());
+             url="/access/login";
          }
 
          var query = Query.create(url,paramMap,function (data) {
