@@ -1,3 +1,13 @@
+$(document).ready(function () {
+    if(userName.length != 0){
+        $("#noLogin").hide();
+        $("#alreadyLogin").show();
+    }else {
+        $("#alreadyLogin").hide();
+        $("#noLogin").show();
+    }
+})
+
 /**
  * 打开注册窗口
  */

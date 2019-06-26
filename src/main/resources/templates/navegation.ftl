@@ -1,4 +1,7 @@
 <#--导航栏模板-->
+<script>
+    var userName = '${userName!}';
+</script>
 <script src="/js/navegation.js"></script>
 <#include "/welcome/access.ftl" encoding="UTF-8">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -14,7 +17,7 @@
                 <li><a data-toggle="tab" href="#menu2">菜单 2</a></li>
                 <li><a data-toggle="tab" href="#menu3">菜单 3</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-t oggle" data-toggle="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         Java
                         <b class="caret"></b>
                     </a>
@@ -38,8 +41,15 @@
             </ul>
 
             <ul id="alreadyLogin" class="nav navbar-nav navbar-right">
-                <li><a href="#" onclick="openRegisterModal();return false;"><span
-                                class="glyphicon glyphicon-user"></span>${userName!}</a></li>
+                <li class="dropdown">
+                    <a href="#"  class="dropdown-toggle" data-toggle="dropdown"
+                    ><span class="glyphicon glyphicon-user"></span>${userName!}</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="return false;">个人主页</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/logout">注销</a></li>
+                    </ul>
+                </li>
             </ul>
 
             <form class="navbar-form navbar-right" role="search">

@@ -31,6 +31,12 @@ public class LoginController {
     @Autowired
     LoginService loginService;
 
+    /**
+     * 注册
+     * @param user
+     * @return
+     * @throws Exception
+     */
     @ResponseBody
     @RequestMapping("/registered")
     public String registered(@RequestBody User user) throws Exception {
@@ -38,6 +44,12 @@ public class LoginController {
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT,"注册成功");
     }
 
+    /**
+     * 登录
+     * @param checkUser
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping("/login")
     public String login(@RequestBody User checkUser,HttpServletRequest request) {
@@ -45,6 +57,19 @@ public class LoginController {
         HttpSession session=request.getSession(true);
         session.setAttribute("user",user);
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT,"登录成功",
-                SystemStaticValue.REDIRECT_URL,"/welcome/welcome");
+                SystemStaticValue.REDIRECT_URL,"/welcome");
+    }
+
+    /**
+     * 注销
+     * @param request
+     * @return
+     */
+    @RequestMapping("/logout")
+    public ModelAndView logout(HttpServletRequest request,ModelAndView modelAndView){
+           request.getSession().removeAttribute("user");
+           modelAndView.addObject(SystemStaticValue.ACTION_RESULT,"注销成功");
+           modelAndView.setViewName("/welcome");
+           return modelAndView;
     }
 }

@@ -54,7 +54,7 @@ Query.prototype._callback = function(queryResult){
       var handleError;
 
       if(queryResult.status == EXPECTATION_FAILED||queryResult.status == EXPECTATION_QUERY){
-          var error =query.responseText;
+          var error =queryResult.responseText;
           self.queryException = true;
       }
 
