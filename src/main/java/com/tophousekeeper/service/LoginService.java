@@ -4,6 +4,7 @@ import com.tophousekeeper.dao.function.LoginDao;
 import com.tophousekeeper.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 /**
  * @author NiceBin
@@ -22,7 +23,10 @@ public class LoginService {
 
 
        public User login(User checkUser){
-           User user =loginDao.selectOne(checkUser);
+           Example example = new Example(User.class);
+           Example.Criteria criteria=example.createCriteria();
+           criteria.orCondition("password = ",checkUser.getPassword());
+           User user =loginDao.selectOneByExample(example);
            return user;
        }
 }

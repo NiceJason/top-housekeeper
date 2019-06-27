@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -69,7 +70,8 @@ public class LoginController {
     public ModelAndView logout(HttpServletRequest request,ModelAndView modelAndView){
            request.getSession().removeAttribute("user");
            modelAndView.addObject(SystemStaticValue.ACTION_RESULT,"注销成功");
-           modelAndView.setViewName("/welcome");
+           modelAndView.setViewName("/welcome/welcome");
+        System.out.println("根目录为："+ ClassUtils.getDefaultClassLoader().getResource("").getPath());
            return modelAndView;
     }
 }

@@ -15,7 +15,7 @@ public class WelcomeController {
     @Autowired
     private WelcomeService welcomeService;
 
-    @RequestMapping(value={"/","/index","welcome"})
+    @RequestMapping(value={"/welcome","/"})
     public ModelAndView welcome(HttpServletRequest request,ModelAndView modelAndView){
         System.out.println("进入欢迎页面");
         System.out.println(welcomeService.selectByResourcesId(1));

@@ -1,6 +1,6 @@
 <@comm.page>
     <@comm.head>
-    <link href="css/welcome.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/welcome.css" rel="stylesheet" type="text/css"/>
 
     </@comm.head>
     <@comm.body>
@@ -15,13 +15,13 @@
             <!-- 轮播（Carousel）项目 -->
             <div class="carousel-inner myCarouselCss">
                 <div class="item active">
-                    <img src="image/bootstrap.png" alt="First slide">
+                    <img src="/image/bootstrap.png" alt="First slide">
                 </div>
                 <div class="item">
-                    <img src="image/jquery.png" alt="Second slide">
+                    <img src="/image/jquery.png" alt="Second slide">
                 </div>
                 <div class="item">
-                    <img src="image/springboot.png" alt="Third slide">
+                    <img src="/image/springboot.png" alt="Third slide">
                 </div>
             </div>
             <!-- 轮播（Carousel）导航 -->

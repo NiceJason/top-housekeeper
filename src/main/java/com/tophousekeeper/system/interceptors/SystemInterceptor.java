@@ -1,35 +1,25 @@
 package com.tophousekeeper.system.interceptors;
 
-import com.tophousekeeper.entity.User;
-import com.tophousekeeper.system.SystemException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
  * @author NiceBin
- * @description: TODO
- * @date 2019/6/25 16:30
+ * @description: 系统拦截器
+ *               1.对输入的安全性过滤
+ *               2.对于返回时，赋予项目路径
+ * @date 2019/6/27 16:13
  */
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
+public class SystemInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("进入登录拦截器");
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-        if(user !=null){
-            return true;
-        }else {
-            //这里应该给未登录信息，并打开登录的模态窗口
-            System.out.println("被拦截了");
-            throw new SystemException("100","请先登录");
-        }
+        return false;
     }
 
     @Override

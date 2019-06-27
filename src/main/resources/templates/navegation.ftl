@@ -47,7 +47,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#" onclick="return false;">个人主页</a></li>
                         <li class="divider"></li>
-                        <li><a href="/logout">注销</a></li>
+                        <li><a href="/access/logout">注销</a></li>
                     </ul>
                 </li>
             </ul>
