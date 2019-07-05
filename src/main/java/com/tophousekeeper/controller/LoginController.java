@@ -7,6 +7,7 @@ import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -68,6 +69,7 @@ public class LoginController {
      */
     @RequestMapping("/logout")
     public ModelAndView logout(HttpServletRequest request,ModelAndView modelAndView){
+        RedisTemplate redisTemplate = new RedisTemplate();
            request.getSession().removeAttribute("user");
            modelAndView.addObject(SystemStaticValue.ACTION_RESULT,"注销成功");
            modelAndView.setViewName("/welcome/welcome");

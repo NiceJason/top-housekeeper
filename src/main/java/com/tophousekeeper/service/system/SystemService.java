@@ -1,6 +1,6 @@
-package com.tophousekeeper.service;
+package com.tophousekeeper.service.system;
 
-import com.tophousekeeper.dao.function.WelcomeDao;
+import com.tophousekeeper.dao.function.system.SystemDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
  * @date 2019/5/24 8:01
  */
 @Service
-public class WelcomeService {
+public class SystemService {
 
     @Autowired
-    private WelcomeDao welcomeDao;
+    private SystemDao systemDao;
 
 
     public String selectByResourcesId(int resourcesId){
-        return welcomeDao.selectByPrimaryKey(resourcesId).getInfo();
+        return systemDao.selectByPrimaryKey(resourcesId).getInfo();
     }
 }
