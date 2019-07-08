@@ -1,10 +1,12 @@
 package com.tophousekeeper.system;
 
 
+import com.tophousekeeper.service.system.RedisTemplateService;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.util.HashMap;
 
@@ -14,17 +16,18 @@ import java.util.HashMap;
  * @date 2019/7/5 9:30
  */
 @Component
-public class SystemContext {
+public class SystemContext implements ApplicationContextAware {
+
+    //Redis缓存
     @Autowired
+    private RedisTemplateService redisTemplateService;
     private static ApplicationContext applicationContext;
     private static SystemContext systemContext;
-    //下面这个属性之后会有redis替代
-    private HashMap<String,String> valueMap = new HashMap<>();
 
     public static synchronized SystemContext getSystemContext(){
-        WebApplicationContextUtils.getRequiredWebApplicationContext();
+
         if(systemContext == null){
-            systemContext = (SystemContext)applicationContext.getBean("SystemContext");
+            systemContext = (SystemContext)applicationContext.getBean("systemContext");
         }
         return systemContext;
     }
@@ -33,11 +36,18 @@ public class SystemContext {
         return applicationContext;
     }
 
-    public void setValue(String key,String value){
-        valueMap.put(key,value);
+    //向redis中存储信息
+    public void setValue(String key,Object value){
+        redisTemplateService.set(key,value);
     }
 
-    public String getValue(String key){
-        return valueMap.get(key);
+    //向redis获取信息
+    public<T> T getValue(String key,Class<T> clazz){
+        return redisTemplateService.get(key,clazz);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

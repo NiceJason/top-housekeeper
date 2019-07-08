@@ -26,7 +26,6 @@ public class RedisTemplateService {
             if(val==null||val.length()<=0){
                 return false;
             }
-
             stringRedisTemplate.opsForValue().set(key,val);
             return true;
         }catch (Exception e){
