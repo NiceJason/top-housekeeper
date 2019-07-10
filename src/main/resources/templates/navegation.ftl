@@ -2,7 +2,7 @@
 <script>
     var userName = '${userName!}';
 </script>
-<script src="/js/navegation.js"></script>
+<script src="/js/system/navegation.js"></script>
 <#include "/welcome/access.ftl" encoding="UTF-8">
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
