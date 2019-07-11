@@ -30,14 +30,19 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" onclick="Access.getAccess().submit()">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-default" data-container="body"
-                        data-toggle="popover" data-placement="top"
-                        <#--                        data-html="true"-->
-                        <#--                        data-title="验证码" id="identifyingBtn"-->
-                        <#--                        data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."-->
-                >
-                    Popover on 顶部
-                </button>
+<#--                <button type="button" class="btn btn-default" data-container="body"-->
+<#--                        data-toggle="popover" data-placement="top"-->
+<#--                        &lt;#&ndash;                        data-html="true"&ndash;&gt;-->
+<#--                        &lt;#&ndash;                        data-title="验证码" id="identifyingBtn"&ndash;&gt;-->
+<#--                        &lt;#&ndash;                        data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."&ndash;&gt;-->
+<#--                >-->
+<#--                    Popover on 顶部-->
+<#--                </button>-->
+<#--                <button id="custom" class="btn btn-default" data-toggle="popover" title="显示的标题" data-placement="bottom" data-content='显示的内容'>点我</button>-->
+<#--                <button id="identifyingBtn" class="btn btn-default" data-toggle="popover" data-html="true" title="显示的标题" data-placement="bottom"-->
+<#--                        data-content='<h3 id="identifyingContent" style="color:#F00;">显示的内容</h3><button type="submit">pop的按钮</button>'>点我</button>-->
+                <button id="identifyingBtn" class="btn btn-default" onclick="test(123)" >点我</button>
+                <button id="identifyingContent" data-toggle="popover"></button>
             </div>
         </div>
     </div>
@@ -52,25 +57,32 @@
         }
     );
 
+
     //验证码弹窗
     //要加下面这句进行弹窗初始化，不然弹窗出不来
-    $(function () {
-        $("[data-toggle='popover']").popover(
-            {
-                trigger: 'click', //触发方式
-                template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title">标题</h3><div class="popover-content">内容</div></div>',
-                html: true, // 为true的话，data-content里就能放html代码了
-            }
-        );
-    });
-    $('#identifyingBtn').on('show.bs.popover',
+    // $(function () {
+    //     $("[data-toggle='popover']").popover({html : true }
+    //     );
+    // });
+    $('#identifyingContent').on('show.bs.popover',
         function (e) {
 
         }
     );
-    $('#identifyingBtn').on('shown.bs.popover',
+    $('#identifyingContent').on('shown.bs.popover',
         function (e) {
-            e.currentTarget.dataset.content = "新生成的";
+            // e.currentTarget.dataset.content = "新生成的";
         }
     );
+
+    function test(dom){
+        $("#identifyingContent").popover({
+            html:true,
+            placement:'top',
+            /*delay:{"hide":2000},*/
+            title:'<span style="font-weight:700">详细url地址</span>',
+            content:'<p style="width:auto;height:20px;">'+dom+'</p>'
+        })
+        $("#identifyingContent").popover('show');
+    }
 </script>
