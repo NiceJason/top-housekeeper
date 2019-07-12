@@ -75,3 +75,10 @@
 .re-btn a:hover {
     background-position: 0 -1193px
 }
+
+.verBox {
+    width:100%;
+    text-align:center;
+    opacity:0;
+    transition:all 0.8s;
+}

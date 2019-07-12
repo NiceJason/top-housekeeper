@@ -64,11 +64,9 @@
 
         <script type="text/javascript">
 
-            $(function(){
-                $(".modal-dialog").draggable();
-            })
-
-
+            // $(function(){
+            //     $(".modal-dialog").draggable();
+            // })
         </script>
 
         <#include "/footer.ftl" encoding="UTF-8">

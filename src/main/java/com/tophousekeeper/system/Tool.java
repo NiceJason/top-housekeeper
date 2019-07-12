@@ -3,10 +3,14 @@ package com.tophousekeeper.system;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
 /**
  * @author NiceBin
  * @description: 工具类
  *               1.快速搭建Json字符串
+ *               2.给定范围出随机数
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -28,5 +32,42 @@ public class Tool {
                }
            }
            return jsonObject.toJSONString();
+    }
+
+    /**
+     * 获得一定范围的安全随机数
+     * @param min 最小值，能转为数值型就行
+     * @param max 最大值，能转为数值型就行
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    public static int getSecureRandom(Object min,Object max) throws NoSuchAlgorithmException {
+        int theMin=0,theMax=0;
+        //检测大小值是否合法
+        boolean legalMin = false,legalMax = false;
+
+        if(min instanceof String){
+            theMin=Integer.parseInt((String)min);
+            legalMin=true;
+        }
+        if(max instanceof String){
+            theMax=Integer.parseInt((String)max);
+            legalMax=true;
+        }
+        if(min instanceof Integer){
+            theMin=(Integer)min;
+            legalMin=true;
+        }
+        if(max instanceof String){
+            theMax=(Integer)max;
+            legalMax=true;
+        }
+
+        if(legalMax||legalMin){
+           throw new SystemException("100","随机数参数不正确");
+        }
+
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        return secureRandom.nextInt((theMax - theMin +1)+theMin);
     }
 }

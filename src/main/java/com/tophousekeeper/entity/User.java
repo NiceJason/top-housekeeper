@@ -4,6 +4,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * @author NiceBin
@@ -11,7 +12,7 @@ import javax.persistence.Table;
  * @date 2019/6/13 8:25
  */
 @Table(name = "t_user")
-public class User {
+public class User implements Serializable {
     @Id
     private String email;
     private String password;

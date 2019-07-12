@@ -1,5 +1,5 @@
 function imgVer(Config) {
-    var el = eval(Config.el);
+    var el = Config.el;
     var w = Config.width;
     var h = Config.height;
     var imgLibrary = Config.img;
@@ -34,11 +34,11 @@ function imgVer(Config) {
     html += '<div style="position:relative;overflow:hidden;width:' + w + 'px;">';
     html += '<div style="position:relative;width:' + w + 'px;height:' + h + 'px;">';
     html += '<img id="scream" src="' + imgSrc + '" style="width:' + w + 'px;height:' + h + 'px;">';
-    html += '<canvas id="puzzleBox" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:22;"></canvas>';
+    html += '<canvas id="puzzleBox" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:2222;"></canvas>';
     html += '</div>';
-    html += '<div class="puzzle-lost-box" style="position:absolute;width:' + w + 'px;height:' + h + 'px;top:0;left:' + left_Num + 'px;z-index:111;">';
-    html += '<canvas id="puzzleShadow" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:22;"></canvas>';
-    html += '<canvas id="puzzleLost" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:33;"></canvas>';
+    html += '<div class="puzzle-lost-box" style="position:absolute;width:' + w + 'px;height:' + h + 'px;top:0;left:' + left_Num + 'px;z-index:11111;">';
+    html += '<canvas id="puzzleShadow" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:2222;"></canvas>';
+    html += '<canvas id="puzzleLost" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:3333;"></canvas>';
     html += '</div>';
     html += '<p class="ver-tips"></p>';
     html += '</div>';
@@ -150,12 +150,12 @@ function imgVer(Config) {
 
     var moveStart = '';
     $(".slider-btn").mousedown(function (e) {
-        e = e || window.event; 
         $(this).css({ "background-position": "0 -216px" });
         moveStart = e.pageX;
     });
+
     onmousemove = function (e) {
-        e = e || window.event;
+
         var moveX = e.pageX;
         var d = moveX - moveStart;
         if (moveStart == '') {
@@ -169,8 +169,10 @@ function imgVer(Config) {
                 $("#puzzleShadow").css({ "left": d + 'px', "transition": "inherit" });
             }
         }
-    }; onmouseup = function (e) {
-        e = e || window.event;
+    };
+
+    onmouseup = function (e) {
+
         var moveEnd_X = e.pageX - moveStart;
         var ver_Num = X - 10;
         var deviation = 4;
@@ -207,4 +209,35 @@ function imgVer(Config) {
             imgVer(Config);
         })
     }
+}
+
+/**
+ * 打开浏览器验证码
+ * 在这之前应该进行输入校验，不合格则不弹出验证码了
+ */
+function openIdentifying() {
+
+    var identifyingContent = $("#identifyingContent");
+    //让验证框显示出来
+    $(".verBox").css({
+        "left":"0",
+        "opacity":"1"
+    })
+    imgVer({
+        el:identifyingContent,
+        width:'260',
+        height:'116',
+        img:[
+            'image/ver.png',
+            'image/ver-1.png',
+            'image/ver-2.png',
+            'image/ver-3.png'
+        ],
+        success:function () {
+            console.log("验证码正确，执行AJAX");
+        },
+        error:function () {
+            console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
+        }
+    });
 }
