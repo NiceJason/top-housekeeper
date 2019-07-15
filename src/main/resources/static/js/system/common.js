@@ -50,7 +50,7 @@ var Map2Array =function (map) {
 var strMap2Obj =function (map) {
     let obj = Object.create(null);
     for(let [k,v] of map){
-        obj[k]=v;
+        obj[k]=String(v);
     }
     return obj;
 }

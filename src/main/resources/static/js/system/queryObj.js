@@ -11,7 +11,8 @@ var EXPECTATION_QUERY=404;
  */
 var Query = function (url, param, callback) {
     this.url=url;
-    this.param = this._convertParam(param);
+    //注意，返回的是字符串
+    this.param = JSON.parse(this._convertParam(param));
     this.callback=callback;
 
     this._sendMessage(this);
@@ -82,7 +83,7 @@ Query.prototype._sendMessage = function (queryObj) {
         {
             type:"post",
             url:this.url,
-            contentType: 'application/json',
+            // contentType: 'application/json',
             data:this.param,
             complete:this._callback,
         }

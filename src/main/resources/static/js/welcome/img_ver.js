@@ -3,12 +3,8 @@ function imgVer(Config) {
     var w = Config.width;
     var h = Config.height;
     var imgLibrary = Config.img;
-    var PL_Size = 48;
-    var padding = 20;
-    var MinN_X = padding + PL_Size;
-    var MaxN_X = w - padding - PL_Size - PL_Size / 6;
-    var MaxN_Y = padding;
-    var MinN_Y = h - padding - PL_Size - PL_Size / 6;
+    var PL_Size = Config.PL_Size;
+    var padding = Config.padding;
 
     //这个要转移到后台
     function RandomNum(Min, Max) {
@@ -27,8 +23,8 @@ function imgVer(Config) {
     var imgRandom = RandomNum(1, imgLibrary.length);
     //确定图片
     var imgSrc = imgLibrary[imgRandom];
-    var X = RandomNum(MinN_X, MaxN_X);
-    var Y = RandomNum(MinN_Y, MaxN_Y);
+    var X = Config.X;
+    var Y = Config.Y;
     var left_Num = -X + 10;
     var html = '<div style="position:relative;padding:16px 16px 28px;border:1px solid #ddd;background:#f2ece1;border-radius:16px;">';
     html += '<div style="position:relative;overflow:hidden;width:' + w + 'px;">';
@@ -155,7 +151,7 @@ function imgVer(Config) {
     });
 
     onmousemove = function (e) {
-
+        var e=e||window.event;
         var moveX = e.pageX;
         var d = moveX - moveStart;
         if (moveStart == '') {
@@ -172,7 +168,7 @@ function imgVer(Config) {
     };
 
     onmouseup = function (e) {
-
+        var e=e||window.event;
         var moveEnd_X = e.pageX - moveStart;
         var ver_Num = X - 10;
         var deviation = 4;
@@ -223,21 +219,44 @@ function openIdentifying() {
         "left":"0",
         "opacity":"1"
     })
-    imgVer({
-        el:identifyingContent,
-        width:'260',
-        height:'116',
-        img:[
-            'image/ver.png',
-            'image/ver-1.png',
-            'image/ver-2.png',
-            'image/ver-3.png'
-        ],
-        success:function () {
-            console.log("验证码正确，执行AJAX");
-        },
-        error:function () {
-            console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
-        }
-    });
+
+    var width='260';
+    var height='116';
+    var PL_Size = 48;
+    var padding = 20;
+    var min_X = padding + PL_Size;
+    var max_X = width - padding - PL_Size - PL_Size / 6;
+    var max_Y = padding;
+    var min_Y = height - padding - PL_Size - PL_Size / 6;
+
+    var paramMap = new Map();
+    paramMap.set("min_X",min_X);
+    paramMap.set("max_X",max_X);
+    paramMap.set("min_Y",min_Y);
+    paramMap.set("max_Y",max_Y);
+
+    //向后台发送验证码请求
+    var query = new Query("/access/identifying",paramMap,function(data){
+        imgVer({
+            el:identifyingContent,
+            width:width,
+            height:height,
+            img:[
+                'image/ver.png',
+                'image/ver-1.png',
+                'image/ver-2.png',
+                'image/ver-3.png'
+            ],
+            success:function () {
+                console.log("验证码正确，执行AJAX登录");
+            },
+            error:function () {
+                console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
+            },
+            X:data.X,
+            Y:data.Y,
+            PL_Size:PL_Size,
+            padding:padding
+        });
+    })
 }

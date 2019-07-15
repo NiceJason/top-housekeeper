@@ -58,12 +58,12 @@ public class Tool {
             theMin=(Integer)min;
             legalMin=true;
         }
-        if(max instanceof String){
+        if(max instanceof Integer){
             theMax=(Integer)max;
             legalMax=true;
         }
 
-        if(legalMax||legalMin){
+        if(!(legalMax&&legalMin)){
            throw new SystemException("100","随机数参数不正确");
         }
 

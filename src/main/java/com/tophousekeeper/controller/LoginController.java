@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * @author NiceBin
@@ -35,7 +36,6 @@ public class LoginController {
 
     /**
      * 注册
-     *
      * @param user
      * @return
      * @throws Exception
@@ -49,7 +49,6 @@ public class LoginController {
 
     /**
      * 登录
-     *
      * @param checkUser
      * @param request
      * @return
@@ -66,7 +65,6 @@ public class LoginController {
 
     /**
      * 注销
-     *
      * @param request
      * @return
      */
@@ -78,5 +76,17 @@ public class LoginController {
         modelAndView.setViewName("/welcome/welcome");
         System.out.println("根目录为：" + ClassUtils.getDefaultClassLoader().getResource("").getPath());
         return modelAndView;
+    }
+
+    /**
+     * 获取验证码信息
+     * @param request
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
+    @ResponseBody
+    @RequestMapping("/identifying")
+    public String getIdentifying(HttpServletRequest request) throws NoSuchAlgorithmException {
+           return loginService.getIdentifying(request);
     }
 }

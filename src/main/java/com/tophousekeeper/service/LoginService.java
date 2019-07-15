@@ -36,14 +36,17 @@ public class LoginService {
        }
 
        public String getIdentifying(HttpServletRequest request) throws NoSuchAlgorithmException {
-           String min = request.getParameter("min");
-           String max = request.getParameter("max");
+           String min_X = request.getParameter("min_X");
+           String max_X = request.getParameter("max_X");
+           String min_Y = request.getParameter("min_Y");
+           String max_Y = request.getParameter("max_Y");
+
            Identifying identifying = new Identifying();
 
            int imgPoolLength = SystemStaticValue.IDENTIFYING_IMG_POOL.length;
            identifying.setImgSrc(SystemStaticValue.IDENTIFYING_IMG_POOL[Tool.getSecureRandom(0,imgPoolLength-1)]);
-           identifying.setX(Tool.getSecureRandom(min,max));
-           identifying.setY(Tool.getSecureRandom(min,max));
+           identifying.setX(Tool.getSecureRandom(min_X,max_X));
+           identifying.setY(Tool.getSecureRandom(min_Y,max_Y));
            return JSONObject.fromObject(identifying).toString();
        }
 
