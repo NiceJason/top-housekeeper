@@ -9,23 +9,37 @@ var EXPECTATION_QUERY=404;
  * 访问后台的对象，为ajax封装
  * @constructor
  */
-var Query = function (url, param, callback) {
+var Query = function (url, param, callback,contentType) {
     this.url=url;
-    //注意，返回的是字符串
-    this.param = JSON.parse(this._convertParam(param));
-    this.callback=callback;
+    //注意，要根据不同的传输格式来确定传输的值的类型
+    if(contentType == Query.NOMAL_TYPE){
+        this.param = JSON.parse(this._convertParam(param));
+    }else{
+        this.param = this._convertParam(param);
+    }
 
+    this.callback=callback;
+    this.contentType = contentType;
     this._sendMessage(this);
 }
+
+Query.JSON_TYPE = 'application/json';
+Query.NOMAL_TYPE = 'application/x-www-form-urlencoded';
 
 /**
  * ajax请求的访问
  * @param url 要访问的地址
  * @param paramMap 传给后台的Map参数，key为字符串类型
  * @param callback 回调函数
+ * @param contentType 传输数据的格式  默认传输Json格式
  */
-Query.create = function (url, paramMap, callback) {
-     return new Query(url, paramMap, callback);
+Query.create = function (url, paramMap, callback,contentType) {
+
+     if(contentType == Query.NOMAL_TYPE) {
+         return new Query(url, paramMap, callback,Query.NOMAL_TYPE);
+     }else {
+         return new Query(url, paramMap, callback,Query.JSON_TYPE);
+     }
 }
 
 /**
@@ -83,7 +97,7 @@ Query.prototype._sendMessage = function (queryObj) {
         {
             type:"post",
             url:this.url,
-            // contentType: 'application/json',
+            contentType: this.contentType,
             data:this.param,
             complete:this._callback,
         }

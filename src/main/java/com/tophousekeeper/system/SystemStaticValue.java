@@ -13,5 +13,5 @@ public class SystemStaticValue {
 
     //以下为资源
     //图片验证码的图片池
-    public static final String[] IDENTIFYING_IMG_POOL = {"image/ver.png","image/ver-1.png","image/ver-2.png","image/ver-3.png"};
+    public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
 }

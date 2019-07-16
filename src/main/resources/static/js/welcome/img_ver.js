@@ -19,10 +19,8 @@ function imgVer(Config) {
             var num = Min + Math.round(Rand * Range) - 1; return num;
         }
     }
-    //图片随机数
-    var imgRandom = RandomNum(1, imgLibrary.length);
     //确定图片
-    var imgSrc = imgLibrary[imgRandom];
+    var imgSrc = Config.img;
     var X = Config.X;
     var Y = Config.Y;
     var left_Num = -X + 10;
@@ -241,22 +239,17 @@ function openIdentifying() {
             el:identifyingContent,
             width:width,
             height:height,
-            img:[
-                'image/ver.png',
-                'image/ver-1.png',
-                'image/ver-2.png',
-                'image/ver-3.png'
-            ],
+            img:data.imgSrc,
             success:function () {
                 console.log("验证码正确，执行AJAX登录");
             },
             error:function () {
                 console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
             },
-            X:data.X,
-            Y:data.Y,
+            X:data.x,
+            Y:data.y,
             PL_Size:PL_Size,
             padding:padding
         });
-    })
+    },Query.NOMAL_TYPE)
 }

@@ -72,11 +72,11 @@ public class SystemControllerAdvice {
     }
 
     @RequestMapping("/error/{code}")
-    public ModelAndView errorPage(SystemException ex){
-           logger.error("报错跳转 "+ex.getMsg());
+    public ModelAndView errorPage(@RequestParam("code") String code){
+           logger.error("报错跳转此时应该根据错误code来展现友好的提示");
            ModelAndView modelAndView=new ModelAndView();
            modelAndView.setViewName("error");
-           modelAndView.addObject("code",ex.getCode());
+           modelAndView.addObject("code",code);
            modelAndView.addObject("msg","处理过的错误提示");
            return modelAndView;
     }
