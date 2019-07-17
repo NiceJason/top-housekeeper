@@ -14,9 +14,9 @@
             <div class="modal-body">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" id="loginNav"><a href="#loginDiv" aria-controls="home" role="tab"
+                    <li role="presentation" id="loginNav"><a href="#loginDiv" onclick="Access.getAccess().setLoginType();return false;" aria-controls="home" role="tab"
                                                              data-toggle="tab">登录</a></li>
-                    <li role="presentation" id="registerNav"><a href="#registerDiv" aria-controls="profile" role="tab"
+                    <li role="presentation" id="registerNav"><a href="#registerDiv" onclick="Access.getAccess().setRegisterType();return false;" aria-controls="profile" role="tab"
                                                                 data-toggle="tab">注册</a></li>
                 </ul>
                 <!--显示的内容-->
@@ -31,11 +31,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="Access.getAccess().submit()">确认</button>
+                <button type="button" class="btn btn-primary" onclick="openIdentifying()">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button id="identifyingBtn" data-toggle="popover" class="btn btn-default" onclick="openIdentifying()">
-                    验证码测试
-                </button>
             </div>
         </div>
     </div>

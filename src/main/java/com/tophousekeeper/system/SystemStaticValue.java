@@ -14,4 +14,6 @@ public class SystemStaticValue {
     //以下为资源
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
+    //验证码过期时间（毫秒）
+    public static final int IDENTIFYING_OVERDUE = 10000;
 }

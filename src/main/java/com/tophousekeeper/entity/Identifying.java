@@ -1,6 +1,7 @@
 package com.tophousekeeper.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 /**
  * @author NiceBin
@@ -8,12 +9,30 @@ import java.io.Serializable;
  * @date 2019/7/12 16:04
  */
 public class Identifying implements Serializable {
+    //此次验证码的id
+    private String identifyingId;
     //需要使用的图片
     private String imgSrc;
     //生成块的x坐标
     private int X;
     //生成块的y坐标
     private int Y;
+    //允许的误差
+    private int deviation = 2;
+    //验证码生成的时间
+    private Calendar calendar;
+
+    public Identifying(String id){
+        this.identifyingId = id;
+    }
+
+    public String getIdentifyingId() {
+        return identifyingId;
+    }
+
+    public void setIdentifyingId(String identifyingId) {
+        this.identifyingId = identifyingId;
+    }
 
     public String getImgSrc() {
         return imgSrc;
@@ -37,5 +56,21 @@ public class Identifying implements Serializable {
 
     public void setY(int y) {
         Y = y;
+    }
+
+    public int getDeviation() {
+        return deviation;
+    }
+
+    public void setDeviation(int deviation) {
+        this.deviation = deviation;
+    }
+
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 }

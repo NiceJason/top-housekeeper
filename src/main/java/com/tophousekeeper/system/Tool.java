@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.regex.Pattern;
 
 /**
  * @author NiceBin
  * @description: 工具类
  *               1.快速搭建Json字符串
  *               2.给定范围出随机数
+ *               3.判断传入的字符串是否为整数
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -69,5 +71,15 @@ public class Tool {
 
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         return secureRandom.nextInt((theMax - theMin +1)+theMin);
+    }
+
+    /*
+     * 判断是否为整数
+     * @param str 传入的字符串
+     * @return 是整数返回true,否则返回false
+     */
+    public static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 }

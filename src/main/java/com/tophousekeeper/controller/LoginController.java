@@ -1,11 +1,12 @@
 package com.tophousekeeper.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.tophousekeeper.entity.Identifying;
 import com.tophousekeeper.entity.User;
 import com.tophousekeeper.service.LoginService;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 
 /**
  * @author NiceBin
@@ -30,6 +32,12 @@ import java.security.NoSuchAlgorithmException;
 @Controller
 @RequestMapping("/access")
 public class LoginController {
+
+    //存储进Session变量Key
+    //用户
+    private static String S_USER = "user";
+    //验证码生成时间
+    private static String S_IDENTIFYING = "identifying";
 
     @Autowired
     LoginService loginService;
@@ -56,9 +64,11 @@ public class LoginController {
     @ResponseBody
     @RequestMapping("/login")
     public String login(@RequestBody User checkUser, HttpServletRequest request) {
+        loginService.checkIdentifying(request);
+
         User user = loginService.login(checkUser);
         HttpSession session = request.getSession(true);
-        session.setAttribute("user", user);
+        session.setAttribute(S_USER, user);
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "登录成功",
                 SystemStaticValue.REDIRECT_URL, "/welcome");
     }
@@ -70,11 +80,12 @@ public class LoginController {
      */
     @RequestMapping("/logout")
     public ModelAndView logout(HttpServletRequest request, ModelAndView modelAndView) {
+        loginService.checkIdentifying(request);
+
         RedisTemplate redisTemplate = new RedisTemplate();
-        request.getSession().removeAttribute("user");
+        request.getSession().removeAttribute(S_USER);
         modelAndView.addObject(SystemStaticValue.ACTION_RESULT, "注销成功");
         modelAndView.setViewName("/welcome/welcome");
-        System.out.println("根目录为：" + ClassUtils.getDefaultClassLoader().getResource("").getPath());
         return modelAndView;
     }
 
@@ -87,6 +98,10 @@ public class LoginController {
     @ResponseBody
     @RequestMapping("/identifying")
     public String getIdentifying(HttpServletRequest request) throws NoSuchAlgorithmException {
-           return loginService.getIdentifying(request);
+           Identifying identifying = loginService.getIdentifying(request);
+           HttpSession session = request.getSession();
+           //存入验证类
+           session.setAttribute(S_IDENTIFYING,identifying);
+           return JSONObject.fromObject(identifying).toString();
     }
 }

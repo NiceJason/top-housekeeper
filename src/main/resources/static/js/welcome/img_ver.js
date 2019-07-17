@@ -142,10 +142,15 @@ function imgVer(Config) {
     ctx_s.shadowColor = "black";
     ctx_s.fill();
 
+    //开始时间
+    var beginTime;
+    //结束时间
+    var endTime;
     var moveStart = '';
     $(".slider-btn").mousedown(function (e) {
         $(this).css({ "background-position": "0 -216px" });
         moveStart = e.pageX;
+        beginTime = new Date().valueOf();
     });
 
     onmousemove = function (e) {
@@ -169,19 +174,21 @@ function imgVer(Config) {
         var e=e||window.event;
         var moveEnd_X = e.pageX - moveStart;
         var ver_Num = X - 10;
-        var deviation = 4;
+        var deviation = Config.deviation;
         var Min_left = ver_Num - deviation;
         var Max_left = ver_Num + deviation;
+        var identifyingId = Config.identifyingId;
         if (moveStart == '') {
 
         } else {
+            endTime = new Date().valueOf();
             if (Max_left > moveEnd_X && moveEnd_X > Min_left) {
                 $(".ver-tips").html('<i style="background-position:-4px -1207px;"></i><span style="color:#42ca6b;">验证通过</span><span></span>');
                 $(".ver-tips").addClass("slider-tips"); $(".puzzle-lost-box").addClass("hidden"); $("#puzzleBox").addClass("hidden");
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips"); imgVer(Config);
                 }, 2000);
-                Config.success();
+                Config.success(identifyingId,moveEnd_X);
             } else {
                 $(".ver-tips").html('<i style="background-position:-4px -1229px;"></i><span style="color:red;">验证失败:</span><span style="margin-left:4px;">拖动滑块将悬浮图像正确拼合</span>');
                 $(".ver-tips").addClass("slider-tips");
@@ -240,8 +247,8 @@ function openIdentifying() {
             width:width,
             height:height,
             img:data.imgSrc,
-            success:function () {
-                console.log("验证码正确，执行AJAX登录");
+            success:function (identifyingId,moveEnd_X) {
+                Access.getAccess().submit(identifyingId,moveEnd_X);
             },
             error:function () {
                 console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
@@ -249,7 +256,11 @@ function openIdentifying() {
             X:data.x,
             Y:data.y,
             PL_Size:PL_Size,
-            padding:padding
+            padding:padding,
+            //误差
+            deviation:data.deviation,
+            //此验证码的id
+            identifyingId:data.identifyingId
         });
     },Query.NOMAL_TYPE)
 }
