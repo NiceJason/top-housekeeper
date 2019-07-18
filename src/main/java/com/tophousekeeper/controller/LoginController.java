@@ -44,29 +44,27 @@ public class LoginController {
 
     /**
      * 注册
-     * @param user
      * @return
      * @throws Exception
      */
     @ResponseBody
     @RequestMapping("/registered")
-    public String registered(@RequestBody User user) throws Exception {
-        loginService.registered(user);
+    public String registered(HttpServletRequest request) throws Exception {
+        loginService.registered(request);
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "注册成功");
     }
 
     /**
      * 登录
-     * @param checkUser
      * @param request
      * @return
      */
     @ResponseBody
     @RequestMapping("/login")
-    public String login(@RequestBody User checkUser, HttpServletRequest request) {
+    public String login(HttpServletRequest request) {
         loginService.checkIdentifying(request);
 
-        User user = loginService.login(checkUser);
+        User user = loginService.login(request);
         HttpSession session = request.getSession(true);
         session.setAttribute(S_USER, user);
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "登录成功",
@@ -80,7 +78,6 @@ public class LoginController {
      */
     @RequestMapping("/logout")
     public ModelAndView logout(HttpServletRequest request, ModelAndView modelAndView) {
-        loginService.checkIdentifying(request);
 
         RedisTemplate redisTemplate = new RedisTemplate();
         request.getSession().removeAttribute(S_USER);

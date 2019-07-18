@@ -6,7 +6,6 @@ import com.tophousekeeper.entity.User;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -27,14 +26,20 @@ public class LoginService {
     @Autowired
     private LoginDao loginDao;
 
-    public void registered(User user) {
+    public void registered(HttpServletRequest request) {
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
         loginDao.insert(user);
     }
 
-    public User login(User checkUser) {
+    public User login(HttpServletRequest request) {
+        String password = request.getParameter("password");
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.orCondition("password = ", checkUser.getPassword());
+        criteria.orCondition("password = ", password);
         User user = loginDao.selectOneByExample(example);
         return user;
     }
@@ -56,14 +61,16 @@ public class LoginService {
         identifying.setY(Y);
         Calendar calendar = Calendar.getInstance();
         identifying.setCalendar(calendar);
+        identifying.setIdentifyingType(request.getParameter("identifyingType"));
         return identifying;
     }
 
     public void checkIdentifying(HttpServletRequest request) {
         String identifyingId = request.getParameter("identifyingId");
         String moveEnd_X = request.getParameter("moveEnd_X");
+        String identifyingType = request.getParameter("identifyingType");
 
-        if(identifyingId==null||Tool.isInteger(moveEnd_X)){
+        if(identifyingId==null||identifyingType==null||!Tool.isInteger(moveEnd_X)){
             throw new SystemException("100","验证失败");
         }
 
@@ -76,9 +83,13 @@ public class LoginService {
                 >SystemStaticValue.IDENTIFYING_OVERDUE){
             throw new SystemException("100","验证码过期");
         }
-
+        //验证类型
+        if(!identifying.getIdentifyingType().equals(identifyingType)){
+            throw new SystemException("100","验证码失败");
+        }
+        //验证Id
         if(!identifying.getIdentifyingId().equals(identifyingId)){
-            throw new SystemException("100","验证码无效");
+            throw new SystemException("100","验证码失败");
         }
         //跟前端判断保持一致
         int X = identifying.getX()-10;

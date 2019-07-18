@@ -31,15 +31,14 @@ Query.NOMAL_TYPE = 'application/x-www-form-urlencoded';
  * @param url 要访问的地址
  * @param paramMap 传给后台的Map参数，key为字符串类型
  * @param callback 回调函数
- * @param contentType 传输数据的格式  默认传输Json格式
+ * @param contentType 传输数据的格式  默认传输application/x-www-form-urlencoded格式
  */
-Query.create = function (url, paramMap, callback,contentType) {
-
-     if(contentType == Query.NOMAL_TYPE) {
+Query.create = function (url, paramMap, callback) {
          return new Query(url, paramMap, callback,Query.NOMAL_TYPE);
-     }else {
-         return new Query(url, paramMap, callback,Query.JSON_TYPE);
-     }
+}
+
+Query.createJsonType = function (url, paramMap, callback) {
+    return new Query(url, paramMap, callback,Query.JSON_TYPE);
 }
 
 /**

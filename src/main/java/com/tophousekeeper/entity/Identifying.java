@@ -11,6 +11,8 @@ import java.util.Calendar;
 public class Identifying implements Serializable {
     //此次验证码的id
     private String identifyingId;
+    //此次验证码的业务类型
+    private String identifyingType;
     //需要使用的图片
     private String imgSrc;
     //生成块的x坐标
@@ -32,6 +34,14 @@ public class Identifying implements Serializable {
 
     public void setIdentifyingId(String identifyingId) {
         this.identifyingId = identifyingId;
+    }
+
+    public String getIdentifyingType() {
+        return identifyingType;
+    }
+
+    public void setIdentifyingType(String identifyingType) {
+        this.identifyingType = identifyingType;
     }
 
     public String getImgSrc() {

@@ -239,9 +239,10 @@ function openIdentifying() {
     paramMap.set("max_X",max_X);
     paramMap.set("min_Y",min_Y);
     paramMap.set("max_Y",max_Y);
+    paramMap.set("identifyingType",Access.getAccess().getType())
 
     //向后台发送验证码请求
-    var query = new Query("/access/identifying",paramMap,function(data){
+    var query = Query.create("/access/identifying",paramMap,function(data){
         imgVer({
             el:identifyingContent,
             width:width,
@@ -260,7 +261,9 @@ function openIdentifying() {
             //误差
             deviation:data.deviation,
             //此验证码的id
-            identifyingId:data.identifyingId
+            identifyingId:data.identifyingId,
+            //当前验证类型，以防验证码用到了别的验证上
+            identifyingType:Access.getAccess().getType()
         });
     },Query.NOMAL_TYPE)
 }
