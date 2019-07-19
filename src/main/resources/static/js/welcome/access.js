@@ -47,13 +47,15 @@ Access.prototype.getType = function () {
 /**
  * 登录或注册的提交
  */
-Access.prototype.submit = function (identifyingId, moveEnd_X) {
+Access.prototype.submit = function (identifyingId, moveEnd_X,identifyingType) {
 
     var paramMap = new Map();
     var url;
 
     paramMap.set("identifyingId", identifyingId);
     paramMap.set("moveEnd_X", moveEnd_X);
+    paramMap.set("identifyingType", identifyingType);
+
     if (access.getType() == Access.register) {
         paramMap.set("email", $('#register-emaill').val());
         paramMap.set("password", $('#register-password').val());

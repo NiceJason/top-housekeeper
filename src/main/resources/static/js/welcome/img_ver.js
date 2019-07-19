@@ -177,7 +177,7 @@ function imgVer(Config) {
         var deviation = Config.deviation;
         var Min_left = ver_Num - deviation;
         var Max_left = ver_Num + deviation;
-        var identifyingId = Config.identifyingId;
+
         if (moveStart == '') {
 
         } else {
@@ -188,7 +188,7 @@ function imgVer(Config) {
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips"); imgVer(Config);
                 }, 2000);
-                Config.success(identifyingId,moveEnd_X);
+                Config.success(Config.identifyingId,moveEnd_X,Config.identifyingType);
             } else {
                 $(".ver-tips").html('<i style="background-position:-4px -1229px;"></i><span style="color:red;">验证失败:</span><span style="margin-left:4px;">拖动滑块将悬浮图像正确拼合</span>');
                 $(".ver-tips").addClass("slider-tips");
@@ -248,8 +248,8 @@ function openIdentifying() {
             width:width,
             height:height,
             img:data.imgSrc,
-            success:function (identifyingId,moveEnd_X) {
-                Access.getAccess().submit(identifyingId,moveEnd_X);
+            success:function (identifyingId,moveEnd_X,identifyingType) {
+                Access.getAccess().submit(identifyingId,moveEnd_X,identifyingType);
             },
             error:function () {
                 console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
