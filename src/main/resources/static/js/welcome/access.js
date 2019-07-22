@@ -3,7 +3,7 @@
  * @constructor
  */
 var Access = function () {
-
+    this.imgIdentifying = new ImgIdentifying()
 }
 
 Access.register = "register";

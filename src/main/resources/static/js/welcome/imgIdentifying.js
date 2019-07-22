@@ -1,10 +1,23 @@
-function imgVer(Config) {
-    var el = Config.el;
-    var w = Config.width;
-    var h = Config.height;
-    var imgLibrary = Config.img;
-    var PL_Size = Config.PL_Size;
-    var padding = Config.padding;
+@include("/js/system/identifying.js")
+/**
+ * 滑动验证类
+ * complete传递的参数为identifyingId，identifyingType，moveEnd_X
+ * @param Config 各种配置
+ */
+function ImgIdentifying() {
+    Identifying.call(this,this.Config.identifyingId,Config.identifyingType);
+}
+
+extendClass(Identifying,ImgVer);
+
+ImgIdentifying.prototype.init = function(){
+    var el = this.Config.el;
+    var w = this.Config.width;
+    var h = this.Config.height;
+    var imgLibrary = this.Config.img;
+    var PL_Size = this.Config.PL_Size;
+    var padding = this.Config.padding;
+    var self = this;
 
     //这个要转移到后台
     function RandomNum(Min, Max) {
@@ -20,9 +33,9 @@ function imgVer(Config) {
         }
     }
     //确定图片
-    var imgSrc = Config.img;
-    var X = Config.X;
-    var Y = Config.Y;
+    var imgSrc = this.Config.img;
+    var X = this.Config.X;
+    var Y = this.Config.Y;
     var left_Num = -X + 10;
     var html = '<div style="position:relative;padding:16px 16px 28px;border:1px solid #ddd;background:#f2ece1;border-radius:16px;">';
     html += '<div style="position:relative;overflow:hidden;width:' + w + 'px;">';
@@ -123,7 +136,7 @@ function imgVer(Config) {
     // ctx_l.fill(); 其实加这句就能有阴影效果了，不知道为什么加多个图层
 
     //分割画布的块
-    ctx_l.clip(); 
+    ctx_l.clip();
 
     ctx_s.beginPath();
     ctx_s.lineWidth = "1";
@@ -174,7 +187,7 @@ function imgVer(Config) {
         var e=e||window.event;
         var moveEnd_X = e.pageX - moveStart;
         var ver_Num = X - 10;
-        var deviation = Config.deviation;
+        var deviation = this.Config.deviation;
         var Min_left = ver_Num - deviation;
         var Max_left = ver_Num + deviation;
 
@@ -186,16 +199,18 @@ function imgVer(Config) {
                 $(".ver-tips").html('<i style="background-position:-4px -1207px;"></i><span style="color:#42ca6b;">验证通过</span><span></span>');
                 $(".ver-tips").addClass("slider-tips"); $(".puzzle-lost-box").addClass("hidden"); $("#puzzleBox").addClass("hidden");
                 setTimeout(function () {
-                    $(".ver-tips").removeClass("slider-tips"); imgVer(Config);
+                    $(".ver-tips").removeClass("slider-tips");
+                    self.init();
                 }, 2000);
-                Config.success(Config.identifyingId,moveEnd_X,Config.identifyingType);
+                this.success({'identifyingId':Config.identifyingId,'identifyingType':Config.identifyingType,
+                    'moveEnd_X':moveEnd_X})
             } else {
                 $(".ver-tips").html('<i style="background-position:-4px -1229px;"></i><span style="color:red;">验证失败:</span><span style="margin-left:4px;">拖动滑块将悬浮图像正确拼合</span>');
                 $(".ver-tips").addClass("slider-tips");
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips");
                 }, 2000);
-                Config.error();
+                this.error();
             }
         }
         //0.5指动画执行到结束一共经历的时间
@@ -207,7 +222,7 @@ function imgVer(Config) {
         $(".slider-btn").css({ "background-position": "0 -84px" });
         moveStart = '';
         $(".re-btn a").on("click", function () {
-            imgVer(Config);
+            self.init();
         })
     }
 }
@@ -218,6 +233,7 @@ function imgVer(Config) {
  */
 function openIdentifying() {
 
+    var self = this;
     var identifyingContent = $("#identifyingContent");
     //让验证框显示出来
     $(".verBox").css({
@@ -239,11 +255,12 @@ function openIdentifying() {
     paramMap.set("max_X",max_X);
     paramMap.set("min_Y",min_Y);
     paramMap.set("max_Y",max_Y);
-    paramMap.set("identifyingType",Access.getAccess().getType())
+    paramMap.set("identifyingType",Access.getAccess().getType());
 
     //向后台发送验证码请求
     var query = Query.create("/access/identifying",paramMap,function(data){
-        imgVer({
+
+           this.Config = {
             el:identifyingContent,
             width:width,
             height:height,
@@ -264,6 +281,24 @@ function openIdentifying() {
             identifyingId:data.identifyingId,
             //当前验证类型，以防验证码用到了别的验证上
             identifyingType:Access.getAccess().getType()
-        });
+        }
+
+        ImgIdentifying();
     },Query.NOMAL_TYPE)
+}
+
+/**
+ * 设置验证成功的回调函数
+ * @param success
+ */
+ImgIdentifying.prototype.setSuccess = function (successFunc) {
+    this.success = successFunc;
+}
+
+/**
+ * 设置验证失败的回调函数
+ * @param success
+ */
+ImgIdentifying.prototype.setError = function (errorFunc) {
+    this.error = errorFunc;
 }

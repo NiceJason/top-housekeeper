@@ -1,7 +1,8 @@
 /**
  * 公共方法类
  * 包括：1.提示窗 prompt
- *      2.Map转Json Map2Json
+ *      2.Map转Json Map2Json (还有其他格式和Json的相互转换)
+ *      3.类的继承 extendClass
  * @constructor
  */
 var Common = function(){
@@ -63,4 +64,16 @@ var strMap2Obj =function (map) {
  */
 var strMap2Json =function (map) {
     return JSON.stringify(strMap2Obj(map));
+}
+
+/**
+ * 继承方法
+ * @param parentClass 父类
+ * @param childClass 子类
+ */
+var extendClass = function(parentClass,childClass){
+    var Super = function(){};
+    Super.prototype = parentClass.prototype;
+    childClass.prototype = new Super();
+    childClass.prototype.constructor = childClass;
 }
