@@ -11,7 +11,7 @@ public class SystemStaticValue {
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
 
-    //以下为验证码资源
+    //以下为验证码资源-------------------------------------------------------------------
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
     //验证码过期时间（毫秒）
@@ -21,4 +21,7 @@ public class SystemStaticValue {
     public static final String IDENTIFYING_FUNC_LOGIN = "login";
     //注册业务
     public static final String IDENTIFYING_FUNC_REGISTERED = "register";
+
+    //以下为异常状态码，650开始----------------------------------------------------------
+    public static final String IDENTIFYING_EXCEPTION_CODE = "631";
 }

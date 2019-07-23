@@ -79,6 +79,7 @@
 .verBox {
     width:100%;
     text-align:center;
-    opacity:0;
+    opacity:1;
     transition:all 0.8s;
+    left: 0;
 }

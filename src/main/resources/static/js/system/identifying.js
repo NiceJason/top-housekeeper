@@ -2,11 +2,13 @@
  * 验证码的父类，所有验证码都要继承这个类
  * @param id 验证码的唯一标识
  * @param type 验证码的类型
+ * @param contentDiv 包含着验证码的DIV
  * @constructor
  */
-var Identifying = function (id,type){
+var Identifying = function (id,type,contentDiv){
     this.id = id;
     this.type = type;
+    this.contentDiv=contentDiv;
 }
 
 /**
@@ -16,8 +18,8 @@ var Identifying = function (id,type){
  * @param result 对象，有对应验证类的传递的参数，具体要看验证类
  */
 Identifying.prototype.success = function (result) {
-    if(this.success instanceof Function){
-        this.success(result);
+    if(this.successFunc instanceof Function){
+        this.successFunc(result);
     }
 }
 
@@ -26,9 +28,38 @@ Identifying.prototype.success = function (result) {
  * @param result
  */
 Identifying.prototype.error = function (result) {
-    if(this.error instanceof Function){
-        this.error(result);
+    if(this.errorFunc instanceof Function){
+        this.errorFunc(result);
     }else{
         //统一处理错误
     }
+}
+
+/**
+ * 获取验证码id
+ */
+Identifying.prototype.getId = function () {
+    return this.id;
+}
+
+/**
+ * 获取验证码类型
+ * @returns {*}
+ */
+Identifying.prototype.getType = function () {
+    return this.type;
+}
+
+/**
+ *  显示验证框
+ */
+Identifying.prototype.showIdentifying = function(callback){
+    this.contentDiv.show(null,callback);
+}
+
+/**
+ * 隐藏验证框
+ */
+Identifying.prototype.hiddenIdentifying = function(callback){
+    this.contentDiv.hide(null,callback);
 }

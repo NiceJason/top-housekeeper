@@ -53,6 +53,7 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
     <script src="/js/system/common.js"></script>
     <script src="/js/system/queryObj.js"></script>
     <script src="/js/system/myModal.js"></script>
+    <script src="/js/system/identifying.js"></script>
     <#nested>
     <#--在这里插入页面主体内容-->
     </body>

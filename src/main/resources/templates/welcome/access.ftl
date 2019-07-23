@@ -1,7 +1,7 @@
 <!--登录注册的集合模板，用标签页将两个页面整合到一个模态框中-->
-<link href="/css/identifying.css" type="text/css" rel="stylesheet">
+<link href="/css/imgIdentifying.css" type="text/css" rel="stylesheet">
 <script src="/js/welcome/access.js"></script>
-<script src="/js/welcome/img_ver.js"></script>
+<script src="/js/welcome/imgIdentifying.js"></script>
 <!-- modal -->
 <div class="modal fade" id="accessModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -14,9 +14,9 @@
             <div class="modal-body">
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" id="loginNav"><a href="#loginDiv" onclick="Access.getAccess().setLoginType();return false;" aria-controls="home" role="tab"
+                    <li role="presentation" id="loginNav"><a href="#loginDiv" onclick="Access.getAccess().changePage(Access.login)" aria-controls="home" role="tab"
                                                              data-toggle="tab">登录</a></li>
-                    <li role="presentation" id="registerNav"><a href="#registerDiv" onclick="Access.getAccess().setRegisterType();return false;" aria-controls="profile" role="tab"
+                    <li role="presentation" id="registerNav"><a href="#registerDiv" onclick="Access.getAccess().changePage(Access.register)" aria-controls="profile" role="tab"
                                                                 data-toggle="tab">注册</a></li>
                 </ul>
                 <!--显示的内容-->
@@ -26,12 +26,12 @@
                          id="registerDiv"><#include "register.ftl" encoding="UTF-8"></div>
                 </div>
                 <!--验证码-->
-                <div id="identifyingDiv" class="verBox">
-                    <div id="identifyingContent" style="display:inline-block;"></div>
+                <div id="accessIdentifyingDiv" class="verBox">
+                    <div id="acessIdentifyingContent" style="display:inline-block;"></div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="openIdentifying()">确认</button>
+                <button type="button" class="btn btn-primary" onclick="Access.getAccess().initIdentifying($('#acessIdentifyingContent'))">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>
@@ -45,5 +45,12 @@
         function (e) {
             $('body').css("cssText", ";overflow-y:auto !important;")
         }
+    ).on('hidden.bs.modal',
+        function (e) {
+            //关闭模态框时，隐藏验证码
+            var identifying=Access.getAccess().getIdentifying();
+            if(identifying)identifying.hiddenIdentifying();
+        }
     );
+
 </script>

@@ -1,22 +1,27 @@
-@include("/js/system/identifying.js")
 /**
  * 滑动验证类
  * complete传递的参数为identifyingId，identifyingType，moveEnd_X
- * @param Config 各种配置
+ * @param config 各种配置
  */
-function ImgIdentifying() {
-    Identifying.call(this,this.Config.identifyingId,Config.identifyingType);
+var ImgIdentifying = function(config) {
+    Identifying.call(this, config.identifyingId, config.identifyingType,config.el);
+    this.config = config;
+    this.init();
 }
 
-extendClass(Identifying,ImgVer);
+extendClass(Identifying, ImgIdentifying);
 
-ImgIdentifying.prototype.init = function(){
-    var el = this.Config.el;
-    var w = this.Config.width;
-    var h = this.Config.height;
-    var imgLibrary = this.Config.img;
-    var PL_Size = this.Config.PL_Size;
-    var padding = this.Config.padding;
+var width = '260';
+var height = '116';
+var pl_size = 48;
+var padding_ = 20;
+ImgIdentifying.prototype.init = function () {
+    var el = this.config.el;
+    var w = width;
+    var h = height;
+    var imgLibrary = this.config.img;
+    var PL_Size = pl_size;
+    var padding = padding_;
     var self = this;
 
     //这个要转移到后台
@@ -29,13 +34,15 @@ ImgIdentifying.prototype.init = function(){
         } else if (Math.round(Rand * Max) == Max) {
             return Max - 1;
         } else {
-            var num = Min + Math.round(Rand * Range) - 1; return num;
+            var num = Min + Math.round(Rand * Range) - 1;
+            return num;
         }
     }
+
     //确定图片
-    var imgSrc = this.Config.img;
-    var X = this.Config.X;
-    var Y = this.Config.Y;
+    var imgSrc = this.config.img;
+    var X = this.config.X;
+    var Y = this.config.Y;
     var left_Num = -X + 10;
     var html = '<div style="position:relative;padding:16px 16px 28px;border:1px solid #ddd;background:#f2ece1;border-radius:16px;">';
     html += '<div style="position:relative;overflow:hidden;width:' + w + 'px;">';
@@ -161,13 +168,13 @@ ImgIdentifying.prototype.init = function(){
     var endTime;
     var moveStart = '';
     $(".slider-btn").mousedown(function (e) {
-        $(this).css({ "background-position": "0 -216px" });
+        $(this).css({"background-position": "0 -216px"});
         moveStart = e.pageX;
         beginTime = new Date().valueOf();
     });
 
     onmousemove = function (e) {
-        var e=e||window.event;
+        var e = e || window.event;
         var moveX = e.pageX;
         var d = moveX - moveStart;
         if (moveStart == '') {
@@ -176,18 +183,18 @@ ImgIdentifying.prototype.init = function(){
             if (d < 0 || d > (w - padding - PL_Size)) {
 
             } else {
-                $(".slider-btn").css({ "left": d + 'px', "transition": "inherit" });
-                $("#puzzleLost").css({ "left": d + 'px', "transition": "inherit" });
-                $("#puzzleShadow").css({ "left": d + 'px', "transition": "inherit" });
+                $(".slider-btn").css({"left": d + 'px', "transition": "inherit"});
+                $("#puzzleLost").css({"left": d + 'px', "transition": "inherit"});
+                $("#puzzleShadow").css({"left": d + 'px', "transition": "inherit"});
             }
         }
     };
 
     onmouseup = function (e) {
-        var e=e||window.event;
+        var e = e || window.event;
         var moveEnd_X = e.pageX - moveStart;
         var ver_Num = X - 10;
-        var deviation = this.Config.deviation;
+        var deviation = self.config.deviation;
         var Min_left = ver_Num - deviation;
         var Max_left = ver_Num + deviation;
 
@@ -197,29 +204,33 @@ ImgIdentifying.prototype.init = function(){
             endTime = new Date().valueOf();
             if (Max_left > moveEnd_X && moveEnd_X > Min_left) {
                 $(".ver-tips").html('<i style="background-position:-4px -1207px;"></i><span style="color:#42ca6b;">验证通过</span><span></span>');
-                $(".ver-tips").addClass("slider-tips"); $(".puzzle-lost-box").addClass("hidden"); $("#puzzleBox").addClass("hidden");
+                $(".ver-tips").addClass("slider-tips");
+                $(".puzzle-lost-box").addClass("hidden");
+                $("#puzzleBox").addClass("hidden");
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips");
                     self.init();
                 }, 2000);
-                this.success({'identifyingId':Config.identifyingId,'identifyingType':Config.identifyingType,
-                    'moveEnd_X':moveEnd_X})
+                self.success({
+                    'identifyingId': self.config.identifyingId, 'identifyingType': self.config.identifyingType,
+                    'moveEnd_X': moveEnd_X
+                })
             } else {
                 $(".ver-tips").html('<i style="background-position:-4px -1229px;"></i><span style="color:red;">验证失败:</span><span style="margin-left:4px;">拖动滑块将悬浮图像正确拼合</span>');
                 $(".ver-tips").addClass("slider-tips");
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips");
                 }, 2000);
-                this.error();
+                self.error();
             }
         }
         //0.5指动画执行到结束一共经历的时间
         setTimeout(function () {
-            $(".slider-btn").css({ "left": '0', "transition": "left 0.5s" });
-            $("#puzzleLost").css({ "left": '0', "transition": "left 0.5s" });
-            $("#puzzleShadow").css({ "left": '0', "transition": "left 0.5s" });
+            $(".slider-btn").css({"left": '0', "transition": "left 0.5s"});
+            $("#puzzleLost").css({"left": '0', "transition": "left 0.5s"});
+            $("#puzzleShadow").css({"left": '0', "transition": "left 0.5s"});
         }, 1000);
-        $(".slider-btn").css({ "background-position": "0 -84px" });
+        $(".slider-btn").css({"background-position": "0 -84px"});
         moveStart = '';
         $(".re-btn a").on("click", function () {
             self.init();
@@ -228,63 +239,22 @@ ImgIdentifying.prototype.init = function(){
 }
 
 /**
- * 打开浏览器验证码
- * 在这之前应该进行输入校验，不合格则不弹出验证码了
+ * 获取该类型验证码的一些参数
  */
-function openIdentifying() {
+ImgIdentifying.getParamMap = function () {
 
-    var self = this;
-    var identifyingContent = $("#identifyingContent");
-    //让验证框显示出来
-    $(".verBox").css({
-        "left":"0",
-        "opacity":"1"
-    })
-
-    var width='260';
-    var height='116';
-    var PL_Size = 48;
-    var padding = 20;
-    var min_X = padding + PL_Size;
-    var max_X = width - padding - PL_Size - PL_Size / 6;
-    var max_Y = padding;
-    var min_Y = height - padding - PL_Size - PL_Size / 6;
+    var min_X = padding_ + pl_size;
+    var max_X = width - padding_ - pl_size - pl_size / 6;
+    var max_Y = padding_;
+    var min_Y = height - padding_ - pl_size - pl_size / 6;
 
     var paramMap = new Map();
-    paramMap.set("min_X",min_X);
-    paramMap.set("max_X",max_X);
-    paramMap.set("min_Y",min_Y);
-    paramMap.set("max_Y",max_Y);
-    paramMap.set("identifyingType",Access.getAccess().getType());
+    paramMap.set("min_X", min_X);
+    paramMap.set("max_X", max_X);
+    paramMap.set("min_Y", min_Y);
+    paramMap.set("max_Y", max_Y);
 
-    //向后台发送验证码请求
-    var query = Query.create("/access/identifying",paramMap,function(data){
-
-           this.Config = {
-            el:identifyingContent,
-            width:width,
-            height:height,
-            img:data.imgSrc,
-            success:function (identifyingId,moveEnd_X,identifyingType) {
-                Access.getAccess().submit(identifyingId,moveEnd_X,identifyingType);
-            },
-            error:function () {
-                console.log("验证码错误，此处可以进行一些记录，防止恶意刷或者错误多少次就换图之类的");
-            },
-            X:data.x,
-            Y:data.y,
-            PL_Size:PL_Size,
-            padding:padding,
-            //误差
-            deviation:data.deviation,
-            //此验证码的id
-            identifyingId:data.identifyingId,
-            //当前验证类型，以防验证码用到了别的验证上
-            identifyingType:Access.getAccess().getType()
-        }
-
-        ImgIdentifying();
-    },Query.NOMAL_TYPE)
+    return paramMap;
 }
 
 /**
@@ -292,7 +262,7 @@ function openIdentifying() {
  * @param success
  */
 ImgIdentifying.prototype.setSuccess = function (successFunc) {
-    this.success = successFunc;
+    this.successFunc = successFunc;
 }
 
 /**
@@ -300,5 +270,5 @@ ImgIdentifying.prototype.setSuccess = function (successFunc) {
  * @param success
  */
 ImgIdentifying.prototype.setError = function (errorFunc) {
-    this.error = errorFunc;
+    this.errorFunc = errorFunc;
 }
