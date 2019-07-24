@@ -20,14 +20,14 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("进入登录拦截器");
+        System.out.println("进入登录过滤器");
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         if(user !=null){
             return true;
         }else {
             //这里应该给未登录信息，并打开登录的模态窗口
-            System.out.println("被拦截了");
+            System.out.println("被过滤了");
             throw new SystemException("100","请先登录");
         }
     }

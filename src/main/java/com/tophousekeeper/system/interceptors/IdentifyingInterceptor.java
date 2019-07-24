@@ -25,6 +25,7 @@ public class IdentifyingInterceptor implements HandlerInterceptor {
             identifying.checkIdentifying(request);
         }
         return true;
+
     }
 
     @Override

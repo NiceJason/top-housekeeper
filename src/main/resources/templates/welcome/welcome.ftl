@@ -61,7 +61,7 @@
                 <p>这是菜单 3 显示的内容。这是菜单 3 显示的内容。这是菜单 3 显示的内容。</p>
             </div>
         </div>
-
+        <object type="application/x-shockwave-flash" style="outline:none;" data="https://files.cnblogs.com/files/zcw-ios/hamster.swf" width="185" height="185"></object>
         <script type="text/javascript">
 
             // $(function(){
