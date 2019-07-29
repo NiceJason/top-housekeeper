@@ -78,7 +78,7 @@ Query.prototype._callback = function(queryResult){
 
       //如果出现了异常并且没有被处理，那么将进行默认错误处理
       if(self.queryException&&!handleError){
-          window.location.href = "/system/error/"+error.code;
+          window.location.href = "/system/error/"+error.code+"/"+error.msg;
       }
 
       //如果需要跳转，则进行跳转

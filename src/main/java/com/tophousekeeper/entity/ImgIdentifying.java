@@ -31,7 +31,7 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
     private int deviation = 2;
     //验证码生成的时间
     private Calendar calendar;
-    //验证码结果
+    //验证码结果，如果有结果说明已经被校验，防止因为网络延时的二次校验
     private String checkResult;
 
     public ImgIdentifying() throws NoSuchAlgorithmException {
@@ -79,7 +79,13 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         HttpSession session = request.getSession();
         ImgIdentifying identifying = (ImgIdentifying) session.getAttribute(I_Identifying.IDENTIFYING);
 
-        //开始验证，先验证时间是否在有效期
+        //开始验证
+        //看是否已经校验
+        if(!Tool.isNull(identifying.getCheckResult())){
+            checkResult = OVERDUE_ERROR;
+            throw new SystemException(EXCEPTION_CODE,OVERDUE);
+        }
+        // 验证时间是否在有效期
         Calendar nowCalendar = Calendar.getInstance();
         if(nowCalendar.getTimeInMillis()-identifying.getCalendar().getTimeInMillis()
                 >SystemStaticValue.IDENTIFYING_OVERDUE){

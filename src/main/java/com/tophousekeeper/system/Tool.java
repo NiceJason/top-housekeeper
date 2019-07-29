@@ -1,6 +1,5 @@
 package com.tophousekeeper.system;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import java.security.NoSuchAlgorithmException;
@@ -12,7 +11,9 @@ import java.util.regex.Pattern;
  * @description: 工具类
  *               1.快速搭建Json字符串
  *               2.给定范围出随机数
- *               3.判断传入的字符串是否为整数
+ *               3.判断字符串是否为整数
+ *               4.判断字符串是否为数字或字母
+ *               5.判断字符串是否为空
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -27,7 +28,7 @@ public class Tool {
            if(keyAndValues!=null){
                //不是大于等于2的偶数则格式错误
                if(keyAndValues.length%2!=0||keyAndValues.length<2){
-                   throw new SystemException("100","quickJson参数错误");
+                   throw new SystemException(SystemStaticValue.TOOL_PARAMETER_EXCEPTION_CODE,"quickJson参数错误");
                }
                for(int i =0 ;i < keyAndValues.length;i=i+2){
                    jsonObject.put(keyAndValues[i],keyAndValues[i+1]);
@@ -66,14 +67,14 @@ public class Tool {
         }
 
         if(!(legalMax&&legalMin)){
-           throw new SystemException("100","随机数参数不正确");
+           throw new SystemException(SystemStaticValue.TOOL_PARAMETER_EXCEPTION_CODE,"随机数参数不正确");
         }
 
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
         return secureRandom.nextInt((theMax - theMin +1)+theMin);
     }
 
-    /*
+    /**
      * 判断是否为整数
      * @param str 传入的字符串
      * @return 是整数返回true,否则返回false
@@ -81,5 +82,27 @@ public class Tool {
     public static boolean isInteger(String str) {
         Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
         return pattern.matcher(str).matches();
+    }
+
+    /**
+     * 判断字符串是否是数字或字母
+     * @param str
+     * @return
+     */
+    public static boolean isLetterDigit(String str){
+        Pattern pattern = Pattern.compile("^[a-z0-9A-Z]+$");
+        return pattern.matcher(str).matches();
+    }
+
+    /**
+     * 判断字符串是否为空
+     * @param str
+     * @return
+     */
+    public static boolean isNull(String str){
+        if(str == null || "".equals(str)){
+            return true;
+        }
+        else return false;
     }
 }

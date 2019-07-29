@@ -2,6 +2,7 @@ package com.tophousekeeper.system.interceptors;
 
 import com.tophousekeeper.entity.User;
 import com.tophousekeeper.system.SystemException;
+import com.tophousekeeper.system.SystemStaticValue;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,7 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         }else {
             //这里应该给未登录信息，并打开登录的模态窗口
             System.out.println("被过滤了");
-            throw new SystemException("100","请先登录");
+            throw new SystemException(SystemStaticValue.PERMISSIONS_EXCEPTION,"请先登录");
         }
     }
 

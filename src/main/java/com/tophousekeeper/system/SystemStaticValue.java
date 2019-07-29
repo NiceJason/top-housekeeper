@@ -22,6 +22,14 @@ public class SystemStaticValue {
     //注册业务
     public static final String IDENTIFYING_FUNC_REGISTERED = "register";
 
-    //以下为异常状态码，650开始----------------------------------------------------------
+    //以下为异常状态码，600开始----------------------------------------------------------
+    //系统异常
+    public static final String SYSTEM_EXCEPTION_CODE = "600";
+    //工具类参数异常
+    public static final String TOOL_PARAMETER_EXCEPTION_CODE = "601";
+    //权限异常
+    public static final String PERMISSIONS_EXCEPTION = "602";
+    //验证异常
     public static final String IDENTIFYING_EXCEPTION_CODE = "631";
+
 }

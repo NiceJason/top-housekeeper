@@ -8,8 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-
 /**
  * @author NiceBin
  * @description: 系统的上下文资源
@@ -21,8 +19,10 @@ public class SystemContext implements ApplicationContextAware {
     //Redis缓存
     @Autowired
     private RedisTemplateService redisTemplateService;
+    //系统启动的时候会加载
     private static ApplicationContext applicationContext;
     private static SystemContext systemContext;
+    //
 
     public static synchronized SystemContext getSystemContext(){
 
@@ -50,4 +50,5 @@ public class SystemContext implements ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
+
 }

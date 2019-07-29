@@ -3,6 +3,7 @@
  * 包括：1.提示窗 prompt
  *      2.Map转Json Map2Json (还有其他格式和Json的相互转换)
  *      3.类的继承 extendClass
+ *      4.判断输入是否只是数字或字母
  * @constructor
  */
 var Common = function(){
@@ -76,4 +77,13 @@ var extendClass = function(parentClass,childClass){
     Super.prototype = parentClass.prototype;
     childClass.prototype = new Super();
     childClass.prototype.constructor = childClass;
+}
+
+/**
+ * 判断字符串是否只是数字和字母
+ * @param str
+ */
+var isLetterDigit = function(str){
+    var reg = /^[0-9a-zA-Z]+$/;
+    return reg.test(str);
 }
