@@ -3,28 +3,6 @@ body{
     padding-right:0!important;
 }
 
-/*.thk-content, .thk-outer-container {*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*}*/
-
-/*.thk-outer-container {*/
-/*    position: relative;*/
-/*    overflow: hidden;*/
-/*}*/
-
-/*.thk-inner-container {*/
-/*    position: absolute;*/
-/*    left: 0;*/
-/*    overflow-x: hidden;*/
-/*    overflow-y: scroll;*/
-/*}*/
-
-/*.thk-inner-container::-webkit-scrollbar {*/
-/*    display: none;*/
-/*}*/
-
-
 /*提示框*/
 .alert {
     display: none;
@@ -62,4 +40,11 @@ body{
     color: #a94442;
     background-color: #f2dede;
     border-color: #ebccd1;
+}
+
+/*加载动画*/
+.loading{
+    width: 100%;
+    height: 100%;
+    text-align: center;
 }

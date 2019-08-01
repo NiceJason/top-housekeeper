@@ -10,12 +10,14 @@
 	</parent>
 	<groupId>com</groupId>
 	<artifactId>top-housekeeper</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+<!--	<version>0.0.1-SNAPSHOT</version>-->
 	<name>top-housekeeper</name>
 	<description>Demo project for Spring Boot</description>
+    <packaging>war</packaging>
 
 	<properties>
 		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -112,6 +114,35 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<!--为了部署项目时，打包方式不同来控制启动方式不同-->
+		<filters>
+			<filter>src/main/resources/application-${env}.properties</filter>
+		</filters>
 	</build>
+
+	<!--为了部署项目时，打包方式不同来控制启动方式不同-->
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<env>dev</env>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+<!--		<profile>-->
+<!--			<id>qa</id>-->
+<!--			<properties>-->
+<!--				<env>qa</env>-->
+<!--			</properties>-->
+<!--		</profile>-->
+		<profile>
+			<id>prod</id>
+			<properties>
+				<env>prod</env>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

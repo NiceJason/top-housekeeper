@@ -46,9 +46,10 @@ Access.prototype.getType = function () {
 
 /**
  * 登录或注册的提交
+ * 由于是给验证码的回调函数，所以this是指验证码
  */
 Access.prototype.submit = function (result) {
-
+    var self = this;
     var paramMap = new Map();
     var url;
 
@@ -71,13 +72,24 @@ Access.prototype.submit = function (result) {
         if (!query.checkEception()) {
             prompt(data.action_result, prompt.success);
             $('#accessModal').modal('hide');
+        }else{
+            //出现异常进行弹框提示
+            prompt(data.msg, prompt.warning);
+            console.log(0);
+            //重新生成验证码
+            Access.getAccess().initIdentifying(self.getContentDiv());
+            //不进行错误页面跳转
+            return true;
         }
 
-    })
+    });
+    query.sendMessage();
 }
 
 Access.prototype.initIdentifying = function (identifyingContent) {
        var self = this;
+
+       console.log("1");
 
        var paramMap = ImgIdentifying.getParamMap();
        var identifyingType = this.getType();
@@ -99,13 +111,16 @@ Access.prototype.initIdentifying = function (identifyingContent) {
             //当前验证类型，以防验证码用到了别的验证上
             identifyingType:identifyingType
         }
+        console.log("3");
         //创建验证码类
         self.identifying = new ImgIdentifying(config);
         //设置成功回调函数
         self.identifying.setSuccess(self.submit);
-        self.identifying.showIdentifying();
-    },Query.NOMAL_TYPE)
+        // self.identifying.showIdentifying();
+    },Query.NOMAL_TYPE);
 
+    query.setBeforeSend(identifyingContent);
+    query.sendMessage();
 }
 /**
  * 切换页面调用的函数
@@ -130,4 +145,12 @@ Access.prototype.changePage = function (target) {
  */
 Access.prototype.getIdentifying = function () {
     return this.identifying;
+}
+
+/**
+ * 摧毁绑定的验证码及其dom结构
+ */
+Access.prototype.destroyIdentifying = function () {
+    if(this.identifying)this.identifying.destroy();
+    this.identifying = null;
 }

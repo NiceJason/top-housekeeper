@@ -15,7 +15,7 @@ public class SystemStaticValue {
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
     //验证码过期时间（毫秒）
-    public static final int IDENTIFYING_OVERDUE = 10000;
+    public static final int IDENTIFYING_OVERDUE = 20000;
     //以下为验证码业务
     //登录业务
     public static final String IDENTIFYING_FUNC_LOGIN = "login";
@@ -31,5 +31,9 @@ public class SystemStaticValue {
     public static final String PERMISSIONS_EXCEPTION = "602";
     //验证异常
     public static final String IDENTIFYING_EXCEPTION_CODE = "631";
+    //登录异常
+    public static final String LOGIN_EXCEPTION_CODE = "640";
+    //注册异常
+    public static final String REGISTERED_EXCEPTION_CODE = "641";
 
 }

@@ -47,9 +47,8 @@
         }
     ).on('hidden.bs.modal',
         function (e) {
-            //关闭模态框时，隐藏验证码
-            var identifying=Access.getAccess().getIdentifying();
-            if(identifying)identifying.hiddenIdentifying();
+            //关闭模态框时，销毁验证码
+           Access.getAccess().destroyIdentifying();
         }
     );
 

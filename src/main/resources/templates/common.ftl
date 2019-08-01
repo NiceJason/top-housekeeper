@@ -34,6 +34,8 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
         <meta http-equiv="Expires" content="0">
         <#--在这里插入需要引用的样式或者脚本-->
         <#nested>
+        <#--网站图标-->
+        <link rel="shortcut icon" type="image/x-icon" href="/image/icon_net.ico" />
         <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/common.css">
     </head>

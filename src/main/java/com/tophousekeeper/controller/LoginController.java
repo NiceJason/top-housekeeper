@@ -3,6 +3,7 @@ package com.tophousekeeper.controller;
 import com.tophousekeeper.entity.ImgIdentifying;
 import com.tophousekeeper.entity.User;
 import com.tophousekeeper.service.LoginService;
+import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
@@ -55,10 +56,15 @@ public class LoginController {
     @RequestMapping("/login")
     public String login(HttpServletRequest request) {
         User user = loginService.login(request);
-        HttpSession session = request.getSession(true);
-        session.setAttribute(USER, user);
-        return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "登录成功",
-                SystemStaticValue.REDIRECT_URL, "/welcome");
+        //检测是否有此账号信息
+        if(user!=null){
+            HttpSession session = request.getSession(true);
+            session.setAttribute(USER, user);
+            return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "登录成功",
+                    SystemStaticValue.REDIRECT_URL, "/welcome");
+        }
+        throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
+
     }
 
     /**

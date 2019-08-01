@@ -11,15 +11,23 @@ var ImgIdentifying = function(config) {
 
 extendClass(Identifying, ImgIdentifying);
 
+/**
+ * 销毁函数
+ */
+ImgIdentifying.prototype.destroy = function () {
+    Identifying.prototype.destroy.call(this);
+}
+
 var width = '260';
 var height = '116';
 var pl_size = 48;
 var padding_ = 20;
 ImgIdentifying.prototype.init = function () {
-    var el = this.config.el;
+
+    this.clearDom();
+    var el = this.getContentDiv();
     var w = width;
     var h = height;
-    var imgLibrary = this.config.img;
     var PL_Size = pl_size;
     var padding = padding_;
     var self = this;
@@ -48,11 +56,11 @@ ImgIdentifying.prototype.init = function () {
     html += '<div style="position:relative;overflow:hidden;width:' + w + 'px;">';
     html += '<div style="position:relative;width:' + w + 'px;height:' + h + 'px;">';
     html += '<img id="scream" src="' + imgSrc + '" style="width:' + w + 'px;height:' + h + 'px;">';
-    html += '<canvas id="puzzleBox" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:2222;"></canvas>';
+    html += '<canvas id="puzzleBox" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:222;"></canvas>';
     html += '</div>';
     html += '<div class="puzzle-lost-box" style="position:absolute;width:' + w + 'px;height:' + h + 'px;top:0;left:' + left_Num + 'px;z-index:11111;">';
-    html += '<canvas id="puzzleShadow" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:2222;"></canvas>';
-    html += '<canvas id="puzzleLost" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:3333;"></canvas>';
+    html += '<canvas id="puzzleShadow" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:222;"></canvas>';
+    html += '<canvas id="puzzleLost" width="' + w + '" height="' + h + '" style="position:absolute;left:0;top:0;z-index:333;"></canvas>';
     html += '</div>';
     html += '<p class="ver-tips"></p>';
     html += '</div>';
@@ -209,7 +217,6 @@ ImgIdentifying.prototype.init = function () {
                 $("#puzzleBox").addClass("hidden");
                 setTimeout(function () {
                     $(".ver-tips").removeClass("slider-tips");
-                    self.init();
                 }, 2000);
                 self.success({
                     'identifyingId': self.config.identifyingId, 'identifyingType': self.config.identifyingType,

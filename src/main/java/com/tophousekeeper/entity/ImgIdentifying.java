@@ -73,7 +73,7 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         //检查验证参数
         if(identifyingId==null||identifyingType==null||!Tool.isInteger(moveEnd_X)){
             checkResult = PARAM_ERROR;
-            throw new SystemException(EXCEPTION_CODE,FAILURE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
 
         HttpSession session = request.getSession();
@@ -83,31 +83,31 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         //看是否已经校验
         if(!Tool.isNull(identifying.getCheckResult())){
             checkResult = OVERDUE_ERROR;
-            throw new SystemException(EXCEPTION_CODE,OVERDUE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
         // 验证时间是否在有效期
         Calendar nowCalendar = Calendar.getInstance();
         if(nowCalendar.getTimeInMillis()-identifying.getCalendar().getTimeInMillis()
                 >SystemStaticValue.IDENTIFYING_OVERDUE){
             checkResult = OVERDUE_ERROR;
-            throw new SystemException(EXCEPTION_CODE,OVERDUE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
         //验证类型
         if(!identifying.getIdentifyingType().equals(identifyingType)){
             checkResult = TYPE_ERROR;
-            throw new SystemException(EXCEPTION_CODE,FAILURE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
         //验证Id
         if(!identifying.getIdentifyingId().equals(identifyingId)){
             checkResult = ID_ERROR;
-            throw new SystemException(EXCEPTION_CODE,FAILURE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
         //跟前端判断保持一致
         int X = identifying.getX()-10;
         int move = Integer.parseInt(moveEnd_X);
         if((X+identifying.getX()) < move || move < (X-identifying.getX())){
             checkResult = CHECK_ERROR;
-            throw new SystemException(EXCEPTION_CODE,FAILURE);
+            throw new SystemException(EXCEPTION_CODE,checkResult);
         }
         checkResult = SUCCESS;
     }

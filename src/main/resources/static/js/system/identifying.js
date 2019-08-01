@@ -12,6 +12,27 @@ var Identifying = function (id,type,contentDiv){
 }
 
 /**
+ * 销毁函数
+ */
+Identifying.prototype.destroy = function(){
+    this.successFunc = null;
+    this.errorFunc = null;
+    this.clearDom();
+    this.contentDiv = null;
+}
+
+/**
+ * 清除节点内容
+ */
+Identifying.prototype.clearDom = function(){
+    if(this.contentDiv instanceof jQuery){
+        this.contentDiv.empty();
+    }else if(this.contentDiv instanceof HTMLElement){
+        this.contentDiv.innerText = "";
+    }
+}
+
+/**
  * 回调函数
  * 验证成功后进行调用
  * this需要指具体验证类
@@ -54,6 +75,7 @@ Identifying.prototype.getType = function () {
  *  显示验证框
  */
 Identifying.prototype.showIdentifying = function(callback){
+    console.log("showIdentifying");
     this.contentDiv.show(null,callback);
 }
 
@@ -62,4 +84,11 @@ Identifying.prototype.showIdentifying = function(callback){
  */
 Identifying.prototype.hiddenIdentifying = function(callback){
     this.contentDiv.hide(null,callback);
+}
+
+/**
+ * 获得验证码显示的dom元素
+ */
+Identifying.prototype.getContentDiv = function () {
+    return this.contentDiv;
 }

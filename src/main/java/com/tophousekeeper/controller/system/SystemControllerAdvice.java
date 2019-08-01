@@ -67,7 +67,7 @@ public class SystemControllerAdvice {
     public ResponseEntity<Map<String,Object>> myErrorHandler(SystemException ex){
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("code", ex.getCode());
-        map.put("msg", ex.getMessage());
+        map.put("msg", ex.getMsg());
         logger.error(ex.getMsg());
         return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
