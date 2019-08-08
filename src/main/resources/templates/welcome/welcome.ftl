@@ -37,16 +37,10 @@
 
         <div class="tab-content">
             <div id="home" class="tab-pane fade in active">
-                <h3>首页</h3>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
-                <p>菜鸟教程 —— 学的不仅是技术，更是梦想！！！</p>
+                <h3>哈哈哈，你是怎么点到这的</h3>
+                <p>欢迎来到试验场，这里是本人一系列的Web知识点练手的地方。</p>
+                <p>会有一些心得记录在内，如果对你有帮助那再好不过了~</p>
+                <p>本网站持续更新中...</p>
             </div>
             <div id="menu1" class="tab-pane fade">
                 <h3>菜单 1</h3>
@@ -61,7 +55,11 @@
                 <p>这是菜单 3 显示的内容。这是菜单 3 显示的内容。这是菜单 3 显示的内容。</p>
             </div>
         </div>
-        <object type="application/x-shockwave-flash" style="outline:none;" data="https://files.cnblogs.com/files/zcw-ios/hamster.swf" width="185" height="185"></object>
+
+
+<#--        <iframe src="http://www.lewan100.com/" width="400" height="200" scrolling="yes" />-->
+
+<#--        <object type="application/x-shockwave-flash" style="outline:none;" data="https://files.cnblogs.com/files/zcw-ios/hamster.swf" width="185" height="185"></object>-->
         <script type="text/javascript">
 
             // $(function(){
