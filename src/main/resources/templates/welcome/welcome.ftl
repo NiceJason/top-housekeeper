@@ -56,9 +56,6 @@
             </div>
         </div>
 
-
-<#--        <iframe src="http://www.lewan100.com/" width="400" height="200" scrolling="yes" />-->
-
 <#--        <object type="application/x-shockwave-flash" style="outline:none;" data="https://files.cnblogs.com/files/zcw-ios/hamster.swf" width="185" height="185"></object>-->
         <script type="text/javascript">
 

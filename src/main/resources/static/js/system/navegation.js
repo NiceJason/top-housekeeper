@@ -1,3 +1,6 @@
+/*
+ * 判断导航栏是否已经登录，显示登录信息
+ */
 $(document).ready(function () {
     if(userName.length != 0){
         $("#noLogin").hide();
@@ -7,6 +10,25 @@ $(document).ready(function () {
         $("#noLogin").show();
     }
 })
+
+/**
+ * 导航类，记录着导航信息
+ * @constructor
+ */
+var Navegation = function () {
+
+}
+
+var navegation;
+
+Navegation.getNavegation = function () {
+    if(!navegation){
+        navegation = new Navegation();
+        return navegation;
+    }else {
+        return navegation;
+    }
+}
 
 /**
  * 打开注册窗口
