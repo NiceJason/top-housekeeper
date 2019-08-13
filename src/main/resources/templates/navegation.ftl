@@ -20,7 +20,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#menu1">JS</a></li>
-                        <li><a href="#menu2">BootStrap</a></li>
+                        <li><a href="#menu2">Bootstrap</a></li>
                         <li class="divider"></li>
                         <li><a href="#">Java</a></li>
                         <li><a href="#">Spring</a></li>

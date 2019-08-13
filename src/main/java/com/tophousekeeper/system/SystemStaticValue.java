@@ -11,6 +11,10 @@ public class SystemStaticValue {
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
 
+    //以下为资源类型--------------------------------------------------------------------
+    public static final String RS_NAV_CATALOG = "Nav-catalog";
+    public static final String RS_NAV_ITEM = "Nav-item";
+
     //以下为验证码资源-------------------------------------------------------------------
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
@@ -29,6 +33,8 @@ public class SystemStaticValue {
     public static final String TOOL_PARAMETER_EXCEPTION_CODE = "601";
     //权限异常
     public static final String PERMISSIONS_EXCEPTION = "602";
+    //数据库异常
+    public static final String DATASOURCE_EXCEPTION = "603";
     //验证异常
     public static final String IDENTIFYING_EXCEPTION_CODE = "631";
     //登录异常

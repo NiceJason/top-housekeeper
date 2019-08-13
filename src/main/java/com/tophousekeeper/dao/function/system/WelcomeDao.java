@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * @date 2019/5/23 17:22
  */
 @Repository
-public interface SystemDao extends BaseDao<Welcome> {
+public interface WelcomeDao extends BaseDao<Welcome> {
 }

@@ -1,6 +1,6 @@
 package com.tophousekeeper.system;
 
-import com.tophousekeeper.service.system.SystemService;
+import com.tophousekeeper.service.WelcomeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent> {
     private final Logger logger = LoggerFactory.getLogger(SystemStart.class);
 
     @Autowired
-    SystemService systemService;
+    WelcomeService welcomeService;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -27,7 +27,7 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent> {
         logger.info("系统数据开始加载");
         SystemContext systemContext = SystemContext.getSystemContext();
         //暂时的模拟系统启动加载数据
-        String testDB = systemService.selectByResourcesId(1);
+        String testDB = welcomeService.selectById(1);
         systemContext.setValue("testDB",testDB);
         logger.info("系统数据加载完毕");
     }

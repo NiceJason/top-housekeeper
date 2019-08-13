@@ -8,6 +8,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 /**
  * @author NiceBin
  * @description: 系统的上下文资源
@@ -19,10 +23,12 @@ public class SystemContext implements ApplicationContextAware {
     //Redis缓存
     @Autowired
     private RedisTemplateService redisTemplateService;
+    //数据库连接池
+    @Autowired
+    private DataSource dataSource;
     //系统启动的时候会加载
     private static ApplicationContext applicationContext;
     private static SystemContext systemContext;
-    //
 
     public static synchronized SystemContext getSystemContext(){
 
@@ -51,4 +57,7 @@ public class SystemContext implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
+    }
 }
