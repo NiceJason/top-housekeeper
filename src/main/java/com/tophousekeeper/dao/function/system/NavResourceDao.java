@@ -1,7 +1,7 @@
 package com.tophousekeeper.dao.function.system;
 
 import com.tophousekeeper.dao.BaseDao;
-import com.tophousekeeper.entity.SystemResource;
+import com.tophousekeeper.entity.NavResource;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  * @date 2019/8/12 19:29
  */
 @Repository
-public interface SystemResourceDao extends BaseDao<SystemResource> {
+public interface NavResourceDao extends BaseDao<NavResource> {
 
 }

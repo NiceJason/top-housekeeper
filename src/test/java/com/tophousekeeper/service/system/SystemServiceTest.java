@@ -10,7 +10,7 @@ public class SystemServiceTest extends TopHousekeeperApplicationTests {
     SystemService systemService;
 
     @Test
-    public void getNavegationURLs() {
-        systemService.getNavegationURLs();
+    public void test() {
+
     }
 }

@@ -2,23 +2,29 @@
  * 以下为程序错误码
  */
 //通用的请求失败，包括未知原因
-var EXPECTATION_FAILED=417;
-var EXPECTATION_QUERY=404;
+var EXPECTATION_FAILED = 417;
+var EXPECTATION_QUERY = 404;
 
 /**
  * 访问后台的对象，为ajax封装
  * @constructor
  */
-var Query = function (url, param, callback,contentType) {
-    this.url=url;
+var Query = function (url, param, callback, contentType) {
+    this.url = url;
+
+    //先确认参数存在，如果不存在则创建空map
+    if (!param) {
+        param = new Map();
+    }
     //注意，要根据不同的传输格式来确定传输的值的类型
-    if(contentType == Query.NOMAL_TYPE){
+    if (contentType == Query.NOMAL_TYPE) {
         this.param = JSON.parse(this._convertParam(param));
-    }else{
+    } else {
         this.param = this._convertParam(param);
     }
 
-    this.callback=callback;
+
+    this.callback = callback;
     this.contentType = contentType;
     //请求超时，默认5秒
     this.timeout = 5000;
@@ -35,11 +41,11 @@ Query.NOMAL_TYPE = 'application/x-www-form-urlencoded';
  * @param contentType 传输数据的格式  默认传输application/x-www-form-urlencoded格式
  */
 Query.create = function (url, paramMap, callback) {
-         return new Query(url, paramMap, callback,Query.NOMAL_TYPE);
+    return new Query(url, paramMap, callback, Query.NOMAL_TYPE);
 }
 
 Query.createJsonType = function (url, paramMap, callback) {
-    return new Query(url, paramMap, callback,Query.JSON_TYPE);
+    return new Query(url, paramMap, callback, Query.JSON_TYPE);
 }
 
 /**
@@ -47,11 +53,11 @@ Query.createJsonType = function (url, paramMap, callback) {
  * @param paramMap
  * @private
  */
-Query.prototype._convertParam = function(param){
+Query.prototype._convertParam = function (param) {
 
-     if(param instanceof Map){
+    if (param instanceof Map) {
         return strMap2Json(param);
-     }
+    }
 }
 
 /**
@@ -59,12 +65,12 @@ Query.prototype._convertParam = function(param){
  * @param loadDom 需要显示动画的dom节点
  * @param beforeSendFunc ajax发送前的自定义函数
  */
-Query.prototype.setBeforeSend = function(loadDom,beforeSendFunc){
-      this.loadDom = loadDom;
-      this.beforeSendFunc = beforeSendFunc;
+Query.prototype.setBeforeSend = function (loadDom, beforeSendFunc) {
+    this.loadDom = loadDom;
+    this.beforeSendFunc = beforeSendFunc;
 }
 
-Query.prototype.setTimeOut = function(timeout){
+Query.prototype.setTimeOut = function (timeout) {
     this.timeout = timeout;
 }
 
@@ -73,39 +79,39 @@ Query.prototype.setTimeOut = function(timeout){
  * @param callBack
  * @private
  */
-Query.prototype._callback = function(queryResult){
+Query.prototype._callback = function (queryResult) {
 
-      //取消加载框
-      if(this.loadDom){
-          $(this.loadDom).remove("#loadingDiv");
-      }
+    //取消加载框
+    if (this.loadDom) {
+        $(this.loadDom).remove("#loadingDiv");
+    }
 
-      //Query对象
-      var self = queryResult.queryObj;
-      var data = $.parseJSON(queryResult.responseText);
-      //记录请求是否有错误
-      self.queryException = false;
-      var handleError;
+    //Query对象
+    var self = queryResult.queryObj;
+    var data = $.parseJSON(queryResult.responseText);
+    //记录请求是否有错误
+    self.queryException = false;
+    var handleError;
 
-      if(queryResult.status == EXPECTATION_FAILED||queryResult.status == EXPECTATION_QUERY){
-          var error =queryResult.responseText;
-          self.queryException = true;
-      }
+    if (queryResult.status == EXPECTATION_FAILED || queryResult.status == EXPECTATION_QUERY) {
+        var error = queryResult.responseText;
+        self.queryException = true;
+    }
 
-      //调用回调函数，如果返回结果为true，则对于出错不会默认错误处理
-      if(self.callback instanceof  Function){
-          handleError=self.callback(data);
-      }
-      console.log("finally");
-      //如果出现了异常并且没有被处理，那么将进行默认错误处理
-      if(self.queryException&&!handleError){
-          window.location.href = "/system/error/"+error.code+"/"+error.msg;
-      }
+    //调用回调函数，如果返回结果为true，则对于出错不会默认错误处理
+    if (self.callback instanceof Function) {
+        handleError = self.callback(data);
+    }
+    console.log("finally");
+    //如果出现了异常并且没有被处理，那么将进行默认错误处理
+    if (self.queryException && !handleError) {
+        window.location.href = "/system/error/" + error.code + "/" + error.msg;
+    }
 
-      //如果需要跳转，则进行跳转
-      if(data.redirect_url){
-          window.location.href = data.redirect_url;
-      }
+    //如果需要跳转，则进行跳转
+    if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+    }
 }
 
 /**
@@ -114,38 +120,38 @@ Query.prototype._callback = function(queryResult){
  */
 Query.prototype.sendMessage = function () {
     var self = this;
-    var xhr =$.ajax(
+    var xhr = $.ajax(
         {
-            type:"post",
-            url:this.url,
+            type: "post",
+            url: this.url,
             contentType: this.contentType,
-            data:this.param,
+            data: this.param,
             // ajax发送前调用的方法，初始化等待动画
             // @param XHR  XMLHttpRequest对象
-            beforeSend:function (XHR) {
+            beforeSend: function (XHR) {
                 console.log("2");
-                if(self.beforeSendFunc instanceof Function){
+                if (self.beforeSendFunc instanceof Function) {
                     self.beforeSendFunc(XHR);
                 }
 
-                if(self.loadDom instanceof HTMLElement){
+                if (self.loadDom instanceof HTMLElement) {
                     self.loadDom.innerText = "";
                     $(self.loadDom).append("<div id='loadingDiv' class='loading'><img src='/image/loading.gif'/></div>");
-                }else if(self.loadDom instanceof jQuery){
+                } else if (self.loadDom instanceof jQuery) {
                     self.loadDom.empty();
                     self.loadDom.append("<div id='loadingDiv' class='loading'><img src='/image/loading.gif'/></div>");
                 }
             },
-            complete:this._callback
+            complete: this._callback
             // timeout:this.timeout
         }
     );
-    xhr.queryObj=this;
+    xhr.queryObj = this;
 }
 
 /**
  * 检测是否有错误,返回ture有错误，或者false
  */
 Query.prototype.checkEception = function () {
-      return this.queryException;
+    return this.queryException;
 }

@@ -11,7 +11,7 @@
         </div>
         <div>
 
-            <ul class="nav nav-pills  navbar-left" style="margin-top:5px;">
+            <ul id="comm-nav-bar" class="nav nav-pills  navbar-left" style="margin-top:5px;">
                 <li class="active "><a data-toggle="tab" href="#home">首页</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -45,6 +45,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         个人随心记
+                        <!--向下的小箭头-->
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
