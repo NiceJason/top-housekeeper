@@ -28,6 +28,8 @@ var Query = function (url, param, callback, contentType) {
     this.contentType = contentType;
     //请求超时，默认5秒
     this.timeout = 5000;
+    //是否异步请求，默认异步
+    this.async = true;
 }
 
 Query.JSON_TYPE = 'application/json';
@@ -58,20 +60,6 @@ Query.prototype._convertParam = function (param) {
     if (param instanceof Map) {
         return strMap2Json(param);
     }
-}
-
-/**
- * 在ajax发送前设置参数，可以有加载的动画，并且请求完成后会自动取消
- * @param loadDom 需要显示动画的dom节点
- * @param beforeSendFunc ajax发送前的自定义函数
- */
-Query.prototype.setBeforeSend = function (loadDom, beforeSendFunc) {
-    this.loadDom = loadDom;
-    this.beforeSendFunc = beforeSendFunc;
-}
-
-Query.prototype.setTimeOut = function (timeout) {
-    this.timeout = timeout;
 }
 
 /**
@@ -129,7 +117,8 @@ Query.prototype.sendMessage = function () {
             // ajax发送前调用的方法，初始化等待动画
             // @param XHR  XMLHttpRequest对象
             beforeSend: function (XHR) {
-                console.log("2");
+                //绑定本次请求的queryObj
+                XHR.queryObj = self;
                 if (self.beforeSendFunc instanceof Function) {
                     self.beforeSendFunc(XHR);
                 }
@@ -142,11 +131,12 @@ Query.prototype.sendMessage = function () {
                     self.loadDom.append("<div id='loadingDiv' class='loading'><img src='/image/loading.gif'/></div>");
                 }
             },
-            complete: this._callback
-            // timeout:this.timeout
+            complete: this._callback,
+            timeout:this.timeout,
+            async:this.async
         }
     );
-    xhr.queryObj = this;
+
 }
 
 /**
@@ -154,4 +144,27 @@ Query.prototype.sendMessage = function () {
  */
 Query.prototype.checkEception = function () {
     return this.queryException;
+}
+
+//------------------------以下为对Query的参数设置---------------------------
+/**
+ * 在ajax发送前设置参数，可以有加载的动画，并且请求完成后会自动取消
+ * @param loadDom 需要显示动画的dom节点
+ * @param beforeSendFunc ajax发送前的自定义函数
+ */
+Query.prototype.setBeforeSend = function (loadDom, beforeSendFunc) {
+    this.loadDom = loadDom;
+    this.beforeSendFunc = beforeSendFunc;
+}
+
+/**
+ * 设置超时时间
+ * @param timeout
+ */
+Query.prototype.setTimeOut = function (timeout) {
+    this.timeout = timeout;
+}
+
+Query.prototype.setAsync = function (async) {
+    this.async = async;
 }

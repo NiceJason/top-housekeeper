@@ -13,47 +13,6 @@
 
             <ul id="comm-nav-bar" class="nav nav-pills  navbar-left" style="margin-top:5px;">
                 <li class="active "><a data-toggle="tab" href="#home">首页</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        前后端感悟
-                        <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#menu1">JS</a></li>
-                        <li><a href="#menu2">Bootstrap</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Java</a></li>
-                        <li><a href="#">Spring</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Redis</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Oracle</a></li>
-                        <li><a href="#">Mysql</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        服务器收获
-                        <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Tomcat</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">Linux</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        个人随心记
-                        <!--向下的小箭头-->
-                        <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">学习感想</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">生活吐槽</a></li>
-                    </ul>
-                </li>
             </ul>
 
             <ul id="noLogin" class="nav navbar-nav navbar-right">
