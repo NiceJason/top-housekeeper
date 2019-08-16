@@ -18,8 +18,9 @@ public class NavegationController {
     @RequestMapping("/jumpURL")
     public ModelAndView jumpURL(HttpServletRequest request,ModelAndView modelAndView){
            String src = request.getParameter("src");
-           modelAndView.addObject("src",src);
+           modelAndView.addObject("blogSrc",src);
            modelAndView.setViewName("/content/blog");
+           System.out.println("页面跳转");
            return modelAndView;
     }
 }

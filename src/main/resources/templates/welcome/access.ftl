@@ -1,7 +1,9 @@
 <!--登录注册的集合模板，用标签页将两个页面整合到一个模态框中-->
 <link href="/css/imgIdentifying.css" type="text/css" rel="stylesheet">
+<link href="/css/emailAutoComplete.css" type="text/css" rel="stylesheet">
 <script src="/js/welcome/access.js"></script>
 <script src="/js/welcome/imgIdentifying.js"></script>
+<script src="/js/welcome/emailAutoComplete.js"></script>
 <!-- modal -->
 <div class="modal fade" id="accessModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">

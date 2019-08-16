@@ -1,6 +1,11 @@
 /*整体页面布局*/
+/*html和body的height都需要是100%，才能主动撑起整个浏览器界面*/
+html{
+    height: 100%;
+}
 body{
     padding-right:0!important;
+    height: 100%;
 }
 
 /*提示框*/

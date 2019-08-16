@@ -1,5 +1,5 @@
 <hr>
-<footer class="footer ">
+<footer class="footer " >
     <div class="container">
         <div class="row footer-top">
             <div class="col-md-6 col-lg-2 col-lg-offset-2">

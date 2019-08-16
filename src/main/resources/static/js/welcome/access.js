@@ -12,7 +12,7 @@ Access.login = "login";
 var access;
 /**
  * 单列模式
- * @returns {Access|Data.access|access|Data.access}
+ * @returns 访问对象
  */
 Access.getAccess = function () {
     if (!access) {
@@ -153,4 +153,18 @@ Access.prototype.getIdentifying = function () {
 Access.prototype.destroyIdentifying = function () {
     if(this.identifying)this.identifying.destroy();
     this.identifying = null;
+}
+
+/**
+ * 检测输入的账号密码格式
+ * 账号需要是邮箱，简单判断有@标志即可，最长可40位
+ * 密码为数字和字母，最长10位
+ */
+Access.prototype.checkInput = function () {
+
+    if(this.type == Access.register){
+
+    }else if(this.type == Access.login){
+
+    }
 }

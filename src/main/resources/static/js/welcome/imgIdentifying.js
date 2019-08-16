@@ -240,7 +240,7 @@ ImgIdentifying.prototype.init = function () {
         $(".slider-btn").css({"background-position": "0 -84px"});
         moveStart = '';
         $(".re-btn a").on("click", function () {
-            self.init();
+            Access.getAccess().initIdentifying($('#acessIdentifyingContent'));
         })
     }
 }
