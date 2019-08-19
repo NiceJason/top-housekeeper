@@ -87,3 +87,12 @@ var isLetterDigit = function(str){
     var reg = /^[0-9a-zA-Z]+$/;
     return reg.test(str);
 }
+
+/**
+ * 判断是否是邮箱格式
+ * @param str
+ */
+var isEmail = function (str) {
+    var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+    return reg.test(str);
+}

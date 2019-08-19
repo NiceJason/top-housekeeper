@@ -7,6 +7,7 @@ var ImgIdentifying = function(config) {
     Identifying.call(this, config.identifyingId, config.identifyingType,config.el);
     this.config = config;
     this.init();
+    this.showIdentifying();
 }
 
 extendClass(Identifying, ImgIdentifying);

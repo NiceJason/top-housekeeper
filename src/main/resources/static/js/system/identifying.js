@@ -75,7 +75,6 @@ Identifying.prototype.getType = function () {
  *  显示验证框
  */
 Identifying.prototype.showIdentifying = function(callback){
-    console.log("showIdentifying");
     this.contentDiv.show(null,callback);
 }
 

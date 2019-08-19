@@ -90,7 +90,7 @@ Query.prototype._callback = function (queryResult) {
     if (self.callback instanceof Function) {
         handleError = self.callback(data);
     }
-    console.log("finally");
+
     //如果出现了异常并且没有被处理，那么将进行默认错误处理
     if (self.queryException && !handleError) {
         window.location.href = "/system/error/" + error.code + "/" + error.msg;

@@ -3,7 +3,9 @@
  * @constructor
  */
 var Access = function () {
-
+    this.bindInputListener($('#register-emaill'),$('#register-emaill-error'));
+    this.bindInputListener($('#register-password'),$('#register-password-error'));
+    this.bindInputListener($('#login-emaill'),$('#login-emaill-error'));
 }
 
 Access.register = "register";
@@ -27,14 +29,22 @@ Access.getAccess = function () {
  * 标志当前为注册行为
  */
 Access.prototype.setRegisterType = function () {
+    this.emailJQ = $('#register-emaill');
+    this.passwordJQ = $('#register-password');
     this.type = Access.register;
+    //是否已经检测输入，合法才生成验证码
+    this.isCheck = false;
 }
 
 /**
  * 标志当前为登录行为
  */
 Access.prototype.setLoginType = function () {
+    this.emailJQ = $('#login-emaill');
+    this.passwordJQ = $('#login-password');
     this.type = Access.login;
+    //是否已经检测输入，合法才生成验证码
+    this.isCheck = false;
 }
 
 /**
@@ -53,19 +63,22 @@ Access.prototype.submit = function (result) {
     var paramMap = new Map();
     var url;
 
+    //检测输入的正确性
+    if(!access.checkEmailInput(access.emailJQ.val(),access.emailJQ))return;
+
     paramMap.set("identifyingId", result.identifyingId);
     paramMap.set("moveEnd_X", result.moveEnd_X);
     paramMap.set("identifyingType", result.identifyingType);
 
     if (access.getType() == Access.register) {
-        paramMap.set("email", $('#register-emaill').val());
-        paramMap.set("password", $('#register-password').val());
         url = "/access/registered";
+        if(!access.checkPasswordInput(access.passwordJQ.val(),access.passwordJQ))return;
     } else {
-        paramMap.set("email", $('#login-emaill').val());
-        paramMap.set("password", $('#login-password').val());
         url = "/access/login";
     }
+
+    paramMap.set("email", access.emailJQ.val());
+    paramMap.set("password", access.passwordJQ.val());
 
     var query = Query.create(url, paramMap, function (data) {
 
@@ -75,9 +88,8 @@ Access.prototype.submit = function (result) {
         }else{
             //出现异常进行弹框提示
             prompt(data.msg, prompt.warning);
-            console.log(0);
             //重新生成验证码
-            Access.getAccess().initIdentifying(self.getContentDiv());
+            access.initIdentifying(self.getContentDiv());
             //不进行错误页面跳转
             return true;
         }
@@ -89,7 +101,10 @@ Access.prototype.submit = function (result) {
 Access.prototype.initIdentifying = function (identifyingContent) {
        var self = this;
 
-       console.log("1");
+       if(!this.isCheck){
+          this.checkEmailInput(this.emailJQ,this.emailJQ.val());
+          this.checkPasswordInput(this.passwordJQ,this.passwordJQ.val());
+       }
 
        var paramMap = ImgIdentifying.getParamMap();
        var identifyingType = this.getType();
@@ -111,7 +126,7 @@ Access.prototype.initIdentifying = function (identifyingContent) {
             //当前验证类型，以防验证码用到了别的验证上
             identifyingType:identifyingType
         }
-        console.log("3");
+
         //创建验证码类
         self.identifying = new ImgIdentifying(config);
         //设置成功回调函数
@@ -156,15 +171,81 @@ Access.prototype.destroyIdentifying = function () {
 }
 
 /**
- * 检测输入的账号密码格式
- * 账号需要是邮箱，简单判断有@标志即可，最长可40位
- * 密码为数字和字母，最长10位
+ * 检测输入的密码格式
+ * 密码为数字和字母，长度6-12位
+ * @param password
+ * @param passwordJQ 密码输入input框
+ * @param promptJQ 文字提示的节点
  */
-Access.prototype.checkInput = function () {
+Access.prototype.checkPasswordInput = function (password,passwordJQ,promptJQ) {
 
-    if(this.type == Access.register){
+    //密码格式是否无误
+    var isPasswordOk = false;
+    //错误信息
+    var errorMsg;
 
-    }else if(this.type == Access.login){
 
+    if(isLetterDigit(password)&& password.length <=10 && password.length>0){
+        if(password.length<6||password.length>12){
+            errorMsg = "密码长度为6~12位";
+        }else {
+            isPasswordOk = true;
+        }
+    }else{
+        errorMsg = "密码只能为数字或字母";
     }
+
+    if(!isPasswordOk){
+        prompt(errorMsg,prompt.warning);
+        if(passwordJQ instanceof jQuery){
+            passwordJQ.focus();
+        }
+    }
+
+    return isPasswordOk;
+}
+
+/**
+ *
+ * @param email
+ * @param emailJQ 邮箱输入input框
+ * @param promptJQ 文字提示的节点
+ */
+Access.prototype.checkEmailInput = function (email,emailJQ,promptJQ) {
+    //邮箱格式是否无误
+    var isEmailOk = false;
+    //错误信息
+    var errorMsg;
+
+    if(isEmail(email)){
+        if(email.length >40){
+            errorMsg = "邮箱长度最长40位";
+        }
+        else {
+            isEmailOk = true;
+        }
+    }else {
+        errorMsg = "邮箱格式不正确";
+    }
+
+    if(!isEmailOk){
+        prompt(errorMsg,prompt.warning);
+        if(emailJQ instanceof jQuery){
+            emailJQ.focus();
+        }
+    }
+
+    return isEmailOk;
+}
+
+/**
+ * 绑定输入框监听失去焦点事件，为的就是输入完后立刻检测输入，进行文字提示
+ * @param inputJQ 需要监听的input框
+ * @param checkFunc 需要检测的函数
+ * @param promptJQ 文字提示的节点
+ */
+Access.prototype.bindInputListener = function (inputJQ,checkFunc,promptJQ) {
+    inputJQ.blur(function (e) {
+
+    });
 }
