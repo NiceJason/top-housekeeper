@@ -187,7 +187,7 @@ Access.prototype._checkPasswordInput = function (password,passwordJQ,promptJQ) {
 
     if(isLetterDigit(password)&& password.length <=10 && password.length>0){
         if(password.length<6||password.length>12){
-            errorMsg = "密码长度为6~12位";
+            errorMsg = "密码长度为6-12位";
         }else {
             isPasswordOk = true;
         }

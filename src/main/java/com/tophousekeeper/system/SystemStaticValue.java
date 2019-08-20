@@ -37,5 +37,8 @@ public class SystemStaticValue {
     public static final String LOGIN_EXCEPTION_CODE = "640";
     //注册异常
     public static final String REGISTERED_EXCEPTION_CODE = "641";
-
+    //邮箱格式异常
+    public static final String EMAIL_EXCEPTION_CODE = "642";
+    //密码格式异常
+    public static final String PASSWORD_EXCEPTION_CODE = "643";
 }
