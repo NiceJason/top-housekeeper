@@ -8,6 +8,7 @@ var QueryForm = function (url,paramMap) {
     this.form = $("<form></form>");
     this.form.attr("action",url);
     this.form.attr("method","post");
+    //遍历Map
     for(var [key,value] of paramMap){
        var inputDom = $("<input/>") ;
        inputDom.attr("name",key);

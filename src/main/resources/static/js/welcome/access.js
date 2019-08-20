@@ -3,9 +3,9 @@
  * @constructor
  */
 var Access = function () {
-    this.bindInputListener($('#register-emaill'),$('#register-emaill-error'));
-    this.bindInputListener($('#register-password'),$('#register-password-error'));
-    this.bindInputListener($('#login-emaill'),$('#login-emaill-error'));
+    this._bindInputListener($('#register-emaill'),$('#register-emaill-error'),this._checkEmailInput);
+    this._bindInputListener($('#register-password'),$('#register-password-error'),this._checkPasswordInput);
+    this._bindInputListener($('#login-emaill'),$('#login-emaill-error'),this._checkEmailInput);
 }
 
 Access.register = "register";
@@ -32,8 +32,10 @@ Access.prototype.setRegisterType = function () {
     this.emailJQ = $('#register-emaill');
     this.passwordJQ = $('#register-password');
     this.type = Access.register;
-    //是否已经检测输入，合法才生成验证码
-    this.isCheck = false;
+    //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
+    this.checkMap = new Map();
+    //需要检查的数量，低于这数量，则检查不通过
+    this.checkCount = 2;
 }
 
 /**
@@ -43,8 +45,10 @@ Access.prototype.setLoginType = function () {
     this.emailJQ = $('#login-emaill');
     this.passwordJQ = $('#login-password');
     this.type = Access.login;
-    //是否已经检测输入，合法才生成验证码
-    this.isCheck = false;
+    //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
+    this.checkMap = new Map();
+    //需要检查的数量，低于这数量，则检查不通过
+    this.checkCount = 2;
 }
 
 /**
@@ -58,13 +62,13 @@ Access.prototype.getType = function () {
  * 登录或注册的提交
  * 由于是给验证码的回调函数，所以this是指验证码
  */
-Access.prototype.submit = function (result) {
+Access.prototype._submit = function (result) {
     var self = this;
     var paramMap = new Map();
     var url;
 
     //检测输入的正确性
-    if(!access.checkEmailInput(access.emailJQ.val(),access.emailJQ))return;
+    if(!access._checkCheckMap())return;
 
     paramMap.set("identifyingId", result.identifyingId);
     paramMap.set("moveEnd_X", result.moveEnd_X);
@@ -72,7 +76,6 @@ Access.prototype.submit = function (result) {
 
     if (access.getType() == Access.register) {
         url = "/access/registered";
-        if(!access.checkPasswordInput(access.passwordJQ.val(),access.passwordJQ))return;
     } else {
         url = "/access/login";
     }
@@ -89,7 +92,7 @@ Access.prototype.submit = function (result) {
             //出现异常进行弹框提示
             prompt(data.msg, prompt.warning);
             //重新生成验证码
-            access.initIdentifying(self.getContentDiv());
+            access._initIdentifying(self.getContentDiv());
             //不进行错误页面跳转
             return true;
         }
@@ -98,13 +101,10 @@ Access.prototype.submit = function (result) {
     query.sendMessage();
 }
 
-Access.prototype.initIdentifying = function (identifyingContent) {
+Access.prototype._initIdentifying = function (identifyingContent) {
        var self = this;
 
-       if(!this.isCheck){
-          this.checkEmailInput(this.emailJQ,this.emailJQ.val());
-          this.checkPasswordInput(this.passwordJQ,this.passwordJQ.val());
-       }
+       if(!this._checkCheckMap())return;
 
        var paramMap = ImgIdentifying.getParamMap();
        var identifyingType = this.getType();
@@ -130,7 +130,7 @@ Access.prototype.initIdentifying = function (identifyingContent) {
         //创建验证码类
         self.identifying = new ImgIdentifying(config);
         //设置成功回调函数
-        self.identifying.setSuccess(self.submit);
+        self.identifying.setSuccess(self._submit);
         // self.identifying.showIdentifying();
     },Query.NOMAL_TYPE);
 
@@ -177,7 +177,7 @@ Access.prototype.destroyIdentifying = function () {
  * @param passwordJQ 密码输入input框
  * @param promptJQ 文字提示的节点
  */
-Access.prototype.checkPasswordInput = function (password,passwordJQ,promptJQ) {
+Access.prototype._checkPasswordInput = function (password,passwordJQ,promptJQ) {
 
     //密码格式是否无误
     var isPasswordOk = false;
@@ -196,12 +196,13 @@ Access.prototype.checkPasswordInput = function (password,passwordJQ,promptJQ) {
     }
 
     if(!isPasswordOk){
-        prompt(errorMsg,prompt.warning);
-        if(passwordJQ instanceof jQuery){
-            passwordJQ.focus();
-        }
+        promptJQ.html(errorMsg);
+        promptJQ.show();
+    }else{
+        promptJQ.hide();
     }
 
+    this.checkMap.set("isPasswordOk",isPasswordOk);
     return isPasswordOk;
 }
 
@@ -211,7 +212,7 @@ Access.prototype.checkPasswordInput = function (password,passwordJQ,promptJQ) {
  * @param emailJQ 邮箱输入input框
  * @param promptJQ 文字提示的节点
  */
-Access.prototype.checkEmailInput = function (email,emailJQ,promptJQ) {
+Access.prototype._checkEmailInput = function (email,emailJQ,promptJQ) {
     //邮箱格式是否无误
     var isEmailOk = false;
     //错误信息
@@ -229,23 +230,46 @@ Access.prototype.checkEmailInput = function (email,emailJQ,promptJQ) {
     }
 
     if(!isEmailOk){
-        prompt(errorMsg,prompt.warning);
-        if(emailJQ instanceof jQuery){
-            emailJQ.focus();
-        }
+        promptJQ.html(errorMsg);
+        promptJQ.show();
+    }else {
+        promptJQ.hide();
     }
 
+    this.checkMap.set("isEmailOk",isEmailOk);
     return isEmailOk;
+}
+
+/**
+ * 对checkMap里的所有check进行检测
+ * 当全部为true时才返回true，否则返回false
+ */
+Access.prototype._checkCheckMap = function(){
+    var isAllOk = true;
+    var count = 0;
+
+    for(var [key,value] of this.checkMap){
+        count++;
+        if(value == false)isAllOk = false;
+    }
+
+    //检查数量是否匹对
+    if(count != this.checkCount)isAllOk = false;
+    return isAllOk;
 }
 
 /**
  * 绑定输入框监听失去焦点事件，为的就是输入完后立刻检测输入，进行文字提示
  * @param inputJQ 需要监听的input框
- * @param checkFunc 需要检测的函数
  * @param promptJQ 文字提示的节点
+ * @param checkFunc 需要检测的函数
  */
-Access.prototype.bindInputListener = function (inputJQ,checkFunc,promptJQ) {
-    inputJQ.blur(function (e) {
+Access.prototype._bindInputListener = function (inputJQ,promptJQ,checkFunc) {
+    var self = this;
 
+    inputJQ.blur(function (e) {
+        if(checkFunc instanceof Function){
+            checkFunc.call(self,inputJQ.val(),inputJQ,promptJQ);
+        }
     });
 }

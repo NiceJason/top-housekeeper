@@ -95,6 +95,16 @@ public class Tool {
     }
 
     /**
+     * 判断是否为邮箱
+     * @param str
+     * @return
+     */
+    public static boolean isEmail(String str){
+        Pattern pattern = Pattern.compile("[a-zA-Z]+[a-zA-Z0-9_]*@[a-zA-Z0-9]+[.][a-zA-Z0-9]+[.][a-zA-Z0-9]+");
+        return pattern.matcher(str).matches();
+    }
+
+    /**
      * 判断字符串是否为空
      * @param str
      * @return

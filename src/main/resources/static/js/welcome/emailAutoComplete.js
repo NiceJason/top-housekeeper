@@ -20,7 +20,7 @@ var mailBox = [
 EmailAutoComplete.inputList=function(inputJQ,listJQ){
 
     inputJQ.bind('input propertychange', function() {
-        var key = input.val();
+        var key = inputJQ.val();
         if(key.indexOf("@") != -1){
             key = key.slice(0,key.indexOf("@"));
         }

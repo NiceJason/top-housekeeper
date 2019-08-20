@@ -33,7 +33,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="Access.getAccess().initIdentifying($('#acessIdentifyingContent'))">确认</button>
+                <button type="button" class="btn btn-primary" onclick="Access.getAccess()._initIdentifying($('#acessIdentifyingContent'))">确认</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
             </div>
         </div>
