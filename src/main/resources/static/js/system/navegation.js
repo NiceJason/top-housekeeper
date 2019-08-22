@@ -73,7 +73,7 @@ Navegation.prototype.getURLs = function () {
                         item_li.addClass("disabled");
                         item_li.attr("data-toggle","tooltip");
                         item_li.attr("data-placement","right");
-                        item_li.attr("title","该模块真正开发");
+                        item_li.attr("title","该模块敬请期待");
                     }
 
                    //插入分隔符
@@ -115,6 +115,10 @@ Navegation.prototype.init = function (data) {
 var jumpURL = function (e) {
     //获取跳转属性
     var src = e.getAttribute("url");
+    if(src == "#"){
+       prompt("该模块敬请期待",prompt.info);
+       return;
+    }
     var paramMap = new Map();
     paramMap.set("src",src);
     var query = QueryForm.create("/Navegation/jumpURL",paramMap);

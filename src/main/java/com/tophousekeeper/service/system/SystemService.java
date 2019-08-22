@@ -2,11 +2,11 @@ package com.tophousekeeper.service.system;
 
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
-import com.tophousekeeper.system.SystemContext;
-import com.tophousekeeper.system.SystemException;
-import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -24,6 +24,7 @@ import java.util.List;
  */
 @Service
 public class SystemService {
+    private final Logger logger = LoggerFactory.getLogger(SystemService.class);
 
     @Autowired
     private NavResourceDao navResourceDao;
@@ -43,6 +44,15 @@ public class SystemService {
      * @return
      */
     public String getNavegationURLs() {
+
+        String navegationJson = SystemContext.getSystemContext().getValue("welcomeNavegation",String.class);
+
+        //先判断缓存是否有该数据，如果有则直接返回
+        if(!Tool.isNull(navegationJson)){
+            return navegationJson;
+        }
+
+        logger.info("系统加载目录");
 
         List<NavResource> catalogs = navResourceDao.selectByExample(
                 getSimpleExample("type =",NavResource.TYPE_NAV_CATALOG, NavResource.class)
@@ -100,6 +110,7 @@ public class SystemService {
             jsonCatalog.put("items", itemsArray);
             catalogsArray.add(jsonCatalog);
         }
-        return catalogsArray.toString();
+        navegationJson = catalogsArray.toString();
+        return navegationJson;
     }
 }

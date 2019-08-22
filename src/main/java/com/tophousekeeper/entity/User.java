@@ -1,7 +1,5 @@
 package com.tophousekeeper.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -16,6 +14,15 @@ public class User implements Serializable {
     @Id
     private String email;
     private String password;
+
+    public User(){
+
+    }
+
+    public User(String email,String password){
+        this.email = email;
+        this.password = password;
+    }
 
     public String getEmail() {
         return email;

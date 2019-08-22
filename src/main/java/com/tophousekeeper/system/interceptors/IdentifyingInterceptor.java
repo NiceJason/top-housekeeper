@@ -18,11 +18,14 @@ import javax.servlet.http.HttpSession;
 public class IdentifyingInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("进入拦截器");
+
         HttpSession session = request.getSession();
         I_Identifying identifying= (I_Identifying)session.getAttribute(I_Identifying.IDENTIFYING);
         if(identifying!=null){
             identifying.checkIdentifying(request);
+        }else {
+            //应该携带验证码信息的，结果没有携带，那就是个非法请求
+            return false;
         }
         return true;
 

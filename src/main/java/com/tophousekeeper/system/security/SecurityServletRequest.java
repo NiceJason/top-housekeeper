@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * @author NiceBin
- * @description: TODO
+ * @description: 过滤输入的敏感字符，防止XSS攻击
  * @date 2019/7/24 13:17
  */
 public class SecurityServletRequest extends HttpServletRequestWrapper {

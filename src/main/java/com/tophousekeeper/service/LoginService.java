@@ -2,14 +2,18 @@ package com.tophousekeeper.service;
 
 import com.tophousekeeper.dao.function.LoginDao;
 import com.tophousekeeper.entity.User;
+import com.tophousekeeper.system.SystemContext;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * @author NiceBin
@@ -40,11 +44,28 @@ public class LoginService {
     }
 
     public User login(HttpServletRequest request) {
+        String sql = "select * from t_user where email = ? and password = ?";
+        User user = null;
+        String email = request.getParameter("email");
+        checkEmail(email);
         String password = request.getParameter("password");
-        Example example = new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.orCondition("password = ", password);
-        User user = loginDao.selectOneByExample(example);
+        checkPassword(password);
+
+        try(Connection connection = SystemContext.getSystemContext().getConnection()){
+            try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
+                preparedStatement.setString(1,email);
+                preparedStatement.setString(2,password);
+                try(ResultSet resultSet = preparedStatement.executeQuery()){
+                    if(resultSet.next()){
+                        user = new User(email,password);
+                    }else {
+                        throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new SystemException(SystemStaticValue.DATASOURCE_EXCEPTION,"数据库错误");
+        }
         return user;
     }
 

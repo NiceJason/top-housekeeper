@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
  *               3.判断字符串是否为整数
  *               4.判断字符串是否为数字或字母
  *               5.判断字符串是否为空
+ *               6.判断字符串是否是邮箱
+ *               7.判断字符串是否是Web地址
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -95,12 +97,12 @@ public class Tool {
     }
 
     /**
-     * 判断是否为邮箱
+     * 判断字符串是否是邮箱
      * @param str
      * @return
      */
     public static boolean isEmail(String str){
-        Pattern pattern = Pattern.compile("[a-zA-Z]+[a-zA-Z0-9_]*@[a-zA-Z0-9]+[.][a-zA-Z0-9]+[.][a-zA-Z0-9]+");
+        Pattern pattern = Pattern.compile("\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$");
         return pattern.matcher(str).matches();
     }
 
@@ -114,5 +116,15 @@ public class Tool {
             return true;
         }
         else return false;
+    }
+
+    /**
+     * 判断字符串是否是Web地址
+     * @param str
+     * @return
+     */
+    public static boolean isWebURL(String str){
+        Pattern pattern = Pattern.compile("(http|https):\\/\\/([\\w.]+\\/?)\\S*");
+        return pattern.matcher(str).matches();
     }
 }

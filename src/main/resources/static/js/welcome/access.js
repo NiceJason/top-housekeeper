@@ -48,7 +48,7 @@ Access.prototype.setLoginType = function () {
     //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
     this.checkMap = new Map();
     //需要检查的数量，低于这数量，则检查不通过
-    this.checkCount = 2;
+    this.checkCount = 1;
 }
 
 /**

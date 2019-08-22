@@ -13,7 +13,7 @@
             <div>
 
                 <ul id="comm-nav-bar" class="nav nav-pills  navbar-left" style="margin-top:5px;">
-                    <li class="active "><a data-toggle="tab" href="/welcome">首页</a></li>
+                    <li><a href="/welcome">首页</a></li>
                 </ul>
 
                 <ul id="noLogin" class="nav navbar-nav navbar-right">

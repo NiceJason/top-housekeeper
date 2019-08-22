@@ -41,4 +41,6 @@ public class SystemStaticValue {
     public static final String EMAIL_EXCEPTION_CODE = "642";
     //密码格式异常
     public static final String PASSWORD_EXCEPTION_CODE = "643";
+    //Web地址异常
+    public static final String WEBURL_EXCEPTION_CODE = "644";
 }

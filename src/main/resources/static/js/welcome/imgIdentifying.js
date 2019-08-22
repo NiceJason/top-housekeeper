@@ -10,6 +10,7 @@ var ImgIdentifying = function(config) {
     this.showIdentifying();
 }
 
+//继承父类
 extendClass(Identifying, ImgIdentifying);
 
 /**
