@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -90,7 +91,7 @@ public class LoginController {
      */
     @ResponseBody
     @RequestMapping("/identifying")
-    public String getIdentifying(HttpServletRequest request) throws NoSuchAlgorithmException {
+    public String getIdentifying(@RequestParam HttpServletRequest request) throws NoSuchAlgorithmException {
            ImgIdentifying identifying = new ImgIdentifying().getInstance(request);
            HttpSession session = request.getSession();
            //存入验证类

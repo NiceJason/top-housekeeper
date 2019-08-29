@@ -1,6 +1,7 @@
 /**
  * 访问后台的类，构造form表单来进行post请求
  * @param url
+ * @param paramMap  参数map
  * @constructor
  */
 var QueryForm = function (url,paramMap) {
@@ -19,6 +20,9 @@ var QueryForm = function (url,paramMap) {
     var bodyDom = $("body");
     bodyDom.append(this.form);
     this.sendMessage();
+
+    //发送完后销毁
+    this.destroy();
 }
 
 QueryForm.create = function (url, paramMap) {
@@ -27,4 +31,8 @@ QueryForm.create = function (url, paramMap) {
 
 QueryForm.prototype.sendMessage = function () {
      this.form.submit();
+}
+
+QueryForm.prototype.destroy =  function () {
+    this.form.remove();
 }
