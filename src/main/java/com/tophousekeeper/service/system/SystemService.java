@@ -2,19 +2,20 @@ package com.tophousekeeper.service.system;
 
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
-import com.tophousekeeper.system.*;
+import com.tophousekeeper.system.SystemContext;
+import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.Tool;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -30,6 +31,10 @@ public class SystemService {
     private NavResourceDao navResourceDao;
     @Autowired
     private SystemContext systemContext;
+    @Autowired
+    RedisTemplateService redisTemplateService;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     public Example getSimpleExample(String condition, String conditionValue, Class clazz) {
         Example example = new Example(clazz);
@@ -45,7 +50,7 @@ public class SystemService {
      */
     public String getNavegationURLs() {
 
-        String navegationJson = SystemContext.getSystemContext().getValue("welcomeNavegation",String.class);
+        String navegationJson = redisTemplateService.get(SystemStaticValue.RE_WELCOMENAVEGATION,String.class);
 
         //先判断缓存是否有该数据，如果有则直接返回
         if(!Tool.isNull(navegationJson)){
@@ -86,27 +91,18 @@ public class SystemService {
                 }
             }
             sql.append(" order by id");
-            try (Connection connection = systemContext.getConnection()) {
-                try (PreparedStatement preparedStatement = connection.prepareStatement(sql.toString())) {
-                    try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                        while (resultSet.next()) {
-                            NavResource item = new NavResource();
-                            item.setId(resultSet.getString(1));
-                            item.setName(resultSet.getString(2));
-                            item.setContent(resultSet.getString(3));
-                            item.setType(resultSet.getString(4));
 
-                            JSONObject jsonItem = new JSONObject();
-                            jsonItem.put("itemName",item.getName());
-                            jsonItem.put("itemSplit",item.getValue(NavResource.KEY_SPLIT));
-                            jsonItem.put("itemHref",item.getValue(NavResource.KEY_HREF));
-                            itemsArray.add(jsonItem);
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                throw new SystemException(SystemStaticValue.DATASOURCE_EXCEPTION, e.getMessage());
+            RowMapper<NavResource>  resourceRowMapper = new BeanPropertyRowMapper<>(NavResource.class);
+            List<NavResource> navResources = jdbcTemplate.query(sql.toString(),resourceRowMapper);
+            for(int k=0,len = navResources.size();k<len;k++){
+                NavResource navResource = navResources.get(k);
+                JSONObject jsonItem = new JSONObject();
+                jsonItem.put("itemName",navResource.getName());
+                jsonItem.put("itemSplit",navResource.getValue(NavResource.KEY_SPLIT));
+                jsonItem.put("itemHref",navResource.getValue(NavResource.KEY_HREF));
+                itemsArray.add(jsonItem);
             }
+
             jsonCatalog.put("items", itemsArray);
             catalogsArray.add(jsonCatalog);
         }

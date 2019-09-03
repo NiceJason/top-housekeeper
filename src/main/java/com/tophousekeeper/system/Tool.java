@@ -2,6 +2,10 @@ package com.tophousekeeper.system;
 
 import com.alibaba.fastjson.JSONObject;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.regex.Pattern;
@@ -72,8 +76,10 @@ public class Tool {
            throw new SystemException(SystemStaticValue.TOOL_PARAMETER_EXCEPTION_CODE,"随机数参数不正确");
         }
 
+        //这种方法获取的随机数最安全
         SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
-        return secureRandom.nextInt((theMax - theMin +1)+theMin);
+        //nextInt值生成0到n之间的数，包含0不包含n，所以要+1来包含
+        return secureRandom.nextInt(theMax - theMin +1)+theMin;
     }
 
     /**
@@ -126,5 +132,27 @@ public class Tool {
     public static boolean isWebURL(String str){
         Pattern pattern = Pattern.compile("(http|https):\\/\\/([\\w.]+\\/?)\\S*");
         return pattern.matcher(str).matches();
+    }
+
+    /**
+     * 根据key来获取cookie的值
+     * @param request
+     * @param key
+     * @return
+     */
+    public static String getCookie(HttpServletRequest request,String key) throws UnsupportedEncodingException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            // 遍历数组
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals(key)) {
+                    // 取出cookie的值
+                    String value = cookie.getValue();
+                    //解码，因为cookie设置值时都进行编码
+                    return URLDecoder.decode(value,"UTF-8");
+                }
+            }
+        }
+        return null;
     }
 }

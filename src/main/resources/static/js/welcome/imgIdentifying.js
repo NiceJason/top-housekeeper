@@ -254,8 +254,8 @@ ImgIdentifying.getParamMap = function () {
 
     var min_X = padding_ + pl_size;
     var max_X = width - padding_ - pl_size - pl_size / 6;
-    var max_Y = padding_;
-    var min_Y = height - padding_ - pl_size - pl_size / 6;
+    var min_Y = padding_;
+    var max_Y = height - padding_ - pl_size - pl_size / 6;
 
     var paramMap = new Map();
     paramMap.set("min_X", min_X);

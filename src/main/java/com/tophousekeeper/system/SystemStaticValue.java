@@ -11,6 +11,9 @@ public class SystemStaticValue {
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
 
+    //以下为系统缓存的名称,RE开头
+    public static final String RE_WELCOMENAVEGATION = "welcomeNavegation";
+
     //以下为验证码资源-------------------------------------------------------------------
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
@@ -22,7 +25,7 @@ public class SystemStaticValue {
     //注册业务
     public static final String IDENTIFYING_FUNC_REGISTERED = "register";
 
-    //以下为异常状态码，600开始----------------------------------------------------------
+    //以下为异常状态码，600开始，EXCEPTION_CODE结尾----------------------------------------------------------
     //系统异常
     public static final String SYSTEM_EXCEPTION_CODE = "600";
     //工具类参数异常
@@ -43,4 +46,6 @@ public class SystemStaticValue {
     public static final String PASSWORD_EXCEPTION_CODE = "643";
     //Web地址异常
     public static final String WEBURL_EXCEPTION_CODE = "644";
+    //非法访问异常
+    public static final String Illegal_EXCEPTION_CODE = "645";
 }

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * @author NiceBin
- * @description: TODO
+ * @description: 对权限的校验（今后会不止用户登录，还有其他权限）
  * @date 2019/6/25 16:30
  */
 @Component

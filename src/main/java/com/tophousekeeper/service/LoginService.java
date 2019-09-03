@@ -6,14 +6,19 @@ import com.tophousekeeper.system.SystemContext;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.system.security.EncrypRSA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author NiceBin
@@ -25,6 +30,11 @@ public class LoginService {
 
     @Autowired
     private LoginDao loginDao;
+
+    //用来设置cookie，存放加密后的账户，主要是需要校验的时候用
+    public final String USER_KEY = "userKey";
+    //session存放user对象
+    public final String USER_OBJ = "userObj";
 
     public void registered(HttpServletRequest request) {
         User user = null;
@@ -43,7 +53,7 @@ public class LoginService {
         loginDao.insert(user);
     }
 
-    public User login(HttpServletRequest request) {
+    public void login(HttpServletRequest request, HttpServletResponse response) throws Exception{
         String sql = "select * from t_user where email = ? and password = ?";
         User user = null;
         String email = request.getParameter("email");
@@ -51,22 +61,33 @@ public class LoginService {
         String password = request.getParameter("password");
         checkPassword(password);
 
-        try(Connection connection = SystemContext.getSystemContext().getConnection()){
-            try(PreparedStatement preparedStatement = connection.prepareStatement(sql)){
-                preparedStatement.setString(1,email);
-                preparedStatement.setString(2,password);
-                try(ResultSet resultSet = preparedStatement.executeQuery()){
-                    if(resultSet.next()){
-                        user = new User(email,password);
-                    }else {
-                        throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new SystemException(SystemStaticValue.DATASOURCE_EXCEPTION,"数据库错误");
+        JdbcTemplate jdbcTemplate = SystemContext.getSystemContext().getJdbcTemplate();
+        RowMapper<User> userRowMapper = new BeanPropertyRowMapper<>(User.class);
+        List<User> users = jdbcTemplate.query(sql,userRowMapper,email,password);
+
+        //检测是否有此账号信息
+        if(users.size()>0){
+            user = users.get(0);
+            HttpSession session = request.getSession(true);
+            //将user账号进行RSA加密，然后作为key值存放user对象，取出时需要解密并匹对用户账号（防止瞎猫碰死耗子）
+            String encryptEmail = EncrypRSA.encrypt(EncrypRSA.publicKey,user.getEmail());
+            session.setAttribute(USER_OBJ,user);
+            //需要进行URL编码，不然会有非法字符
+            Cookie cookie = new Cookie(USER_KEY, URLEncoder.encode(encryptEmail,"UTF-8"));
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+        }else {
+            throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
         }
-        return user;
+    }
+
+    /**
+     * 登出
+     * @param request
+     * @throws Exception
+     */
+    public void logout(HttpServletRequest request) throws Exception {
+        request.getSession().removeAttribute(USER_OBJ);
     }
 
     private void checkEmail(String email){
@@ -88,5 +109,25 @@ public class LoginService {
         }else {
             throw new SystemException(SystemStaticValue.PASSWORD_EXCEPTION_CODE,"密码只能为数字或字母");
         }
+    }
+
+    /**
+     * 检测加密的账户信息是否合法
+     * 跟储存的User的账号比
+     */
+    public boolean checkEncryptEmail(HttpServletRequest request) throws Exception {
+        String encryptEmail = Tool.getCookie(request, USER_KEY);
+        if(encryptEmail!=null){
+            User user = (User)request.getSession().getAttribute(USER_OBJ);
+            if(user!=null){
+                //如果能获取到user，但是和账号信息却不同，99%是非法请求
+                if(!EncrypRSA.decrypt(EncrypRSA.privateKey,encryptEmail).equals(user.getEmail())){
+                    throw new SystemException(SystemStaticValue.Illegal_EXCEPTION_CODE,"encryptEmail");
+                }else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

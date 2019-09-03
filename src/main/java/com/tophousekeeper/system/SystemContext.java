@@ -6,11 +6,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 /**
  * @author NiceBin
@@ -20,12 +17,12 @@ import java.sql.SQLException;
 @Component
 public class SystemContext implements ApplicationContextAware {
 
-    //Redis缓存
+    //Redis缓存服务
     @Autowired
     private RedisTemplateService redisTemplateService;
-    //数据库连接池
+    //数据库操作类
     @Autowired
-    private DataSource dataSource;
+    private JdbcTemplate jdbcTemplate;
     //系统启动的时候会加载
     private static ApplicationContext applicationContext;
     private static SystemContext systemContext;
@@ -42,14 +39,12 @@ public class SystemContext implements ApplicationContextAware {
         return applicationContext;
     }
 
-    //向redis中存储信息
-    public void setValue(String key,Object value){
-        redisTemplateService.set(key,value);
-    }
-
-    //向redis获取信息
-    public<T> T getValue(String key,Class<T> clazz){
-        return redisTemplateService.get(key,clazz);
+    /**
+     * 获取redis模板
+     * @return
+     */
+    public RedisTemplateService getRedisTemplateService(){
+        return redisTemplateService;
     }
 
     @Override
@@ -57,7 +52,7 @@ public class SystemContext implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    public JdbcTemplate getJdbcTemplate() {
+        return jdbcTemplate;
     }
 }

@@ -2,6 +2,7 @@ package com.tophousekeeper.system.configuration;
 
 import com.tophousekeeper.system.interceptors.IdentifyingInterceptor;
 import com.tophousekeeper.system.interceptors.LoginInterceptor;
+import com.tophousekeeper.system.interceptors.NormalInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,6 +21,8 @@ public class WebConfigurer implements WebMvcConfigurer {
     private LoginInterceptor loginInterceptor;
     @Autowired
     private IdentifyingInterceptor identifyingInterceptor;
+    @Autowired
+    private NormalInterceptor normalInterceptor;
 
     //静态资源映射
     @Override
@@ -33,5 +36,6 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(identifyingInterceptor).addPathPatterns("/access/login","/access/registered");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/user");
+        registry.addInterceptor(normalInterceptor).addPathPatterns("/");
     }
 }
