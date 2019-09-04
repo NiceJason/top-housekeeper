@@ -11,7 +11,7 @@
         <datalist id="email_list"></datalist>
     </div>
     <div class="form-group">
-        <label for="login-password">Password</label>
+        <label for="login-password">Password</label><span id="login-password-error" style="color: red;display: none;margin-left: 15px;"></span>
         <input name="password" class="form-control" id="login-password" type="password">
     </div>
 </form>

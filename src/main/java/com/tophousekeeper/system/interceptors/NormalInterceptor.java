@@ -36,7 +36,10 @@ public class NormalInterceptor implements HandlerInterceptor {
         //检测登录信息
         User user = (User)request.getSession().getAttribute(loginService.USER_OBJ);
            if(user!=null){
-               modelAndView.addObject("userName",user.getEmail());
+               if(modelAndView!=null){
+                   modelAndView.addObject("userName",user.getEmail());
+               }
+
            }
     }
 

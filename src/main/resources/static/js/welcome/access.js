@@ -6,6 +6,7 @@ var Access = function () {
     this._bindInputListener($('#register-emaill'),$('#register-emaill-error'),this._checkEmailInput);
     this._bindInputListener($('#register-password'),$('#register-password-error'),this._checkPasswordInput);
     this._bindInputListener($('#login-emaill'),$('#login-emaill-error'),this._checkEmailInput);
+    this._bindInputListener($('#login-password'),$('#login-password-error'),this._checkPasswordInput);
 }
 
 Access.register = "register";
@@ -31,6 +32,9 @@ Access.getAccess = function () {
 Access.prototype.setRegisterType = function () {
     this.emailJQ = $('#register-emaill');
     this.passwordJQ = $('#register-password');
+    this.emailErrorJQ = $('#register-emaill-error');
+    this.passwordErrorJQ = $('#register-password-error');
+
     this.type = Access.register;
     //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
     this.checkMap = new Map();
@@ -44,11 +48,14 @@ Access.prototype.setRegisterType = function () {
 Access.prototype.setLoginType = function () {
     this.emailJQ = $('#login-emaill');
     this.passwordJQ = $('#login-password');
+    this.emailErrorJQ = $('#login-emaill-error');
+    this.passwordErrorJQ = $('#login-password-error');
+
     this.type = Access.login;
     //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
     this.checkMap = new Map();
     //需要检查的数量，低于这数量，则检查不通过
-    this.checkCount = 1;
+    this.checkCount = 2;
 }
 
 /**
@@ -104,6 +111,12 @@ Access.prototype._submit = function (result) {
 Access.prototype._initIdentifying = function (identifyingContent) {
        var self = this;
 
+       //以防点击登录或注册，已经有信息在上面，用户不会再输出来触发失去焦点事件，从而导致验证码出不来
+       //现在先判定checkMap的长度，如果不相等，检测下输入框的内容
+       if(this.checkMap.size != this.checkCount){
+          this._checkEmailInput(this.emailJQ.val(),this.emailJQ,this.emailErrorJQ);
+          this._checkPasswordInput(this.passwordJQ.val(),this.passwordJQ,this.passwordErrorJQ);
+       }
        if(!this._checkCheckMap())return;
 
        var paramMap = ImgIdentifying.getParamMap();
@@ -173,7 +186,7 @@ Access.prototype.destroyIdentifying = function () {
 /**
  * 检测输入的密码格式
  * 密码为数字和字母，长度6-12位
- * @param password
+ * @param password  输入的密码
  * @param passwordJQ 密码输入input框
  * @param promptJQ 文字提示的节点
  */
@@ -208,7 +221,7 @@ Access.prototype._checkPasswordInput = function (password,passwordJQ,promptJQ) {
 
 /**
  *
- * @param email
+ * @param email 输入的email
  * @param emailJQ 邮箱输入input框
  * @param promptJQ 文字提示的节点
  */

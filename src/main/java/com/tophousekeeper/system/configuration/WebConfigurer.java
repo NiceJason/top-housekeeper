@@ -36,6 +36,6 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(identifyingInterceptor).addPathPatterns("/access/login","/access/registered");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/user");
-        registry.addInterceptor(normalInterceptor).addPathPatterns("/");
+        registry.addInterceptor(normalInterceptor).addPathPatterns("/**");
     }
 }

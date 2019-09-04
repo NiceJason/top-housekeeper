@@ -86,7 +86,7 @@ public class LoginService {
      * @param request
      * @throws Exception
      */
-    public void logout(HttpServletRequest request) throws Exception {
+    public void logout(HttpServletRequest request){
         request.getSession().removeAttribute(USER_OBJ);
     }
 

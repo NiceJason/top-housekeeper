@@ -62,9 +62,9 @@ public class LoginController {
      * @return
      */
     @RequestMapping("/logout")
-    public ModelAndView logout(HttpServletRequest request, ModelAndView modelAndView) {
+    public ModelAndView logout(HttpServletRequest request, ModelAndView modelAndView){
 
-
+        loginService.logout(request);
         modelAndView.addObject(SystemStaticValue.ACTION_RESULT, "注销成功");
         modelAndView.setViewName("/welcome/welcome");
         return modelAndView;
