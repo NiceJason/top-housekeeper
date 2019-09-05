@@ -80,7 +80,8 @@ public class LoginService {
             user = users.get(0);
             HttpSession session = request.getSession(true);
             session.setAttribute(USER_OBJ,user);
-            session.setMaxInactiveInterval(10);
+            //设置session存活时间
+            //session.setMaxInactiveInterval(10);
 
             if(!isAutoLogin){
                 //以下为设置cookie
