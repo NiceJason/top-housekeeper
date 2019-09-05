@@ -1,5 +1,7 @@
 package com.tophousekeeper.entity;
 
+
+import com.alibaba.fastjson.annotation.JSONField;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
@@ -27,10 +29,13 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
     private int X;
     //生成块的y坐标
     private int Y;
+
     //允许的误差
     private int deviation = 2;
+    @JSONField(serialize = false) //忽略这个属性转为JSON对象
     //验证码生成的时间
     private Calendar calendar;
+    @JSONField(serialize = false)
     //验证码结果，如果有结果说明已经被校验，防止因为网络延时的二次校验
     private String checkResult;
 

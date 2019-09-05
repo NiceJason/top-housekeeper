@@ -13,6 +13,7 @@
     <div class="form-group">
         <label for="login-password">Password</label><span id="login-password-error" style="color: red;display: none;margin-left: 15px;"></span>
         <input name="password" class="form-control" id="login-password" type="password">
+        <input name="autoLogin"  id="auto-login" type="checkbox" style="margin-left: 2px;margin-right: 5px;margin-top: 6px;zoom: 1.5;"><label for="auto-login" style="position: relative;top: -5px;">自动登录</label>
     </div>
 </form>
 <script>

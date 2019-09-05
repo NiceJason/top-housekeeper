@@ -17,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -31,8 +32,12 @@ public class LoginService {
     @Autowired
     private LoginDao loginDao;
 
-    //用来设置cookie，存放加密后的账户，主要是需要校验的时候用
-    public final String USER_KEY = "userKey";
+    //用来设置cookie，存放加密后的账户，主要是自动登录的时候用
+    public final String USER_EMAIL = "userEmail";
+    //用来设置cookie，存放加密后的密码，主要是自动登录的时候用
+    public final String USER_PASSWORD = "userPassword";
+    //用来设置cookie，自动登录标记，主要是自动登录的时候用
+    public final String AUTOLOGIN = "autoLogin";
     //session存放user对象
     public final String USER_OBJ = "userObj";
 
@@ -53,13 +58,18 @@ public class LoginService {
         loginDao.insert(user);
     }
 
-    public void login(HttpServletRequest request, HttpServletResponse response) throws Exception{
+    /**
+     *
+     * @param request
+     * @param response
+     * @param email 账号
+     * @param password  密码
+     * @param isAutoLogin   是不是自动登录调用这个函数的
+     * @throws Exception
+     */
+    public void login(HttpServletRequest request, HttpServletResponse response,String email,String password,boolean isAutoLogin) throws Exception{
         String sql = "select * from t_user where email = ? and password = ?";
         User user = null;
-        String email = request.getParameter("email");
-        checkEmail(email);
-        String password = request.getParameter("password");
-        checkPassword(password);
 
         JdbcTemplate jdbcTemplate = SystemContext.getSystemContext().getJdbcTemplate();
         RowMapper<User> userRowMapper = new BeanPropertyRowMapper<>(User.class);
@@ -69,14 +79,35 @@ public class LoginService {
         if(users.size()>0){
             user = users.get(0);
             HttpSession session = request.getSession(true);
-            //将user账号进行RSA加密，然后作为key值存放user对象，取出时需要解密并匹对用户账号（防止瞎猫碰死耗子）
-            String encryptEmail = EncrypRSA.encrypt(EncrypRSA.publicKey,user.getEmail());
             session.setAttribute(USER_OBJ,user);
-            //需要进行URL编码，不然会有非法字符
-            Cookie cookie = new Cookie(USER_KEY, URLEncoder.encode(encryptEmail,"UTF-8"));
-            cookie.setHttpOnly(true);
-            response.addCookie(cookie);
-        }else {
+            session.setMaxInactiveInterval(10);
+
+            if(!isAutoLogin){
+                //以下为设置cookie
+                //cookie设置自动登录标识的值
+                String autoLogin = request.getParameter("autoLogin");
+                if("true".equals(autoLogin)){
+                    //如果勾选了自动登录了，则将账户和密码加密保存在cookie
+                    autoLogin = "true";
+                    //将user账号进行RSA加密，然后作为key值存放user对象，取出时需要解密
+                    String encryptEmail = EncrypRSA.encrypt(user.getEmail());
+                    //需要进行URL编码，不然会有非法字符
+                    Cookie cookieEmail=Tool.setCookie(request,response,USER_EMAIL,URLEncoder.encode(encryptEmail,"UTF-8"));
+                    //保存3天
+                    cookieEmail.setMaxAge(3600*72);
+                    //将user密码进行RSA加密，然后作为key值存放user对象，取出时需要解密
+                    String encryptPassword = EncrypRSA.encrypt(user.getPassword());
+                    //需要进行URL编码，不然会有非法字符
+                    Cookie cookiePassword=Tool.setCookie(request,response,USER_PASSWORD,URLEncoder.encode(encryptPassword,"UTF-8"));
+                    //保存3天
+                    cookiePassword.setMaxAge(3600*72);
+                }else{
+                    autoLogin = "false";
+                }
+                Cookie cookieAutoLogin=Tool.setCookie(request,response,AUTOLOGIN,autoLogin);
+            }
+
+        }else if(!isAutoLogin){
             throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
         }
     }
@@ -86,11 +117,14 @@ public class LoginService {
      * @param request
      * @throws Exception
      */
-    public void logout(HttpServletRequest request){
+    public void logout(HttpServletRequest request,HttpServletResponse response){
+        Tool.clearCookie(request,response,USER_EMAIL);
+        Tool.clearCookie(request,response,USER_PASSWORD);
+        Tool.setCookie(request,response,AUTOLOGIN,"false");
         request.getSession().removeAttribute(USER_OBJ);
     }
 
-    private void checkEmail(String email){
+    public void checkEmail(String email){
         if(Tool.isEmail(email)){
            if(email.length()>40){
                throw new SystemException(SystemStaticValue.EMAIL_EXCEPTION_CODE,"邮箱长度最长40位");
@@ -100,7 +134,7 @@ public class LoginService {
         }
     }
 
-    private void checkPassword(String password){
+    public void checkPassword(String password){
         if(Tool.isLetterDigit(password)){
             if(password.length()<6||password.length()>12){
                 throw new SystemException(SystemStaticValue.PASSWORD_EXCEPTION_CODE,"密码只能为数字或字母");
@@ -112,22 +146,25 @@ public class LoginService {
     }
 
     /**
-     * 检测加密的账户信息是否合法
-     * 跟储存的User的账号比
+     * 检测是否是自动登录用户
+     * @param request
+     * @param response
+     * @throws Exception
      */
-    public boolean checkEncryptEmail(HttpServletRequest request) throws Exception {
-        String encryptEmail = Tool.getCookie(request, USER_KEY);
-        if(encryptEmail!=null){
-            User user = (User)request.getSession().getAttribute(USER_OBJ);
-            if(user!=null){
-                //如果能获取到user，但是和账号信息却不同，99%是非法请求
-                if(!EncrypRSA.decrypt(EncrypRSA.privateKey,encryptEmail).equals(user.getEmail())){
-                    throw new SystemException(SystemStaticValue.Illegal_EXCEPTION_CODE,"encryptEmail");
-                }else {
-                    return true;
-                }
+    public void checkAutoLogin(HttpServletRequest request,HttpServletResponse response) throws Exception {
+        String autoLogin = Tool.getCookie(request,AUTOLOGIN);
+        if("true".equals(autoLogin)){
+            String encryptEmail = Tool.getCookie(request, USER_EMAIL);
+            String encryptPassword = Tool.getCookie(request,USER_PASSWORD);
+
+            try{
+                String email = EncrypRSA.decrypt(URLDecoder.decode(encryptEmail,"UTF-8"));
+                String password = EncrypRSA.decrypt(URLDecoder.decode(encryptPassword,"UTF-8"));
+                login(request,response,email,password,true);
+            }catch (Exception e){
+                //当服务器重启时，秘钥会跟原先的不同，这里会报错，那么当作用户自动登出
+                logout(request,response);
             }
         }
-        return false;
     }
 }

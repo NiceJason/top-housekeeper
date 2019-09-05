@@ -4,10 +4,10 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 
 /**
  * @author NiceBin
@@ -17,13 +17,12 @@ import java.security.interfaces.RSAPublicKey;
  */
 public class EncrypRSA {
 
-    public static RSAPrivateKey privateKey;
-    public static RSAPublicKey publicKey;
+    public static Key convertSecretKey;
 
     /**
      * 加密
-     * @param publicKey 公钥
-     * @param src   要加密的字符串
+     *
+     * @param src 要加密的字符串
      * @return
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
@@ -31,28 +30,27 @@ public class EncrypRSA {
      * @throws IllegalBlockSizeException
      * @throws BadPaddingException
      */
-    public static String encrypt(RSAPublicKey publicKey, String src) throws Exception{
+    public static String encrypt(String src) throws Exception {
 
-        byte[] srcBytes = src.getBytes("UTF-8");
+        if (src == null) return null;
 
-        if (publicKey != null) {
+        if (convertSecretKey != null) {
 
-            //Cipher负责完成加密或解密工作，基于RSA
-            Cipher cipher = Cipher.getInstance("RSA");
+            // 加密（加解密方式：..工作模式/填充方式）
+            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, convertSecretKey);
+            //必须得这种编码，不然转为String再转回来byte内容是不同的！！
+            byte[] result = cipher.doFinal(src.getBytes(StandardCharsets.ISO_8859_1));
 
-            //根据公钥，对Cipher对象进行初始化
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] resultBytes = cipher.doFinal(srcBytes);
-
-            return new String(resultBytes,"UTF-8");
+            return new String(result, StandardCharsets.ISO_8859_1);
         }
         return null;
     }
 
     /**
      * 解密
-     * @param privateKey    私钥
-     * @param src   要解密的字符串
+     *
+     * @param src 要解密的字符串
      * @return
      * @throws NoSuchAlgorithmException
      * @throws NoSuchPaddingException
@@ -60,20 +58,17 @@ public class EncrypRSA {
      * @throws IllegalBlockSizeException
      * @throws BadPaddingException
      */
-    public static String decrypt(RSAPrivateKey privateKey, String src) throws Exception{
+    public static String decrypt(String src) throws Exception {
 
-        byte[] srcBytes = src.getBytes("UTF-8");
+        if (src == null) return null;
 
-        if (privateKey != null) {
+        if (convertSecretKey != null) {
 
-            //Cipher负责完成加密或解密工作，基于RSA
-            Cipher cipher = Cipher.getInstance("RSA");
-
-            //根据公钥，对Cipher对象进行初始化
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-
-            byte[] resultBytes = cipher.doFinal(srcBytes);
-            return new String(resultBytes,"UTF-8");
+            // 加密（加解密方式：..工作模式/填充方式）
+            Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, convertSecretKey);
+            byte[] result = cipher.doFinal(src.getBytes(StandardCharsets.ISO_8859_1));
+            return new String(result,StandardCharsets.ISO_8859_1);
         }
         return null;
     }

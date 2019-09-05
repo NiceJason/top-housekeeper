@@ -3,10 +3,7 @@
  * @constructor
  */
 var Access = function () {
-    this._bindInputListener($('#register-emaill'),$('#register-emaill-error'),this._checkEmailInput);
-    this._bindInputListener($('#register-password'),$('#register-password-error'),this._checkPasswordInput);
-    this._bindInputListener($('#login-emaill'),$('#login-emaill-error'),this._checkEmailInput);
-    this._bindInputListener($('#login-password'),$('#login-password-error'),this._checkPasswordInput);
+    this._init();
 }
 
 Access.register = "register";
@@ -50,6 +47,8 @@ Access.prototype.setLoginType = function () {
     this.passwordJQ = $('#login-password');
     this.emailErrorJQ = $('#login-emaill-error');
     this.passwordErrorJQ = $('#login-password-error');
+    //自动登录勾选框
+    this.autoLoginCheckJQ = $('#auto-login');
 
     this.type = Access.login;
     //所有检测的结果都会存入Map，只有Map里的存在的值都为true，才生成验证码
@@ -63,6 +62,21 @@ Access.prototype.setLoginType = function () {
  */
 Access.prototype.getType = function () {
     return this.type;
+}
+
+/**
+ * access对象的初始化
+ * @private
+ */
+Access.prototype._init = function(){
+
+    var self = this;
+
+    this._bindInputListener($('#register-emaill'),$('#register-emaill-error'),this._checkEmailInput);
+    this._bindInputListener($('#register-password'),$('#register-password-error'),this._checkPasswordInput);
+    this._bindInputListener($('#login-emaill'),$('#login-emaill-error'),this._checkEmailInput);
+    this._bindInputListener($('#login-password'),$('#login-password-error'),this._checkPasswordInput);
+
 }
 
 /**
@@ -85,6 +99,10 @@ Access.prototype._submit = function (result) {
         url = "/access/registered";
     } else {
         url = "/access/login";
+        //检测是否勾选了自动登录
+        if(access.autoLoginCheckJQ.prop("checked")){
+            paramMap.set("autoLogin", "true");
+        }
     }
 
     paramMap.set("email", access.emailJQ.val());

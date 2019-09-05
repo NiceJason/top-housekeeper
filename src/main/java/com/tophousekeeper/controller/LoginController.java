@@ -1,11 +1,11 @@
 package com.tophousekeeper.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.entity.ImgIdentifying;
 import com.tophousekeeper.service.LoginService;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
-import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +50,14 @@ public class LoginController {
     @ResponseBody
     @RequestMapping("/login")
     public String login(HttpServletRequest request, HttpServletResponse response) throws Exception{
-        loginService.login(request, response);
+
+        String email = request.getParameter("email");
+        loginService.checkEmail(email);
+        String password = request.getParameter("password");
+        loginService.checkPassword(password);
+
+        loginService.login(request, response,email,password,false);
+
         return Tool.quickJson(SystemStaticValue.ACTION_RESULT, "登录成功",
                 SystemStaticValue.REDIRECT_URL, "/welcome");
     }
@@ -62,9 +69,9 @@ public class LoginController {
      * @return
      */
     @RequestMapping("/logout")
-    public ModelAndView logout(HttpServletRequest request, ModelAndView modelAndView){
+    public ModelAndView logout(HttpServletRequest request,HttpServletResponse response, ModelAndView modelAndView){
 
-        loginService.logout(request);
+        loginService.logout(request,response);
         modelAndView.addObject(SystemStaticValue.ACTION_RESULT, "注销成功");
         modelAndView.setViewName("/welcome/welcome");
         return modelAndView;
@@ -84,6 +91,6 @@ public class LoginController {
         HttpSession session = request.getSession();
         //存入验证类
         session.setAttribute(I_Identifying.IDENTIFYING, identifying);
-        return JSONObject.fromObject(identifying).toString();
+        return JSONObject.toJSONString(identifying);
     }
 }

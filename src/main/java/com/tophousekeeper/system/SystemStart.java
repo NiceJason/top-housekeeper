@@ -10,10 +10,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
+import java.security.Key;
 
 /**
  * @author NiceBin
@@ -43,14 +44,20 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent> {
             String welcomeNavegation = systemService.getNavegationURLs();
             redisTemplateService.set(SystemStaticValue.RE_WELCOMENAVEGATION,welcomeNavegation,RedisTemplateService.TYPE_MIN);
 
-            //生成秘钥对
-            KeyPairGenerator keyPairGenRSA = KeyPairGenerator.getInstance("RSA");
-            //初始化密钥对生成器，密钥大小为1024位
-            keyPairGenRSA.initialize(1024);
-            //生成一个密钥对，
-            KeyPair keyPairRSA = keyPairGenRSA.generateKeyPair();
-            EncrypRSA.privateKey = (RSAPrivateKey) keyPairRSA.getPrivate();
-            EncrypRSA.publicKey = (RSAPublicKey) keyPairRSA.getPublic();
+            //生成秘钥
+            KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
+            keyGenerator.init(56);
+            // 产生密钥
+            SecretKey secretKey = keyGenerator.generateKey();
+            // 获取密钥
+            byte[] bytesKey = secretKey.getEncoded();
+
+            // KEY转换
+            DESKeySpec desKeySpec = new DESKeySpec(bytesKey);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
+            Key convertSecretKey = factory.generateSecret(desKeySpec);
+
+            EncrypRSA.convertSecretKey = convertSecretKey;
 
         } catch (Exception e) {
             logger.error(e.getMessage());
