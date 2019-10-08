@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -93,19 +92,15 @@ public class LoginService {
                     //将user账号进行RSA加密，然后作为key值存放user对象，取出时需要解密
                     String encryptEmail = EncrypRSA.encrypt(user.getEmail());
                     //需要进行URL编码，不然会有非法字符
-                    Cookie cookieEmail=Tool.setCookie(request,response,USER_EMAIL,URLEncoder.encode(encryptEmail,"UTF-8"));
-                    //保存3天
-                    cookieEmail.setMaxAge(3600*72);
+                    Tool.setCookie(response,USER_EMAIL,URLEncoder.encode(encryptEmail,"UTF-8"),3600*72);
                     //将user密码进行RSA加密，然后作为key值存放user对象，取出时需要解密
                     String encryptPassword = EncrypRSA.encrypt(user.getPassword());
                     //需要进行URL编码，不然会有非法字符
-                    Cookie cookiePassword=Tool.setCookie(request,response,USER_PASSWORD,URLEncoder.encode(encryptPassword,"UTF-8"));
-                    //保存3天
-                    cookiePassword.setMaxAge(3600*72);
+                    Tool.setCookie(response,USER_PASSWORD,URLEncoder.encode(encryptPassword,"UTF-8"),3600*72);
                 }else{
                     autoLogin = "false";
                 }
-                Cookie cookieAutoLogin=Tool.setCookie(request,response,AUTOLOGIN,autoLogin);
+                Tool.setCookie(response,AUTOLOGIN,autoLogin,3600*72);
             }
 
         }else if(!isAutoLogin){
@@ -121,7 +116,7 @@ public class LoginService {
     public void logout(HttpServletRequest request,HttpServletResponse response){
         Tool.clearCookie(request,response,USER_EMAIL);
         Tool.clearCookie(request,response,USER_PASSWORD);
-        Tool.setCookie(request,response,AUTOLOGIN,"false");
+        Tool.setCookie(response,AUTOLOGIN,"false",3600*72);
         request.getSession().removeAttribute(USER_OBJ);
     }
 

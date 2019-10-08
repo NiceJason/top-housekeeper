@@ -1,5 +1,6 @@
 package com.tophousekeeper.system;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.Cookie;
@@ -21,6 +22,11 @@ import java.util.regex.Pattern;
  * 5.判断字符串是否为空
  * 6.判断字符串是否是邮箱
  * 7.判断字符串是否是Web地址
+ * 8.根据key来获取cookie的值
+ * 9.根据key来清除cookie的值
+ * 10.根据key,value来设置cookie的值
+ * 11.String转对象
+ * 12.beanToString
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -188,17 +194,69 @@ public class Tool {
 
     /**
      * 根据key,value来设置cookie的值
-     *
-     * @param request
+     * @param response
      * @param key
-     * @return cookie 设置好的cookie
+     * @param value
+     * @param aliveTime cookie最大存活时间，秒为单位
+     * @return
      */
-    public static Cookie setCookie(HttpServletRequest request, HttpServletResponse response, String key, String value) {
+    public static void setCookie(HttpServletResponse response, String key, String value,int aliveTime) {
         Cookie cookie = new Cookie(key, value);
-        //需要重新设置属性，因为它不会按原来的属性存的
+        //需要重新设置属性，因为它不会按原来的属性存的，需要把一切设置好，再addCookie，不然设置无效
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setMaxAge(aliveTime);
         response.addCookie(cookie);
-        return cookie;
+    }
+
+    /**
+     * String转对象
+     * @param value
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T stringToBean(String value, Class<T> clazz) {
+        if(value==null||value.length()<=0||clazz==null){
+            return null;
+        }
+
+        if(clazz ==int.class ||clazz==Integer.class){
+            return (T)Integer.valueOf(value);
+        }
+        else if(clazz==long.class||clazz==Long.class){
+            return (T)Long.valueOf(value);
+        }
+        else if(clazz==String.class){
+            return (T)value;
+        }else {
+            //这一步是转为对象的
+            return JSON.toJavaObject(JSON.parseObject(value),clazz);
+        }
+    }
+
+    /**
+     * 对象转String
+     * @param value
+     * @param <T>
+     * @return
+     */
+    public static <T> String beanToString(T value) {
+
+        if(value==null){
+            return null;
+        }
+        Class <?> clazz = value.getClass();
+        if(clazz==int.class||clazz==Integer.class){
+            return ""+value;
+        }
+        else if(clazz==long.class||clazz==Long.class){
+            return ""+value;
+        }
+        else if(clazz==String.class){
+            return (String)value;
+        }else {
+            return JSON.toJSONString(value);
+        }
     }
 }

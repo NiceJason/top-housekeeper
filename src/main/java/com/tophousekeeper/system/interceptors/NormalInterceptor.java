@@ -28,10 +28,10 @@ public class NormalInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        if(request.getSession().getAttribute(loginService.USER_OBJ) == null){
+//        if(request.getSession().getAttribute(loginService.USER_OBJ) == null){
             //检测是否是自动登录
             loginService.checkAutoLogin(request,response);
-        }
+//        }
         return true;
     }
 
