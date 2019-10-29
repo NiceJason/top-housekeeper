@@ -106,6 +106,12 @@
 			<version>1.6</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
         <!--AOP相关-->
         <dependency>
             <groupId>org.aspectj</groupId>

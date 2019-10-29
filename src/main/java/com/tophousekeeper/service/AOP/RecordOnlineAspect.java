@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author NiceBin
- * @description: 记录登录在线的人数
+ * @description: 记录登录人数（配合计划任务，每天登录次数可以记录）
  * @date 2019/10/8 8:54
  */
 @Aspect
@@ -23,25 +23,16 @@ public class RecordOnlineAspect {
     @Autowired
     private SystemContext systemContext;
     private final Logger logger = LoggerFactory.getLogger(RecordOnlineAspect.class);
-    /**
-     * 增加在线人数
-     */
+
     @AfterReturning("execution(* login(..)) && target(com.tophousekeeper.service.LoginService)")
     public void addOnline(){
-        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_ONLINE,AtomicInteger.class);
+        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_LOGIN_COUNT,AtomicInteger.class);
         if(online == null){
             online = new AtomicInteger(0);
         }
         online.incrementAndGet();
-        systemContext.setResource(SystemStaticValue.SY_ONLINE,online);
-        logger.info("网站当前登录人数："+online.get());
+        systemContext.setResource(SystemStaticValue.SY_LOGIN_COUNT,online);
+        logger.info("网站今日登录人数："+online.get());
     }
 
-    @AfterReturning("execution(* logout(..)) && target(com.tophousekeeper.service.LoginService)")
-    public void reduceOnline(){
-        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_ONLINE,AtomicInteger.class);
-        online.decrementAndGet();
-        systemContext.setResource(SystemStaticValue.SY_ONLINE,online);
-        logger.info("网站当前登录人数："+online.get());
-    }
 }

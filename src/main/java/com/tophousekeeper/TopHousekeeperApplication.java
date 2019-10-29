@@ -5,11 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @MapperScan("com.tophousekeeper.dao.function")
 @EnableAspectJAutoProxy(proxyTargetClass=true)
+@EnableScheduling
 public class TopHousekeeperApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
