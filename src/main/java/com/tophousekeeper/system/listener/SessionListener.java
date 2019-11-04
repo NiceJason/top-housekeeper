@@ -1,7 +1,8 @@
 package com.tophousekeeper.system.listener;
 
-import com.tophousekeeper.system.SystemContext;
+import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.entity.SystemDaily;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +35,10 @@ public class SessionListener implements HttpSessionListener {
      * 统计今日在线人数（需要任务调度配合）
      */
     private void addSessionCount(){
-        AtomicInteger count = systemContext.getResource(SystemStaticValue.SY_ONLINE_COUNT,AtomicInteger.class);
-        if(count == null){
-            count = new AtomicInteger(0);
-        }
-        count.incrementAndGet();
-        System.out.println("今日在线人数："+count.get());
+        SystemDaily systemDaily = systemContext.getResource(SystemStaticValue.SY_DAILY, SystemDaily.class);
+        AtomicInteger loginCount = systemDaily.getLoginCount();
+        loginCount.incrementAndGet();
+
+        System.out.println("今日在线人数："+loginCount.get());
     }
 }

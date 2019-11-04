@@ -2,6 +2,7 @@ package com.tophousekeeper.system;
 
 import com.tophousekeeper.service.system.RedisTemplateService;
 import com.tophousekeeper.service.system.SystemService;
+import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.system.security.EncrypRSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

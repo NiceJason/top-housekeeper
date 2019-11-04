@@ -12,10 +12,8 @@ public class SystemStaticValue {
     public static final String REDIRECT_URL = "redirect_url";
 
     //以下为系统资源，SY开头，存于SystemContext的resouces(Map对象)中
-    //系统每日登录人数
-    public static final String SY_LOGIN_COUNT = "login_count";
-    //系统每日在线人数
-    public static final String SY_ONLINE_COUNT = "online_count";
+    //系统每日资源
+    public static final String SY_DAILY = "system_daily";
 
     //以下为系统redis缓存的名称,RE(reids)开头---------------------------------------------
     public static final String RE_WELCOMENAVEGATION = "welcomeNavegation";

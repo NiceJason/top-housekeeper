@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
-import com.tophousekeeper.system.SystemContext;
+import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import org.slf4j.Logger;
