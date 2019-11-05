@@ -15,11 +15,11 @@
         3：定义调度器，并将Trigger注册到Scheduler
      -->
     <!-- 1：定义任务的bean ，这里使用JobDetailFactoryBean,也可以使用MethodInvokingJobDetailFactoryBean ，配置类似-->
-    <bean name="hwJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+    <bean name="job_detail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
         <!-- 指定job的名称 -->
-        <property name="name" value="hw_job"/>
+        <property name="name" value="system_daily_job"/>
         <!-- 指定job的分组 -->
-        <property name="group" value="hw_group"/>
+        <property name="group" value="system_daily_group"/>
         <!-- 指定具体的job类 -->
         <property name="jobClass" value="com.tophousekeeper.system.schedule.job.SystemDailyJob"/>
         <!-- 必须设置为true，如果为false，当没有活动的触发器与之关联时会在调度器中会删除该任务  -->
@@ -46,13 +46,13 @@
     <!-- 2.2：定义触发器的bean，定义一个Cron的Trigger，一个触发器只能和一个任务进行绑定 -->
     <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <!-- 指定Trigger的名称 -->
-        <property name="name" value="hw_trigger"/>
+        <property name="name" value="system_daily_trigger"/>
         <!-- 指定Trigger的名称 -->
-        <property name="group" value="hw_trigger_group"/>
+        <property name="group" value="system_daily_trigger_group"/>
         <!-- 指定Tirgger绑定的Job -->
-        <property name="jobDetail" ref="hwJob"/>
+        <property name="jobDetail" ref="job_detail"/>
         <!-- 指定Cron 的表达式 ，当前是每隔1s运行一次 -->
-        <property name="cronExpression" value="0/1 * * * * ?" />
+        <property name="cronExpression" value="10 * * * * ?" />
     </bean>
 
 

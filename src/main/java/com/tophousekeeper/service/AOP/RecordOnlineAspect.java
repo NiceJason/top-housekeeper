@@ -26,12 +26,12 @@ public class RecordOnlineAspect {
 
     @AfterReturning("execution(* login(..)) && target(com.tophousekeeper.service.LoginService)")
     public void addOnline(){
-        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_LOGIN_COUNT,AtomicInteger.class);
+        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_DAILY,AtomicInteger.class);
         if(online == null){
             online = new AtomicInteger(0);
         }
         online.incrementAndGet();
-        systemContext.setResource(SystemStaticValue.SY_LOGIN_COUNT,online);
+        systemContext.setResource(SystemStaticValue.SY_DAILY,online);
         logger.info("网站今日登录人数："+online.get());
     }
 
