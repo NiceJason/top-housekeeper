@@ -31,7 +31,6 @@ public class RecordOnlineAspect {
             online = new AtomicInteger(0);
         }
         online.incrementAndGet();
-        systemContext.setResource(SystemStaticValue.SY_DAILY,online);
         logger.info("网站今日登录人数："+online.get());
     }
 

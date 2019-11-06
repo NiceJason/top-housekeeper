@@ -21,6 +21,10 @@ public class SystemDailyJob extends QuartzJobBean {
         System.out.println("SystemDailyJob执行了 "+new Date().toString());
         ApplicationContext applicationContext = SystemContext.getSystemContext().getApplicationContext();
         SystemTimingMgr systemTimingMgr = (SystemTimingMgr)applicationContext.getBean("systemTimingMgr");
-        systemTimingMgr.saveSystemDaily();
+        try {
+            systemTimingMgr.saveSystemDaily();
+        } catch (Exception e) {
+            throw new JobExecutionException(e.getMessage());
+        }
     }
 }

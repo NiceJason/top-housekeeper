@@ -39,6 +39,6 @@ public class SessionListener implements HttpSessionListener {
         AtomicInteger loginCount = systemDaily.getLoginCount();
         loginCount.incrementAndGet();
 
-        System.out.println("今日在线人数："+loginCount.get());
+        System.out.println("今日访问人数："+loginCount.get());
     }
 }
