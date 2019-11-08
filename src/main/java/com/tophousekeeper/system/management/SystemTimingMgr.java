@@ -17,19 +17,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class SystemTimingMgr {
     @Autowired
-    SystemDailyDao systemDailyDao;
+    private SystemDailyDao systemDailyDao;
 
     //当日登录人数
-    AtomicInteger loginCount;
+    private AtomicInteger loginCount;
+    //当日在线人数
+    private AtomicInteger onlineCount;
 
     public SystemTimingMgr(){
         loginCount = new AtomicInteger();
+        onlineCount = new AtomicInteger();
     }
 
     //保存每日数据
     public void saveSystemDaily() throws Exception {
         SystemDaily systemDaily = new SystemDaily();
         systemDaily.setLoginCount(loginCount.get());
+        systemDaily.setOnlineCount(onlineCount.get());
         systemDailyDao.insert(systemDaily);
         dailyClear();
     }
@@ -52,9 +56,7 @@ public class SystemTimingMgr {
             //首字母
             char firstLetter = fieldName.substring(0,1).toUpperCase().charAt(0);
             String getMethodName = "get"+firstLetter+fieldName.substring(1);
-            String setMethodName = "set"+firstLetter+fieldName.substring(1);
             Method getMethod = this.getClass().getMethod(getMethodName);
-            Method setMethod = this.getClass().getMethod(setMethodName);
 
             //获取该属性的实例
             Object obj = getMethod.invoke(this);
@@ -63,5 +65,31 @@ public class SystemTimingMgr {
                 method.invoke(obj,0);
             }
         }
+    }
+
+    //以下为set和get，必须要有，为了dailyClear方法的正常使用
+
+    public SystemDailyDao getSystemDailyDao() {
+        return systemDailyDao;
+    }
+
+    public void setSystemDailyDao(SystemDailyDao systemDailyDao) {
+        this.systemDailyDao = systemDailyDao;
+    }
+
+    public AtomicInteger getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(AtomicInteger loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public AtomicInteger getOnlineCount() {
+        return onlineCount;
+    }
+
+    public void setOnlineCount(AtomicInteger onlineCount) {
+        this.onlineCount = onlineCount;
     }
 }

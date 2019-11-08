@@ -1,5 +1,9 @@
 package com.tophousekeeper.entity;
 
+import org.apache.ibatis.type.JdbcType;
+import tk.mybatis.mapper.annotation.ColumnType;
+
+import javax.persistence.Column;
 import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -13,20 +17,22 @@ import java.util.Date;
 public class SystemDaily {
 
     //今日日期
+    @ColumnType(jdbcType= JdbcType.TIMESTAMP)
     private Timestamp date;
 
     //系统每日登录人数
-    private int loginCount;
+    @Column(name = "login_count")
+    private Integer loginCount;
 
     //今日访问网站的人数
-    private int onlineCount;
+    @Column(name = "online_count")
+    private Integer onlineCount;
 
 
     public SystemDaily(){
         ////将String类型格式化为timestamp
         Date date = new Date();
         date = new Timestamp(date.getTime());
-        loginCount = 0;
     }
 
     //以下为set和get

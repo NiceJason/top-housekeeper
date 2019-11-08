@@ -1,7 +1,5 @@
 package com.tophousekeeper.entity;
 
-import org.springframework.stereotype.Repository;
-
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;

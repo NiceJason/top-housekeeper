@@ -82,4 +82,23 @@ public class SystemContext implements ApplicationContextAware {
     public <T> T getResource(String key,Class<T> clazz){
         return (T)resources.get(key);
     }
+
+    /**
+     * 根据类的名字获取Spring中的类
+     * @param name 没有指定名字的托管，记得首字母要小写 如loginService来获取LoginService类
+     * @return
+     */
+    public Object getAppBean(String name){
+        return applicationContext.getBean(name);
+    }
+
+    /**
+     * 根据class获取Spring中的类
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public <T> T getAppBean(Class<T> tClass){
+        return applicationContext.getBean(tClass);
+    }
 }

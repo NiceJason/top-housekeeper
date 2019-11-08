@@ -18,11 +18,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Aspect
 @Component
-public class RecordOnlineAspect {
+public class RecordLoginAspect {
 
     @Autowired
     private SystemContext systemContext;
-    private final Logger logger = LoggerFactory.getLogger(RecordOnlineAspect.class);
+    private final Logger logger = LoggerFactory.getLogger(RecordLoginAspect.class);
 
     @AfterReturning("execution(* login(..)) && target(com.tophousekeeper.service.LoginService)")
     public void addOnline(){
