@@ -25,8 +25,8 @@ public class SystemTimingMgr {
     private AtomicInteger onlineCount;
 
     public SystemTimingMgr(){
-        loginCount = new AtomicInteger();
-        onlineCount = new AtomicInteger();
+        loginCount = new AtomicInteger(3);
+        onlineCount = new AtomicInteger(4);
     }
 
     //保存每日数据
