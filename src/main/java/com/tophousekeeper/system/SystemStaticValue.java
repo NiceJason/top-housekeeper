@@ -23,6 +23,12 @@ public class SystemStaticValue {
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
     //验证码过期时间（毫秒）
     public static final int IDENTIFYING_OVERDUE = 20000;
+    //非法验证次数的key
+    public static final String IDENTIFYING_ILLEGAL_COUNT = "illegalCount";
+    //非法验证次数的标准值
+    public static final int IDENTIFYING_ILLEGAL_STANDARD = 3;
+    //非法验证封禁的时间（分钟）
+    public static final int IDENTIFYING_ILLEGAL_BAN = 1;
     //以下为验证码业务
     //登录业务
     public static final String IDENTIFYING_FUNC_LOGIN = "login";

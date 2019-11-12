@@ -1,6 +1,8 @@
 package com.tophousekeeper.system.listener;
 
 import com.tophousekeeper.system.management.SystemTimingMgr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +17,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Component
 public class SessionListener implements HttpSessionListener {
+
+    private final Logger logger = LoggerFactory.getLogger(SessionListener.class);
 
     @Autowired
     private SystemTimingMgr systemTimingMgr;
@@ -37,6 +41,6 @@ public class SessionListener implements HttpSessionListener {
         AtomicInteger onlineCount = systemTimingMgr.getOnlineCount();
         onlineCount.incrementAndGet();
 
-        System.out.println("今日访问人数："+onlineCount.get());
+        logger.info("今日访问人数："+onlineCount.get());
     }
 }

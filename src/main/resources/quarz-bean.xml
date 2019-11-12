@@ -51,7 +51,8 @@
         <property name="group" value="system_daily_trigger_group"/>
         <!-- 指定Tirgger绑定的Job -->
         <property name="jobDetail" ref="job_detail"/>
-        <!-- 指定Cron 的表达式 ，当前是每隔1s运行一次 -->
+        <!-- 指定Cron 的表达式 ，当前是每隔1s运行一次 <property name="cronExpression" value="0 5 0 * * ?" />-->
+
         <property name="cronExpression" value="10 * * * * ?" />
     </bean>
 

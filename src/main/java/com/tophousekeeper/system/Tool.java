@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
  * 10.根据key,value来设置cookie的值
  * 11.String转对象
  * 12.beanToString
+ * 13.获取ip地址
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -258,5 +259,48 @@ public class Tool {
         }else {
             return JSON.toJSONString(value);
         }
+    }
+
+    /**
+     * 获取与服务器相连的ip，可能是用户的ip，也可能是代理的ip
+     * @param request
+     * @return
+     */
+    public static String getConnectIp(HttpServletRequest request){
+        String ip = request.getHeader("x-forwarded-for");
+        System.out.println("x-forwarded-for ip: " + ip);
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            // 多次反向代理后会有多个ip值，最后一个ip是与服务器相连的ip
+            if( ip.indexOf(",")!=-1 ){
+                String[] ips = ip.split(",");
+                ip = ips[ips.length-1];
+            }
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+            System.out.println("Proxy-Client-IP ip: " + ip);
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+            System.out.println("WL-Proxy-Client-IP ip: " + ip);
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+            System.out.println("HTTP_CLIENT_IP ip: " + ip);
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            System.out.println("HTTP_X_FORWARDED_FOR ip: " + ip);
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+            System.out.println("X-Real-IP ip: " + ip);
+        }
+        else if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            System.out.println("getRemoteAddr ip: " + ip);
+        }
+        System.out.println("获取客户端ip: " + ip);
+        return ip;
     }
 }

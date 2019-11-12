@@ -1,7 +1,7 @@
 package com.tophousekeeper.service.AOP;
 
-import com.tophousekeeper.system.running.SystemContext;
-import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.entity.User;
+import com.tophousekeeper.system.management.SystemTimingMgr;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author NiceBin
- * @description: 记录登录人数（配合计划任务，每天登录次数可以记录）
+ * @description: 记录登录人数（配合计划任务，每天登录次数可以记录），同一用户每天只登记一次
  * @date 2019/10/8 8:54
  */
 @Aspect
@@ -21,17 +21,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RecordLoginAspect {
 
     @Autowired
-    private SystemContext systemContext;
+    private SystemTimingMgr systemTimingMgr;
     private final Logger logger = LoggerFactory.getLogger(RecordLoginAspect.class);
 
-    @AfterReturning("execution(* login(..)) && target(com.tophousekeeper.service.LoginService)")
-    public void addOnline(){
-        AtomicInteger online = systemContext.getResource(SystemStaticValue.SY_DAILY,AtomicInteger.class);
-        if(online == null){
-            online = new AtomicInteger(0);
+
+    @AfterReturning(value = "execution(* login(..)) && target(com.tophousekeeper.service.LoginService)",returning = "user")
+    public void addOnline(User user){
+
+        if(!systemTimingMgr.isUserFilter(user)){
+            AtomicInteger loginCount = systemTimingMgr.getLoginCount();
+            loginCount.incrementAndGet();
+            logger.info("网站今日登录人数："+loginCount.get());
         }
-        online.incrementAndGet();
-        logger.info("网站今日登录人数："+online.get());
     }
 
 }

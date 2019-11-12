@@ -2,11 +2,14 @@ package com.tophousekeeper.system.management;
 
 import com.tophousekeeper.dao.function.system.SystemDailyDao;
 import com.tophousekeeper.entity.SystemDaily;
+import com.tophousekeeper.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -23,10 +26,12 @@ public class SystemTimingMgr {
     private AtomicInteger loginCount;
     //当日在线人数
     private AtomicInteger onlineCount;
+    //用户过滤网，每个用户当天只登记一次登录，多了不算。存的是账户
+    private Set userFilterSet = new HashSet();
 
     public SystemTimingMgr(){
-        loginCount = new AtomicInteger(3);
-        onlineCount = new AtomicInteger(4);
+        loginCount = new AtomicInteger(0);
+        onlineCount = new AtomicInteger(0);
     }
 
     //保存每日数据
@@ -34,6 +39,7 @@ public class SystemTimingMgr {
         SystemDaily systemDaily = new SystemDaily();
         systemDaily.setLoginCount(loginCount.get());
         systemDaily.setOnlineCount(onlineCount.get());
+        System.out.println("onlineCount="+onlineCount+"; loginCount="+loginCount);
         systemDailyDao.insert(systemDaily);
         dailyClear();
     }
@@ -63,7 +69,26 @@ public class SystemTimingMgr {
             if(obj instanceof AtomicInteger){
                 method = theClass.getMethod("set",int.class);
                 method.invoke(obj,0);
+            }else if(obj instanceof Set){
+                method = theClass.getMethod("clear");
+                method.invoke(obj);
             }
+        }
+    }
+
+    /**
+     * 判断该用户今天登录是否已经登记了（登记了会在过滤网中有记录）
+     * true表示为被过滤了,false为没被过滤（第一次记录）
+     * @param user
+     * @return
+     */
+    public boolean isUserFilter(User user){
+        String email = user.getEmail();
+        if(userFilterSet.contains(email)){
+            return true;
+        }else{
+            userFilterSet.add(email);
+            return false;
         }
     }
 
@@ -91,5 +116,13 @@ public class SystemTimingMgr {
 
     public void setOnlineCount(AtomicInteger onlineCount) {
         this.onlineCount = onlineCount;
+    }
+
+    public Set getUserFilterSet() {
+        return userFilterSet;
+    }
+
+    public void setUserFilterSet(Set userFilterSet) {
+        this.userFilterSet = userFilterSet;
     }
 }

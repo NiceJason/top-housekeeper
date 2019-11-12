@@ -66,7 +66,7 @@ public class LoginService {
      * @param isAutoLogin   是不是自动登录调用这个函数的
      * @throws Exception
      */
-    public void login(HttpServletRequest request, HttpServletResponse response,String email,String password,boolean isAutoLogin) throws Exception{
+    public User login(HttpServletRequest request, HttpServletResponse response,String email,String password,boolean isAutoLogin) throws Exception{
         String sql = "select * from t_user where email = ? and password = ?";
         User user = null;
 
@@ -102,10 +102,10 @@ public class LoginService {
                 }
                 Tool.setCookie(response,AUTOLOGIN,autoLogin,3600*72);
             }
-
         }else if(!isAutoLogin){
             throw new SystemException(SystemStaticValue.LOGIN_EXCEPTION_CODE,"账号或密码错误");
         }
+        return user;
     }
 
     /**
