@@ -6,8 +6,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.util.Date;
-
 /**
  * @author NiceBin
  * @description: JOB按正常来说Spring是管不了的，就是自动注入，AOP切面都不行
@@ -25,7 +23,6 @@ public class SystemDailyJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        System.out.println("SystemDailyJob执行了 "+new Date().toString());
         try {
             systemTimingMgr.saveSystemDaily();
         } catch (Exception e) {

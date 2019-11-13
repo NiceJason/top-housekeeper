@@ -2,13 +2,15 @@ package com.tophousekeeper.service.system;
 
 import com.tophousekeeper.system.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,11 +18,12 @@ import java.util.concurrent.TimeUnit;
  * @description: 对Redis操作进行封装，让任何数据都能方便转换成String格式存储并取出
  * @date 2019/7/4 13:24
  */
-@Service
-public class RedisTemplateService {
+@Component
+public class RedisCache implements Cache {
 
     @Autowired
-    StringRedisTemplate stringRedisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
+    private String name;
 
     //布隆过滤网，对搜索的key值进行过滤，防止缓存击穿
     Map<String,String> filterMap = new HashMap<>();
@@ -37,7 +40,6 @@ public class RedisTemplateService {
         final TimeUnit timeUnit = TimeUnit.MINUTES;
 
         try {
-
             //任意类型转换成String
             String val = Tool.beanToString(value);
 
@@ -116,4 +118,70 @@ public class RedisTemplateService {
         }
     }
 
+
+    @Override
+    public Object getNativeCache() {
+        return null;
+    }
+
+    @Override
+    public ValueWrapper get(Object key) {
+        return null;
+    }
+
+    @Override
+    public <T> T get(Object key, Class<T> type) {
+        return null;
+    }
+
+    @Override
+    public <T> T get(Object key, Callable<T> valueLoader) {
+        return null;
+    }
+
+    @Override
+    public void put(Object key, Object value) {
+
+    }
+
+    @Override
+    public ValueWrapper putIfAbsent(Object key, Object value) {
+        return null;
+    }
+
+    @Override
+    public void evict(Object key) {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    //以下为get和set
+    public StringRedisTemplate getStringRedisTemplate() {
+        return stringRedisTemplate;
+    }
+
+    public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, String> getFilterMap() {
+        return filterMap;
+    }
+
+    public void setFilterMap(Map<String, String> filterMap) {
+        this.filterMap = filterMap;
+    }
 }

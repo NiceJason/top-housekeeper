@@ -1,9 +1,9 @@
 package com.tophousekeeper.system.running;
 
 
-import com.tophousekeeper.service.system.RedisTemplateService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,7 +22,7 @@ public class SystemContext implements ApplicationContextAware {
 
     //Redis缓存服务
     @Autowired
-    private RedisTemplateService redisTemplateService;
+    private SimpleCacheManager simpleCacheManager;
     //数据库操作类
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -44,12 +44,13 @@ public class SystemContext implements ApplicationContextAware {
         return applicationContext;
     }
 
+
     /**
-     * 获取redis模板
+     * 获取缓存管理器
      * @return
      */
-    public RedisTemplateService getRedisTemplateService(){
-        return redisTemplateService;
+    public SimpleCacheManager getSimpleCacheManager() {
+        return simpleCacheManager;
     }
 
     @Override

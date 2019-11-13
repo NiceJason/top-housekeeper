@@ -6,9 +6,9 @@ import org.springframework.context.annotation.ImportResource;
 /**
  * @author NiceBin
  * @description: TODO
- * @date 2019/10/30 17:10
+ * @date 2019/11/13 17:02
  */
 @Configuration
-@ImportResource(locations= {"classpath:bean/quarz-bean.xml"})
-public class QuartzConfig {
+@ImportResource(locations = "classpath:bean/cache-bean.xml")
+public class CacheConfig {
 }

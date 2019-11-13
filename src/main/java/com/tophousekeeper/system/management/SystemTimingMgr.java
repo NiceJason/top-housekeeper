@@ -39,7 +39,6 @@ public class SystemTimingMgr {
         SystemDaily systemDaily = new SystemDaily();
         systemDaily.setLoginCount(loginCount.get());
         systemDaily.setOnlineCount(onlineCount.get());
-        System.out.println("onlineCount="+onlineCount+"; loginCount="+loginCount);
         systemDailyDao.insert(systemDaily);
         dailyClear();
     }

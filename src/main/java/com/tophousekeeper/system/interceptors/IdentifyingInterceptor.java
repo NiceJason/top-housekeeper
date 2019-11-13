@@ -1,5 +1,6 @@
 package com.tophousekeeper.system.interceptors;
 
+import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class IdentifyingInterceptor implements HandlerInterceptor {
 
     //非法过滤器,key为ip地址,value为illegalInfo。
-    Map<String,IllegalInfo> requestFilter = new HashMap();
+    Map<String,IllegalInfo> ipFilter = new HashMap();
 
     //错误信息，内部类
     class IllegalInfo{
@@ -38,15 +39,21 @@ public class IdentifyingInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        HttpSession session = request.getSession();
-        I_Identifying identifying= (I_Identifying)session.getAttribute(I_Identifying.IDENTIFYING);
-        if(identifying!=null){
-            identifying.checkIdentifying(request);
-        }else {
-            //应该携带验证码信息的，结果没有携带，那就是个非法请求
-            return false;
+        if(!isRequestFilter(request)){
+            HttpSession session = request.getSession();
+            I_Identifying identifying= (I_Identifying)session.getAttribute(I_Identifying.IDENTIFYING);
+            if(identifying!=null){
+                identifying.checkIdentifying(request);
+            }else {
+                //应该携带验证码信息的，结果没有携带，那就是个非法请求
+                addIllegalCount(request);
+                throw new SystemException(SystemStaticValue.Illegal_EXCEPTION_CODE,"非法访问");
+            }
+            return true;
+        }else{
+            throw new SystemException(SystemStaticValue.Illegal_EXCEPTION_CODE,"该ip非法登录次数过多，封禁一段时间");
         }
-        return true;
+
 
     }
 
@@ -70,7 +77,7 @@ public class IdentifyingInterceptor implements HandlerInterceptor {
     private boolean isRequestFilter(HttpServletRequest request){
 
         String ip = Tool.getConnectIp(request);
-        IllegalInfo illegalInfo = requestFilter.get(ip);
+        IllegalInfo illegalInfo = ipFilter.get(ip);
 
         if(illegalInfo!=null&&illegalInfo.illegalCount> SystemStaticValue.IDENTIFYING_ILLEGAL_STANDARD){
             Timestamp banTime = illegalInfo.banTime;
@@ -80,7 +87,7 @@ public class IdentifyingInterceptor implements HandlerInterceptor {
                 return true;
             }else{
                 //重置信息
-                requestFilter.remove(ip);
+                ipFilter.remove(ip);
             }
         }
         return false;
@@ -92,5 +99,13 @@ public class IdentifyingInterceptor implements HandlerInterceptor {
      */
     private void addIllegalCount(HttpServletRequest request){
         String ip = Tool.getConnectIp(request);
+        IllegalInfo illegalInfo = ipFilter.get(ip);
+        if(illegalInfo == null){
+            illegalInfo = new IllegalInfo();
+            illegalInfo.banTime = new Timestamp(new Date().getTime());
+            ipFilter.put(ip,illegalInfo);
+        }
+        illegalInfo.illegalCount++;
+
     }
 }

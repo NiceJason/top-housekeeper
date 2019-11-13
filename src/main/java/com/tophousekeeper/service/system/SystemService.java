@@ -32,7 +32,7 @@ public class SystemService {
     @Autowired
     private SystemContext systemContext;
     @Autowired
-    RedisTemplateService redisTemplateService;
+    RedisCache redisCache;
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -50,7 +50,7 @@ public class SystemService {
      */
     public String getNavegationURLs() {
 
-        String navegationJson = redisTemplateService.get(SystemStaticValue.RE_WELCOMENAVEGATION,String.class);
+        String navegationJson = redisCache.get(SystemStaticValue.RE_WELCOMENAVEGATION,String.class);
 
         //先判断缓存是否有该数据，如果有则直接返回
         if(!Tool.isNull(navegationJson)){
