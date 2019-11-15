@@ -6,10 +6,13 @@ package com.tophousekeeper.system;
  * @date 2019/6/24 8:43
  */
 public class SystemStaticValue {
+    //以下为一些系统的固定值
     //ajax请求返回操作Key值
     public static final String ACTION_RESULT = "action_result";
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
+    //系统默认缓存名称
+    public static final String DEFAULT_CACHE = "defaultCache";
 
     //以下为系统资源，SY开头，存于SystemContext的resouces(Map对象)中
     //系统每日资源

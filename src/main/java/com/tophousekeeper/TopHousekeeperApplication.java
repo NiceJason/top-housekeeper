@@ -4,6 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
@@ -12,6 +13,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan("com.tophousekeeper.dao.function")
 @EnableAspectJAutoProxy(proxyTargetClass=true)
 @EnableScheduling
+@EnableCaching
 public class TopHousekeeperApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {

@@ -8,7 +8,7 @@
             <set>
                 <!-- 这里可以配置多个redis -->
                 <bean class="com.tophousekeeper.service.system.RedisCache">
-                    <property name="name" value="reids"/>
+                    <property name="name" value=""/>
                     <!-- name对应的名称要在类或方法的注解中使用 -->
                 </bean>
             </set>

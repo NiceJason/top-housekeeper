@@ -1,21 +1,22 @@
 package com.tophousekeeper.service.system;
 
+import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
+import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author NiceBin
- * @description: 对Redis操作进行封装，让任何数据都能方便转换成String格式存储并取出
+ * @description:    一个Redis缓存容器
+ *                  对Redis操作进行封装，让任何数据都能方便转换成String格式存储并取出
  * @date 2019/7/4 13:24
  */
 @Component
@@ -25,8 +26,15 @@ public class RedisCache implements Cache {
     private StringRedisTemplate stringRedisTemplate;
     private String name;
 
-    //布隆过滤网，对搜索的key值进行过滤，防止缓存击穿
-    Map<String,String> filterMap = new HashMap<>();
+    //系统初始化会默认一个缓存容器
+    public RedisCache(){
+        this.name = SystemStaticValue.DEFAULT_CACHE;
+    }
+
+    public RedisCache(String name){
+        this.name = name;
+    }
+
     /**
      * 设置key,value
      * @param key
@@ -141,12 +149,16 @@ public class RedisCache implements Cache {
 
     @Override
     public void put(Object key, Object value) {
-
+        set((String)key,value);
     }
 
     @Override
     public ValueWrapper putIfAbsent(Object key, Object value) {
-        return null;
+
+        if(get(key)==null){
+           put(key,value);
+        }
+        return new SimpleValueWrapper(get(key));
     }
 
     @Override
@@ -156,7 +168,7 @@ public class RedisCache implements Cache {
 
     @Override
     public void clear() {
-
+            clearAll();
     }
 
     //以下为get和set
@@ -177,11 +189,4 @@ public class RedisCache implements Cache {
         this.name = name;
     }
 
-    public Map<String, String> getFilterMap() {
-        return filterMap;
-    }
-
-    public void setFilterMap(Map<String, String> filterMap) {
-        this.filterMap = filterMap;
-    }
 }

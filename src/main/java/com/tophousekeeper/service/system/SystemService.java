@@ -10,6 +10,7 @@ import com.tophousekeeper.system.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,6 +49,7 @@ public class SystemService {
      *
      * @return
      */
+    @Cacheable(value = SystemStaticValue.DEFAULT_CACHE)
     public String getNavegationURLs() {
 
         String navegationJson = redisCache.get(SystemStaticValue.RE_WELCOMENAVEGATION,String.class);

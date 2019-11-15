@@ -7,7 +7,6 @@ import com.tophousekeeper.system.security.EncrypRSA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -31,7 +30,7 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private SystemService systemService;
     @Autowired
-    private SimpleCacheManager simpleCacheManager;
+    private RedisCache redisCache;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
