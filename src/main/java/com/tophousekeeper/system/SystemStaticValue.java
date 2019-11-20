@@ -11,16 +11,54 @@ public class SystemStaticValue {
     public static final String ACTION_RESULT = "action_result";
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
-    //系统默认缓存名称
-    public static final String DEFAULT_CACHE = "defaultCache";
 
-    //以下为系统资源，SY开头，存于SystemContext的resouces(Map对象)中
+    //以下为缓存信息的配置(CACHE开头)--------------------------------------------------------
+    //系统缓存名称及过期时间（秒）
+    public enum SystemCache{
+        //每日缓存,有效时间24小时
+        DAY("dailyCache",24*60*60),
+        //半日缓存，有效时间12小时
+        HALF_DAY("halfDayCache",12*60*60),
+        //1小时缓存
+        ONE_HOUR("oneHour",1*60*60),
+        //半小时缓存
+        HALF_HOUR("halfHour",30*60);
+        private String cacheName;
+        private long surviveTime;
+
+        SystemCache(String cacheName,long surviveTime){
+            this.cacheName = cacheName;
+            this.surviveTime = surviveTime;
+        }
+
+        public String getCacheName() {
+            return cacheName;
+        }
+
+        public void setCacheName(String cacheName) {
+            this.cacheName = cacheName;
+        }
+
+        public long getSurviveTime() {
+            return surviveTime;
+        }
+
+        public void setSurviveTime(long surviveTime) {
+            this.surviveTime = surviveTime;
+        }
+    }
+
+    //系统缓存过期时间允许最小值（秒）
+    public static final long CACHE_MIN_EXPIRE = 2*60;
+    //系统缓存过期时间允许最大值（秒）
+    public static final long CACHE_MAX_EXPIRE= 7*60;
+    //以下为缓存数据的key（固定的key需要用''包裹）
+    public static final String CACHE_ID_WELCOMENAVEGATION = "'welcomeNavegation'";
+
+    //以下为系统资源，SY开头，存于SystemContext的resouces(Map对象)中------------------------
     //系统每日资源
     public static final String SY_DAILY = "system_daily";
-
-    //以下为系统redis缓存的名称,RE(reids)开头---------------------------------------------
-    public static final String RE_WELCOMENAVEGATION = "welcomeNavegation";
-
+    
     //以下为验证码资源-------------------------------------------------------------------
     //图片验证码的图片池
     public static final String[] IDENTIFYING_IMG_POOL = {"/image/ver-1.png","/image/ver-2.png","/image/ver-3.png"};
@@ -61,4 +99,6 @@ public class SystemStaticValue {
     public static final String WEBURL_EXCEPTION_CODE = "644";
     //非法访问异常
     public static final String Illegal_EXCEPTION_CODE = "645";
+    //内存异常
+    public static final String CACHE_EXCEPTION_CODE = "646";
 }

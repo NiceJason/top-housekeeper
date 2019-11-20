@@ -5,12 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
 import com.tophousekeeper.system.running.SystemContext;
-import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.system.running.cache.RedisCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -49,15 +47,9 @@ public class SystemService {
      *
      * @return
      */
-    @Cacheable(value = SystemStaticValue.DEFAULT_CACHE)
     public String getNavegationURLs() {
 
-        String navegationJson = redisCache.get(SystemStaticValue.RE_WELCOMENAVEGATION,String.class);
-
-        //先判断缓存是否有该数据，如果有则直接返回
-        if(!Tool.isNull(navegationJson)){
-            return navegationJson;
-        }
+        String navegationJson ;
 
         logger.info("系统加载目录");
 

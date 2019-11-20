@@ -1,6 +1,6 @@
 package com.tophousekeeper.system;
 
-import com.tophousekeeper.service.system.RedisCache;
+import com.tophousekeeper.system.running.cache.RedisCache;
 import com.tophousekeeper.service.system.SystemService;
 import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.system.security.EncrypRSA;

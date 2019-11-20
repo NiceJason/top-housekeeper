@@ -1,12 +1,9 @@
-package com.tophousekeeper.service.system;
+package com.tophousekeeper.system.running.cache;
 
-import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.Tool;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Set;
@@ -19,17 +16,11 @@ import java.util.concurrent.TimeUnit;
  *                  对Redis操作进行封装，让任何数据都能方便转换成String格式存储并取出
  * @date 2019/7/4 13:24
  */
-@Component
+
 public class RedisCache implements Cache {
 
-    @Autowired
     private StringRedisTemplate stringRedisTemplate;
     private String name;
-
-    //系统初始化会默认一个缓存容器
-    public RedisCache(){
-        this.name = SystemStaticValue.DEFAULT_CACHE;
-    }
 
     public RedisCache(String name){
         this.name = name;

@@ -8,7 +8,7 @@
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/welcome">顶上管家</a>
+                <a class="navbar-brand" href="/welcome">NiceBin小窝</a>
             </div>
             <div>
 
@@ -19,8 +19,8 @@
                 <ul id="noLogin" class="nav navbar-nav navbar-right">
                     <li><a href="#" onclick="openLoginModal();return false;"><span
                                     class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                    <li><a href="#" onclick="openRegisterModal();return false;"><span
-                                    class="glyphicon glyphicon-user"></span> 注册</a></li>
+<#--                    <li><a href="#" onclick="openRegisterModal();return false;"><span-->
+<#--                                    class="glyphicon glyphicon-user"></span> 注册</a></li>-->
                 </ul>
 
                 <ul id="alreadyLogin" class="nav navbar-nav navbar-right">
