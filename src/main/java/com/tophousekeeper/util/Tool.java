@@ -1,7 +1,9 @@
-package com.tophousekeeper.system;
+package com.tophousekeeper.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tophousekeeper.system.SystemException;
+import com.tophousekeeper.system.SystemStaticValue;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;

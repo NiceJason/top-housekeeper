@@ -2,7 +2,7 @@ package com.tophousekeeper.system.interceptors;
 
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.util.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;

@@ -1,6 +1,6 @@
 package com.tophousekeeper.system.running.cache;
 
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.util.Tool;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.data.redis.core.StringRedisTemplate;

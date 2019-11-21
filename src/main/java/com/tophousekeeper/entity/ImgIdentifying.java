@@ -4,7 +4,7 @@ package com.tophousekeeper.entity;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.util.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
 
 import javax.servlet.http.HttpServletRequest;

@@ -1,15 +1,9 @@
 package com.tophousekeeper.system.management;
 
-import com.tophousekeeper.system.SystemException;
-import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.system.running.cache.I_SystemCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Component;
 
-import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author NiceBin
  * @description: 本系统的缓存管理器
- *               为了实现缓存的自动更新，对已经实现的缓存管理器进行再次封装
+ *               数据自动刷新功能，要配合@SystemCache才能实现
  *               目前没办法实现缓存纯自动更新，必须要使用到该缓存拿数据进行触发
  *               纯自动更新没有意义，假设一个数据放了半小时没人访问要过期了，那就过期吧
  *               因为缓存前提是一段时间频繁访问的数据，如果都没人访问了，就不能称之为缓存
@@ -26,68 +20,62 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class SystemCacheMgr{
-    //spring必须要有一个默认缓存管理器，这个对应那个默认的，目前本系统就用一个缓存管理器，暂不考虑多个
-    //且该管理器必须支持TTL
+    //目前系统只考虑一个CacheManager，多个也能实现，只需要参数多加个CacheManagerName，配合注解将此参数传入即可
+    //必须有一个I_SystemCache的实现类，多个实现类用@Primary注解，类似于Spring的缓存管理器
     @Autowired
-    private CacheManager defaultCacheMgr;
-    //时间记录Map，key为数据的id，value为记录该数据的时间
-    private ConcurrentHashMap<String,Timestamp> saveTimeMap = new ConcurrentHashMap<>();
+    private I_SystemCache defaultCacheMgr;
+    //所有缓存的时间记录Map，
+    //外部Map中，key为缓存名称，value为该缓存内的数据和存储时间的Map
+    //内部Map中，key为数据的id，value为记录该数据的时间
+    private ConcurrentHashMap<String,ConcurrentHashMap<String,Timestamp>> saveTimeMaps = new ConcurrentHashMap<>();
 
     /**
-     * 为该数据增加时间记录
+     * 为该数据在对应的缓存里增加时间记录
      * @param id 数据id
      */
-    public void putSaveTime(String id){
+    public void putSaveTime(String cacheName,String id){
         Date date = new Date();
         Timestamp nowtime = new Timestamp(date.getTime());
+        ConcurrentHashMap<String,Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
         saveTimeMap.put(id,nowtime);
     }
 
     /**
-     * 该数据是否要过期
-     * 过期时间为：缓存有效时间-（目前时间-记录时间）<= 随机时间
-     * 随机时间是防止同一时刻过期时间太多，造成缓存雪崩，在SystemStaticValue中缓存项里配置
-     * true为将要过期（可以刷新了）
+     * 自动刷新，要配合@SystemCache注解一起使用才有效果
+     * 原理：先判断数据是否过期，如果数据过期则从缓存删除。
+     * 然后@SystemCache包含@Cacheable，所以会重新访问数据库将缓存写入
      * @param cacheName 缓存名称
      * @param id 数据id
      * @return
      */
-    public boolean isApproachExpire(String cacheName,String id) throws NoSuchAlgorithmException {
-        long ttl = -1;
-        //判断缓存管理器是否是已知支持TTL的类型
-        if(defaultCacheMgr instanceof RedisCacheManager){
-            RedisCacheConfiguration configuration =((RedisCacheManager) defaultCacheMgr).getCacheConfigurations().get(cacheName);
-            ttl=configuration.getTtl().getSeconds();
+    public void autoUpdate(String cacheName,String id) throws Exception {
+        ConcurrentHashMap<String,Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
+        if(defaultCacheMgr.isApproachExpire(cacheName,id,saveTimeMap)){
+           defaultCacheMgr.remove(cacheName,id);
         }
+    }
 
-        if(ttl!=-1){
-            int random = Tool.getSecureRandom(SystemStaticValue.CACHE_MIN_EXPIRE,SystemStaticValue.CACHE_MAX_EXPIRE);
-            Date date = new Date();
-            long nowTime = date.getTime()/1000;
-            long saveTime = saveTimeMap.get(id).getTime()/1000;
-            if(ttl-(nowTime-saveTime)<=random){
-                return true;
-            }else{
-                return false;
-            }
-        }
-        throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"默认缓存管理器不支持TTL");
+    /**
+     * 清楚所有缓存内容
+     */
+    public void clearAll() throws Exception {
+        defaultCacheMgr.clearAll();
     }
 
     //以下为Set和Get
-    public CacheManager getDefaultCacheMgr() {
+    public I_SystemCache getDefaultCacheMgr() {
         return defaultCacheMgr;
     }
 
-    public void setDefaultCacheMgr(CacheManager defaultCacheMgr) {
+    public void setDefaultCacheMgr(I_SystemCache defaultCacheMgr) {
         this.defaultCacheMgr = defaultCacheMgr;
     }
 
-    public ConcurrentHashMap<String, Timestamp> getSaveTimeMap() {
-        return saveTimeMap;
+    public ConcurrentHashMap<String, ConcurrentHashMap<String, Timestamp>> getSaveTimeMaps() {
+        return saveTimeMaps;
     }
 
-    public void setSaveTimeMap(ConcurrentHashMap<String, Timestamp> saveTimeMap) {
-        this.saveTimeMap = saveTimeMap;
+    public void setSaveTimeMaps(ConcurrentHashMap<String, ConcurrentHashMap<String, Timestamp>> saveTimeMaps) {
+        this.saveTimeMaps = saveTimeMaps;
     }
 }

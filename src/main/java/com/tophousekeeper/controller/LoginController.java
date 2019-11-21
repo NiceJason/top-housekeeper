@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.entity.ImgIdentifying;
 import com.tophousekeeper.service.LoginService;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.util.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

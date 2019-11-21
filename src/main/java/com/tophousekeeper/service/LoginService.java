@@ -5,7 +5,7 @@ import com.tophousekeeper.entity.User;
 import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.Tool;
+import com.tophousekeeper.util.Tool;
 import com.tophousekeeper.system.security.EncrypRSA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;

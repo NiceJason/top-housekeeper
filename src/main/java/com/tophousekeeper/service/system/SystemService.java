@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
+import com.tophousekeeper.system.SystemStaticValue;
 import com.tophousekeeper.system.running.SystemContext;
-import com.tophousekeeper.system.running.cache.RedisCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,8 +31,7 @@ public class SystemService {
     private NavResourceDao navResourceDao;
     @Autowired
     private SystemContext systemContext;
-    @Autowired
-    RedisCache redisCache;
+
     @Autowired
     JdbcTemplate jdbcTemplate;
 
@@ -44,9 +44,9 @@ public class SystemService {
 
     /**
      * json格式返回，最外层是jsonArray，包裹一个目录,目录下面有
-     *
      * @return
      */
+    @Cacheable(value = "dailyCache",key = SystemStaticValue.CACHE_ID_WELCOMENAVEGATION)
     public String getNavegationURLs() {
 
         String navegationJson ;
