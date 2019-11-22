@@ -30,14 +30,21 @@ public class SystemCacheMgr{
     private ConcurrentHashMap<String,ConcurrentHashMap<String,Timestamp>> saveTimeMaps = new ConcurrentHashMap<>();
 
     /**
-     * 为该数据在对应的缓存里增加时间记录
+     * 为该数据在对应的缓存里增加或更新时间记录
      * @param id 数据id
      */
     public void putSaveTime(String cacheName,String id){
         Date date = new Date();
         Timestamp nowtime = new Timestamp(date.getTime());
         ConcurrentHashMap<String,Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
-        saveTimeMap.put(id,nowtime);
+        if(saveTimeMap == null){
+            saveTimeMap = new ConcurrentHashMap<>();
+            saveTimeMaps.put(cacheName,saveTimeMap);
+        }
+        if(!saveTimeMap.containsKey(id)){
+            saveTimeMap.put(id,nowtime);
+        }
+
     }
 
     /**
