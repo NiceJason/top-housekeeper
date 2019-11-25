@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
  */
 
 public class RedisCacheEnhance extends RedisCache {
+
     /**
      * Create new {@link RedisCacheEnhance}.
      *

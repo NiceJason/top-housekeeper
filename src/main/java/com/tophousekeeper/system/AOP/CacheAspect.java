@@ -22,6 +22,7 @@ public class CacheAspect {
     SystemCacheMgr systemCacheMgr;
 
     @Pointcut("@annotation(com.tophousekeeper.system.annotation.UpdateCache)")
+//@Pointcut("target(com.tophousekeeper.system.running.cache.RedisCacheEnhance)")
     private void checkSystemCache(){}
 
     /**
@@ -37,6 +38,6 @@ public class CacheAspect {
     @After(value = "checkSystemCache()")
     public void get(JoinPoint joinPoint){
         Object[] objects=joinPoint.getArgs();
-        System.out.println("退出切面");
+        System.out.println("出去切面");
     }
 }

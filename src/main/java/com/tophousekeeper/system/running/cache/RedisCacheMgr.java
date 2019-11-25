@@ -2,12 +2,15 @@ package com.tophousekeeper.system.running.cache;
 
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.annotation.UpdateCache;
 import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.util.Tool;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.cache.Cache;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -49,31 +52,31 @@ public class RedisCacheMgr extends RedisCacheManager implements I_SystemCacheMgr
 
     @Override
     protected RedisCacheEnhance createRedisCache(String name, @Nullable RedisCacheConfiguration cacheConfig) {
-//        BeanDefinition beanDefinition = new RootBeanDefinition(RedisCacheEnhance.class);
+        BeanDefinition beanDefinition = new RootBeanDefinition(RedisCacheEnhance.class);
 
-//        ConstructorArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
-//        constructorArgumentValues.addIndexedArgumentValue(0,name);
-//        constructorArgumentValues.addIndexedArgumentValue(1,cacheWriter);
-//        constructorArgumentValues.addIndexedArgumentValue(2,cacheConfig);
-        ApplicationContext applicationContext = SystemContext.getSystemContext()
-                .getApplicationContext();
-        DefaultListableBeanFactory defaultListableBeanFactory = applicationContext.getBean(DefaultListableBeanFactory.class);
-//        defaultListableBeanFactory.registerBeanDefinition(name,beanDefinition);
-
-        Class<?> cls = Cache.class;
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(cls);
-        GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
-        ConstructorArgumentValues constructorArgumentValues = definition.getConstructorArgumentValues();
+        ConstructorArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
         constructorArgumentValues.addIndexedArgumentValue(0,name);
         constructorArgumentValues.addIndexedArgumentValue(1,cacheWriter);
         constructorArgumentValues.addIndexedArgumentValue(2,cacheConfig);
-        definition.getPropertyValues().add("interfaceClass", definition.getBeanClassName());
-        definition.setBeanClass(RedisCacheEnhance.class);
-        definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-        defaultListableBeanFactory.registerBeanDefinition(name, definition);
+
+        ApplicationContext applicationContext = SystemContext.getSystemContext()
+                .getApplicationContext();
+        DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
+        defaultListableBeanFactory.registerBeanDefinition(name,beanDefinition);
+
+//        Class<?> cls = RedisCacheEnhance.class;
+//        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(cls);
+//        GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
+//        ConstructorArgumentValues constructorArgumentValues = definition.getConstructorArgumentValues();
+//        constructorArgumentValues.addIndexedArgumentValue(0,name);
+//        constructorArgumentValues.addIndexedArgumentValue(1,cacheWriter);
+//        constructorArgumentValues.addIndexedArgumentValue(2,cacheConfig);
+//        definition.setBeanClass(RedisCacheEnhance.class);
+//        definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
+//        defaultListableBeanFactory.registerBeanDefinition(name, definition);
 
 
-        RedisCacheEnhance redisCacheEnhance = (RedisCacheEnhance)defaultListableBeanFactory.getBean(name);
+        RedisCacheEnhance redisCacheEnhance = (RedisCacheEnhance)applicationContext.getBean(name);
         caches.put(name, redisCacheEnhance);
         return redisCacheEnhance;
     }
