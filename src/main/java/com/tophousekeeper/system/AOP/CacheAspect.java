@@ -21,7 +21,7 @@ public class CacheAspect {
     @Autowired
     SystemCacheMgr systemCacheMgr;
 
-    @Pointcut("@annotation(com.tophousekeeper.system.annotation.SystemCache)")
+    @Pointcut("@annotation(com.tophousekeeper.system.annotation.UpdateCache)")
     private void checkSystemCache(){}
 
     /**

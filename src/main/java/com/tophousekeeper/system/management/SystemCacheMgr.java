@@ -1,7 +1,9 @@
 package com.tophousekeeper.system.management;
 
-import com.tophousekeeper.system.running.cache.I_SystemCache;
+import com.tophousekeeper.system.running.cache.I_SystemCacheMgr;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -20,10 +22,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Component
 public class SystemCacheMgr{
-    //目前系统只考虑一个CacheManager，多个也能实现，只需要参数多加个CacheManagerName，配合注解将此参数传入即可
+    //目前系统只考虑一个CacheManager
     //必须有一个I_SystemCache的实现类，多个实现类用@Primary注解，类似于Spring的缓存管理器
     @Autowired
-    private I_SystemCache defaultCacheMgr;
+    private I_SystemCacheMgr defaultCacheMgr;
+    private DefaultListableBeanFactory defaultListableBeanFactory;
     //所有缓存的时间记录Map，
     //外部Map中，key为缓存名称，value为该缓存内的数据和存储时间的Map
     //内部Map中，key为数据的id，value为记录该数据的时间
@@ -69,12 +72,16 @@ public class SystemCacheMgr{
         defaultCacheMgr.clearAll();
     }
 
+    public void registeredBeanToSpring(String cacheName, Cache cache){
+        defaultListableBeanFactory.registerSingleton(cacheName,cache);
+    }
+
     //以下为Set和Get
-    public I_SystemCache getDefaultCacheMgr() {
+    public I_SystemCacheMgr getDefaultCacheMgr() {
         return defaultCacheMgr;
     }
 
-    public void setDefaultCacheMgr(I_SystemCache defaultCacheMgr) {
+    public void setDefaultCacheMgr(I_SystemCacheMgr defaultCacheMgr) {
         this.defaultCacheMgr = defaultCacheMgr;
     }
 

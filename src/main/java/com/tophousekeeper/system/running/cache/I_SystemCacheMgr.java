@@ -1,7 +1,10 @@
 package com.tophousekeeper.system.running.cache;
 
+import org.springframework.cache.Cache;
+
 import java.sql.Timestamp;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * 本系统的缓存接口
@@ -10,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 例子如RedisCacheMangerEnhance类，实现此接口，里面持有真正的CacheManger即可
  * SystemCacheMgr会对缓存自动刷新统一管理
  */
-public interface I_SystemCache {
+public interface I_SystemCacheMgr {
     /**
      * 该数据是否过期
      * true为已经过期
@@ -36,4 +39,9 @@ public interface I_SystemCache {
      */
     void clearAll() throws Exception;
 
+    /**
+     * 获得所有的Cache
+     * @return
+     */
+    ConcurrentMap<String, Cache> getAllCaches();
 }

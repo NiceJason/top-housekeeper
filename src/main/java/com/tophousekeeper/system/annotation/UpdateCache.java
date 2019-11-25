@@ -1,7 +1,6 @@
 package com.tophousekeeper.system.annotation;
 
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
@@ -17,21 +16,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Cacheable
-public @interface SystemCache {
-
-        //以下为新增属性
-        long overdue() default -1;
-
-        //以下为@Cacheable的属性
-        @AliasFor("cacheNames")
-        String[] value() default {};
-        @AliasFor("value")
-        String[] cacheNames() default {};
-        String key() default "";
-        String keyGenerator() default "";
-        String cacheManager() default "";
-        String cacheResolver() default "";
-        String condition() default "";
-        String unless() default "";
-        boolean sync() default false;
+public @interface UpdateCache {
 }

@@ -5,11 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.dao.function.system.NavResourceDao;
 import com.tophousekeeper.entity.NavResource;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.annotation.SystemCache;
 import com.tophousekeeper.system.running.SystemContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -46,7 +46,7 @@ public class SystemService {
      * json格式返回，最外层是jsonArray，包裹一个目录,目录下面有
      * @return
      */
-    @SystemCache(value = "dailyCache",key = SystemStaticValue.CACHE_ID_WELCOMENAVEGATION)
+    @Cacheable(value = "dailyCache",key = SystemStaticValue.CACHE_ID_WELCOMENAVEGATION)
     public String getNavegationURLs() {
 
         String navegationJson ;
