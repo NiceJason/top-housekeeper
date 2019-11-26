@@ -54,7 +54,7 @@ public class SystemControllerAdvice {
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("code", SystemStaticValue.SYSTEM_EXCEPTION_CODE);
         map.put("msg", ex.getMessage());
-        logger.error(ex.getMessage());
+        logger.error(ex.getLocalizedMessage()+" 错误:"+ex.getMessage());
         return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
     }
 

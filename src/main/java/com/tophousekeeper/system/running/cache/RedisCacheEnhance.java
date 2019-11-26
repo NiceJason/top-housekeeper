@@ -10,7 +10,8 @@ import java.util.concurrent.Callable;
 
 /**
  * @author NiceBin
- * @description:    增强RedisCache，过了实现自动刷新
+ * @description:    增强RedisCache
+ *                  为了能写上@Update注解，实现自动刷新
  * @date 2019/7/4 13:24
  */
 
@@ -29,6 +30,7 @@ public class RedisCacheEnhance extends RedisCache {
 
     @UpdateCache
     public ValueWrapper get(Object key){
+        System.out.println("进入get方法");
         return super.get(key);
     }
 

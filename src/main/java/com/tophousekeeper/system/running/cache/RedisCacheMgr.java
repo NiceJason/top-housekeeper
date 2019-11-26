@@ -1,15 +1,11 @@
 package com.tophousekeeper.system.running.cache;
 
-import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.system.annotation.UpdateCache;
 import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.util.Tool;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.cache.Cache;
 import org.springframework.context.ApplicationContext;
@@ -29,52 +25,48 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author NiceBin
- * @description: TODO
+ * @description: RedisCacheManager增强类，为了实现本系统缓存自动更新功能
  * @date 2019/11/25 9:07
  */
 public class RedisCacheMgr extends RedisCacheManager implements I_SystemCacheMgr {
 
     private final RedisCacheWriter cacheWriter;
-    private final RedisCacheConfiguration defaultCacheConfig;
-    private final Map<String, RedisCacheConfiguration> initialCacheConfiguration;
-    private final boolean allowInFlightCacheCreation;
-
     private ConcurrentMap<String, Cache> caches = new ConcurrentHashMap<>();
+
+    private DefaultListableBeanFactory defaultListableBeanFactory;
 
     public RedisCacheMgr(RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultCacheConfiguration, Map<String, RedisCacheConfiguration> initialCacheConfigurations, boolean allowInFlightCacheCreation) {
         super(cacheWriter, defaultCacheConfiguration, initialCacheConfigurations, allowInFlightCacheCreation);
-
         this.cacheWriter = cacheWriter;
-        this.defaultCacheConfig = defaultCacheConfiguration;
-        this.initialCacheConfiguration = initialCacheConfigurations;
-        this.allowInFlightCacheCreation = allowInFlightCacheCreation;
+
     }
 
+    /**
+     * 重写createRedisCache的方法，生成自己定义的Cache
+     * 这里主要要让Spring来生成代理Cache，不然在Cache上的注解是无效的
+     * @param name
+     * @param cacheConfig
+     * @return
+     */
     @Override
     protected RedisCacheEnhance createRedisCache(String name, @Nullable RedisCacheConfiguration cacheConfig) {
+        //利用Spring生成代理Cache
         BeanDefinition beanDefinition = new RootBeanDefinition(RedisCacheEnhance.class);
-
+        //因为只有有参构造方法，所以要添加参数
         ConstructorArgumentValues constructorArgumentValues = beanDefinition.getConstructorArgumentValues();
         constructorArgumentValues.addIndexedArgumentValue(0,name);
         constructorArgumentValues.addIndexedArgumentValue(1,cacheWriter);
         constructorArgumentValues.addIndexedArgumentValue(2,cacheConfig);
 
+        //如果有属性需要设置，还能这样做，不过需要有对应属性名的set方法
+        //definition.getPropertyValues().add("propertyName", beanDefinition.getBeanClassName());
+
         ApplicationContext applicationContext = SystemContext.getSystemContext()
                 .getApplicationContext();
+        //需要这样获取的DefaultListableBeanFactory类才能走一遍完整的Bean初始化流程！！
+        //像applicationContext.getBean(DefaultListableBeanFactory.class)都不好使！！
         DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory)applicationContext.getAutowireCapableBeanFactory();
         defaultListableBeanFactory.registerBeanDefinition(name,beanDefinition);
-
-//        Class<?> cls = RedisCacheEnhance.class;
-//        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(cls);
-//        GenericBeanDefinition definition = (GenericBeanDefinition) builder.getRawBeanDefinition();
-//        ConstructorArgumentValues constructorArgumentValues = definition.getConstructorArgumentValues();
-//        constructorArgumentValues.addIndexedArgumentValue(0,name);
-//        constructorArgumentValues.addIndexedArgumentValue(1,cacheWriter);
-//        constructorArgumentValues.addIndexedArgumentValue(2,cacheConfig);
-//        definition.setBeanClass(RedisCacheEnhance.class);
-//        definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
-//        defaultListableBeanFactory.registerBeanDefinition(name, definition);
-
 
         RedisCacheEnhance redisCacheEnhance = (RedisCacheEnhance)applicationContext.getBean(name);
         caches.put(name, redisCacheEnhance);
@@ -91,28 +83,29 @@ public class RedisCacheMgr extends RedisCacheManager implements I_SystemCacheMgr
      * @return
      */
     @Override
-    public boolean isApproachExpire(String cacheName, String id, ConcurrentHashMap<String, Timestamp> saveTimeMap) throws NoSuchAlgorithmException {
+    public boolean isApproachExpire(String cacheName, Object id, ConcurrentHashMap<Object, Timestamp> saveTimeMap) throws NoSuchAlgorithmException {
         long ttl = -1;
 
         RedisCacheConfiguration configuration = this.getCacheConfigurations().get(cacheName);
         ttl = configuration.getTtl().getSeconds();
 
-        if (ttl != -1) {
-            int random = Tool.getSecureRandom(SystemStaticValue.CACHE_MIN_EXPIRE, SystemStaticValue.CACHE_MAX_EXPIRE);
-            Date date = new Date();
-            long nowTime = date.getTime() / 1000;
-            long saveTime = saveTimeMap.get(id).getTime() / 1000;
-            if (ttl - (nowTime - saveTime) <= random) {
-                return true;
-            } else {
-                return false;
+        if (ttl != -1 && saveTimeMap!=null) {
+            Timestamp saveTimestamp = saveTimeMap.get(id);
+            if(saveTimeMap!=null){
+                int random = Tool.getSecureRandom(SystemStaticValue.CACHE_MIN_EXPIRE, SystemStaticValue.CACHE_MAX_EXPIRE);
+                Date date = new Date();
+                long nowTime = date.getTime() / 1000;
+                long saveTime = saveTimestamp.getTime() / 1000;
+                if (ttl - (nowTime - saveTime) <= random) {
+                    return true;
+                }
             }
         }
-        throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE, "默认缓存管理器不支持TTL");
+        return false;
     }
 
     @Override
-    public void remove(String cacheName, String id) throws Exception {
+    public void remove(String cacheName, Object id) throws Exception {
         Cache cache = this.getCache(cacheName);
         cache.evict(id);
     }

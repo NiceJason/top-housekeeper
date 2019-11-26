@@ -1,17 +1,23 @@
 package com.tophousekeeper.system.running.cache;
 
 import org.springframework.cache.Cache;
-
+import org.springframework.cache.CacheManager;
+import com.tophousekeeper.system.annotation.UpdateCache;
 import java.sql.Timestamp;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
 /**
- * 本系统的缓存接口
- * 为了实现数据自动刷新，需要对原来的CacheManager进行增强
- * 对已经实现的缓存管理器进行再次封装
- * 例子如RedisCacheMangerEnhance类，实现此接口，里面持有真正的CacheManger即可
- * SystemCacheMgr会对缓存自动刷新统一管理
+ * 本系统的缓存接口，SystemCacheMgr统一保存数据记录的时间和控制缓存自动刷新流程
+ *
+ * 为了实现数据快过期前的自动刷新，需要以下操作：
+ * 1.实现 {@link CacheManager} 接口的类必须也要实现此接口
+ *   如果用如RedisCacheManager这种写好的类，需要子类继承再实现此接口
+ *   如果Cache是CacheManager内部生成的，还需要重写createCache方法
+ *   使生成的Cache走一遍Spring初始化Bean的过程，交给Spring管理
+ *   这里主要为了Spring帮忙生成代理类，让注解生效
+ * 2.实现了 {@link Cache} 接口的类在get方法上加上注解 {@link UpdateCache} 才有更新效果，所以如果要用如RedisCache
+ *   这种写好的类，需要子类继承，并重写get方法
+ *   然后在get方法上加@UpdateCache
  */
 public interface I_SystemCacheMgr {
     /**
@@ -23,7 +29,7 @@ public interface I_SystemCacheMgr {
      * @return
      * @throws Exception
      */
-    boolean isApproachExpire(String cacheName, String id, ConcurrentHashMap<String, Timestamp> saveTimeMap) throws Exception;
+    boolean isApproachExpire(String cacheName, Object id, ConcurrentHashMap<Object, Timestamp> saveTimeMap) throws Exception;
 
     /**
      * 删除指定Cache里的指定数据
@@ -31,7 +37,7 @@ public interface I_SystemCacheMgr {
      * @param id
      * @throws Exception
      */
-    void remove(String cacheName, String id) throws Exception;
+    void remove(String cacheName, Object id) throws Exception;
 
     /**
      * 清除所有缓存内容

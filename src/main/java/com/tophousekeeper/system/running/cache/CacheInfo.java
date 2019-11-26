@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * @author NiceBin
  * @description: Cache的详情信息封装，用此类进行缓存的操作
- *               缓存类必须实现Cache接口，并放置com/tophousekeeper/system/running/cache下
+ *               缓存类必须实现Cache接口，并放置com/tophousekeeper/system/running/cached下
  *               会被CacheAspect切
  * @date 2019/11/18 15:01
  */

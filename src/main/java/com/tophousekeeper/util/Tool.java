@@ -4,11 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.core.BridgeMethodResolver;
+import org.springframework.util.ClassUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -30,6 +36,7 @@ import java.util.regex.Pattern;
  * 11.String转对象
  * 12.beanToString
  * 13.获取ip地址
+ * 14.获得代理类方法中真实的方法
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -55,7 +62,7 @@ public class Tool {
     }
 
     /**
-     * 获得一定范围的安全随机数
+     * 获得一定范围的安全随机数，随后转为int
      *
      * @param min 最小值，能转为数值型就行
      * @param max 最大值，能转为数值型就行
@@ -70,19 +77,26 @@ public class Tool {
         if (min instanceof String) {
             theMin = Integer.parseInt((String) min);
             legalMin = true;
+        }else if (min instanceof Integer) {
+            theMin = (Integer) min;
+            legalMin = true;
+        }else if(min instanceof Long){
+            theMin = ((Long) min).intValue();
+            legalMin = true;
         }
+
         if (max instanceof String) {
             theMax = Integer.parseInt((String) max);
             legalMax = true;
-        }
-        if (min instanceof Integer) {
-            theMin = (Integer) min;
-            legalMin = true;
-        }
-        if (max instanceof Integer) {
+        }else if (max instanceof Integer) {
             theMax = (Integer) max;
             legalMax = true;
+        }else if(max instanceof Long){
+            theMax = ((Long) max).intValue();
+            legalMax = true;
         }
+
+
 
         if (!(legalMax && legalMin)) {
             throw new SystemException(SystemStaticValue.TOOL_PARAMETER_EXCEPTION_CODE, "随机数参数不正确");
@@ -297,5 +311,42 @@ public class Tool {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    /**
+     * 获得代理类方法中真实的方法
+     * 小知识：
+     * ClassUtils.getMostSpecificMethod(Method method, Class<?> targetClass)
+     * 该方法是一个有趣的方法，他能从代理对象上的一个方法，找到真实对象上对应的方法。
+     * 举个例子，MyComponent代理之后的对象上的someLogic方法，肯定是属于cglib代理之后的类上的method，
+     * 使用这个method是没法去执行目标MyComponent的someLogic方法，
+     * 这种情况下，就可以使用getMostSpecificMethod，
+     * 找到真实对象上的someLogic方法，并执行真实方法
+     *
+     * BridgeMethodResolver.findBridgedMethod(Method bridgeMethod)
+     * 如果当前方法是一个泛型方法，则会找Class文件中实际实现的方法
+     * @param poxyMethod 代理的方法
+     * @param targetclass 真实的目标类
+     * @return
+     */
+    public static Method getSpecificMethod(Method poxyMethod,Class targetclass){
+        Method specificMethod = ClassUtils.getMostSpecificMethod(poxyMethod,targetclass);
+        specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
+        return specificMethod;
+    }
+
+    /**
+     * 获得代理类方法中真实的方法
+     * 小知识：
+     * AopProxyUtils.ultimateTargetClass()
+     * 获取一个代理对象的最终对象类型
+     * @param joinPoint 切面的切点类
+     * @return
+     */
+    public static Method getSpecificMethod(JoinPoint joinPoint){
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method poxyMethod = methodSignature.getMethod();
+        Class targetClass = AopProxyUtils.ultimateTargetClass(joinPoint.getTarget());
+        return Tool.getSpecificMethod(poxyMethod,targetClass);
     }
 }

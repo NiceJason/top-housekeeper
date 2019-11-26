@@ -6,7 +6,7 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.SerializationException;
 import java.nio.charset.Charset;
 /*
-要实现对象的缓存，定义自己的序列化和反序列化器。使用阿里的fastjson来实现的比较多。
+要实现对象的缓存，定义自己的序列化和反序列化器。使用阿里的fastjson来实现的方便多。
  */
 public class FastJsonRedisSerializer<T> implements RedisSerializer<T> {
     private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
