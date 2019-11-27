@@ -9,6 +9,7 @@ import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author NiceBin
@@ -34,7 +35,7 @@ public class SystemCacheMgr {
     //外部Map中，key为cacheName，value为记录方法信息的Map
     //内部Map中，key为数据id，value为方法信息
     private ConcurrentHashMap<String, ConcurrentHashMap<Object, CacheInvocation>> cacheInvocations = new ConcurrentHashMap<>();
-
+    private ReentrantLock refleshLock = new ReentrantLock();
     /**
      * 为该数据放入缓存的时间记录
      * @param id 数据id
@@ -90,7 +91,6 @@ public class SystemCacheMgr {
     /**
      * 自动刷新，要配合@SystemCache注解一起使用才有效果
      * 原理：先判断数据是否过期，如果数据过期则从缓存删除。
-     * 然后@Cacheable，所以会重新访问数据库将缓存写入
      *
      * @param cacheName 缓存名称
      * @param id        数据id
@@ -98,7 +98,6 @@ public class SystemCacheMgr {
      */
     public void autoUpdate(String cacheName, Object id) throws Exception {
         ConcurrentHashMap<Object, Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
-
         if (defaultCacheMgr.isApproachExpire(cacheName, id, saveTimeMap)) {
             defaultCacheMgr.remove(cacheName, id);
         }
