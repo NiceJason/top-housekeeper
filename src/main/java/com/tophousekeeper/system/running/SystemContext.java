@@ -22,6 +22,9 @@ public class SystemContext implements ApplicationContextAware {
     //数据库操作类
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    //系统线程管理类
+    @Autowired
+    private SystemThreadPool systemThreadPool;
     //系统动态资源，如在线人数等，必须要线程安全的类存入
     private static Map<String,Object> resources = new HashMap<>();
     //系统启动的时候会加载

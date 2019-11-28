@@ -12,6 +12,10 @@ public class SystemStaticValue {
     //ajax需要跳转的界面
     public static final String REDIRECT_URL = "redirect_url";
 
+    //以下为线程池的配置（THREAD开头）
+    //线程池的核心大小
+    public static int THREAD_CORE_POOL_SIZE = 20;
+    public static int THREAD_MAXIMUM_POOL_SIZE = 40;
     //以下为缓存信息的配置(CACHE开头)--------------------------------------------------------
     //系统缓存名称及过期时间（秒）
     public enum SystemCache{

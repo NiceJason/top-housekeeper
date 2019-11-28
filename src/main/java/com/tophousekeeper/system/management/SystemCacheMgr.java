@@ -27,15 +27,45 @@ public class SystemCacheMgr {
     //必须有一个I_SystemCache的实现类，多个实现类用@Primary注解，类似于Spring的缓存管理器
     @Autowired
     private I_SystemCacheMgr defaultCacheMgr;
-    //所有缓存的时间记录Map，
-    //外部Map中，key为缓存名称，value为该缓存内的数据和存储时间的Map
-    //内部Map中，key为数据的id，value为记录该数据的时间
-    private ConcurrentHashMap<String, ConcurrentHashMap<Object, Timestamp>> saveTimeMaps = new ConcurrentHashMap<>();
-    //记录获得此数据的方法信息，为了主动更新缓存时的调用
-    //外部Map中，key为cacheName，value为记录方法信息的Map
-    //内部Map中，key为数据id，value为方法信息
-    private ConcurrentHashMap<String, ConcurrentHashMap<Object, CacheInvocation>> cacheInvocations = new ConcurrentHashMap<>();
-    private ReentrantLock refleshLock = new ReentrantLock();
+    //所有缓存的所有数据记录Map
+    //外部Map中，key为缓存名称，value为该缓存内的数据储存信息Map
+    //内部Map中，key为数据的id，value为记录该数据的储存信息
+    private ConcurrentHashMap<String, ConcurrentHashMap<Object, DataInfo>> dataInfoMaps = new ConcurrentHashMap<>();
+
+    /**
+     * 储存信息内部类，用于记录
+     */
+    class DataInfo{
+        //记录该数据的时间
+        public Timestamp saveTime;
+        //获得此数据的方法信息
+        public CacheInvocation cacheInvocation;
+        //保证只有一个线程提前更新此数据
+        public ReentrantLock lock;
+    }
+
+    private DataInfo getDataInfo(String cacheName, Object id){
+        ConcurrentHashMap<Object, DataInfo> dateInfoMap = dataInfoMaps.get((cacheName));
+        DataInfo dataInfo ;
+        if (dateInfoMap == null) {
+            //简单的锁住了，因为创建这个对象挺快的
+            synchronized (this){
+                //重新获取一次进行判断，因为dateInfoMap是局部变量
+                dateInfoMap = dataInfoMaps.get((cacheName));
+                if(dateInfoMap == null){
+                    dateInfoMap = new ConcurrentHashMap<>();
+                    dataInfo = new DataInfo();
+                    dateInfoMap.put(id,dataInfo);
+                    dataInfoMaps.put(cacheName, dateInfoMap);
+                }
+            }
+        }
+        //这里不能用else，因为多线程同时进入if，后面进的dataInfo会是null
+        dataInfo = dateInfoMap.get(id);
+
+        return dataInfo;
+    }
+
     /**
      * 为该数据放入缓存的时间记录
      * @param id 数据id
@@ -43,21 +73,8 @@ public class SystemCacheMgr {
     public void recordDataSaveTime(String cacheName, Object id) {
         Date date = new Date();
         Timestamp nowtime = new Timestamp(date.getTime());
-        ConcurrentHashMap<Object, Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
-        if (saveTimeMap == null) {
-            //简单的锁住了，因为创建这个对象挺快的
-            synchronized (this){
-                if(saveTimeMap == null){
-                    saveTimeMap = new ConcurrentHashMap<>();
-                    saveTimeMaps.put(cacheName, saveTimeMap);
-                }
-            }
-        }
-        if (!saveTimeMap.containsKey(id)) {
-            saveTimeMap.put(id, nowtime);
-        } else {
-            saveTimeMap.replace(id, nowtime);
-        }
+        DataInfo dataInfo = getDataInfo(cacheName,id);
+        dataInfo.saveTime = nowtime;
     }
 
     /**
@@ -68,24 +85,10 @@ public class SystemCacheMgr {
      * @param targetMethod 目标方法
      * @param arguments 目标方法的参数
      */
-    public void recordCacheInvocation(String cacheName,String id, Object targetBean, Method targetMethod, Object[] arguments){
-        ConcurrentHashMap<Object, CacheInvocation> cacheInvocationMap = cacheInvocations.get(cacheName);
-        if(cacheInvocationMap == null){
-            synchronized (this){
-                if(cacheInvocationMap == null){
-                    cacheInvocationMap = new ConcurrentHashMap<>();
-                    cacheInvocations.put(cacheName,cacheInvocationMap);
-                }
-            }
-        }
+    public synchronized void recordCacheInvocation(String cacheName,String id, Object targetBean, Method targetMethod, Object[] arguments){
         CacheInvocation cacheInvocation = new CacheInvocation(id,targetBean,targetMethod,arguments);
-        if(!cacheInvocationMap.containsKey(id)){
-
-            cacheInvocationMap.put(id,cacheInvocation);
-        }else{
-            cacheInvocationMap.replace(id,cacheInvocation);
-        }
-
+        DataInfo dataInfo = getDataInfo(cacheName,id);
+        dataInfo.cacheInvocation = cacheInvocation;
     }
 
     /**
@@ -96,9 +99,10 @@ public class SystemCacheMgr {
      * @param id        数据id
      * @return
      */
-    public void autoUpdate(String cacheName, Object id) throws Exception {
-        ConcurrentHashMap<Object, Timestamp> saveTimeMap = saveTimeMaps.get((cacheName));
-        if (defaultCacheMgr.isApproachExpire(cacheName, id, saveTimeMap)) {
+    public synchronized void autoUpdate(String cacheName, Object id) throws Exception {
+        DataInfo dataInfo = getDataInfo(cacheName,id);
+        if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
+            if(dataInfo.lock.tryLock())
             defaultCacheMgr.remove(cacheName, id);
         }
     }
@@ -121,19 +125,11 @@ public class SystemCacheMgr {
         this.defaultCacheMgr = defaultCacheMgr;
     }
 
-    public ConcurrentHashMap<String, ConcurrentHashMap<Object, Timestamp>> getSaveTimeMaps() {
-        return saveTimeMaps;
+    public ConcurrentHashMap<String, ConcurrentHashMap<Object, DataInfo>> getDataInfoMaps() {
+        return dataInfoMaps;
     }
 
-    public void setSaveTimeMaps(ConcurrentHashMap<String, ConcurrentHashMap<Object, Timestamp>> saveTimeMaps) {
-        this.saveTimeMaps = saveTimeMaps;
-    }
-
-    public ConcurrentHashMap<String, ConcurrentHashMap<Object, CacheInvocation>> getCacheInvocations() {
-        return cacheInvocations;
-    }
-
-    public void setCacheInvocations(ConcurrentHashMap<String, ConcurrentHashMap<Object, CacheInvocation>> cacheInvocations) {
-        this.cacheInvocations = cacheInvocations;
+    public void setDataInfoMaps(ConcurrentHashMap<String, ConcurrentHashMap<Object, DataInfo>> dataInfoMaps) {
+        this.dataInfoMaps = dataInfoMaps;
     }
 }

@@ -1,52 +1,35 @@
 package com.tophousekeeper.system.running;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.*;
 
 public class ConditionTest {
 
-    static ReentrantLock lock = new ReentrantLock();
-    static Condition condition = lock.newCondition();
-    public static void main(String[] args) throws InterruptedException {
-//        System.out.println("1 "+lock.tryLock(1, TimeUnit.SECONDS));
-        lock.lock();
-//        System.out.println("2 "+lock.tryLock(1, TimeUnit.SECONDS));
-        new Thread(new SignalThread()).start();
-//        new Thread(new SignalThread()).start();
-//        new Thread(new SignalThread()).start();
-//        new Thread(new SignalThread()).start();
-        System.out.println("主线程等待通知");
-        try {
-            condition.await();
-            Thread.sleep(3000);
-        } finally {
-//            System.out.println("3 "+lock.tryLock());
-            lock.unlock();
-//            System.out.println("4 "+lock.tryLock());
-        }
-        System.out.println("主线程恢复运行");
-        Thread.sleep(30000000);
-    }
-    static class SignalThread implements Runnable {
+    public static class MyTask1 implements Runnable{
 
         @Override
         public void run() {
+            System.out.println(System.currentTimeMillis()+"Thrad ID:"+Thread.currentThread().getId());
             try {
-                System.out.println("5 "+lock.tryLock(1, TimeUnit.SECONDS));
-//                lock.lock();
-                System.out.println("获取到了");
-                System.out.println("6 "+lock.tryLock(1, TimeUnit.SECONDS));
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
 
-            try {
-                condition.signal();
-                System.out.println(Thread.currentThread().getName()+"子线程通知");
-            } finally {
-//                lock.unlock();
+    public static void main(String[] args) throws InterruptedException {
+        MyTask1 task = new MyTask1();
+        ExecutorService es = new ThreadPoolExecutor(5, 5, 0L, TimeUnit.MICROSECONDS, new SynchronousQueue<Runnable>(), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+//                t.setDaemon(true);
+                System.out.println("创建线程"+t);
+                return  t;
             }
+        });
+        for (int i = 0;i<=4;i++){
+            es.submit(task);
         }
     }
 }

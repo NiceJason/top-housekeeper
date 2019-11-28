@@ -1,10 +1,10 @@
 package com.tophousekeeper.system.running.cache;
 
+import com.tophousekeeper.system.annotation.UpdateCache;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import com.tophousekeeper.system.annotation.UpdateCache;
+
 import java.sql.Timestamp;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 /**
  * 本系统的缓存接口，SystemCacheMgr统一保存数据记录的时间和控制缓存自动刷新流程
@@ -25,11 +25,11 @@ public interface I_SystemCacheMgr {
      * true为已经过期
      * @param cacheName 缓存名字
      * @param id 数据id
-     * @param saveTimeMap 该缓存内的数据和存储时间的Map
+     * @param saveTime 该缓存内该数据的存储时间
      * @return
      * @throws Exception
      */
-    boolean isApproachExpire(String cacheName, Object id, ConcurrentHashMap<Object, Timestamp> saveTimeMap) throws Exception;
+    boolean isApproachExpire(String cacheName, Object id, Timestamp saveTime) throws Exception;
 
     /**
      * 删除指定Cache里的指定数据

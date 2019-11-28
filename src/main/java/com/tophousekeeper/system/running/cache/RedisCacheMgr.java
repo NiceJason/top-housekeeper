@@ -79,27 +79,25 @@ public class RedisCacheMgr extends RedisCacheManager implements I_SystemCacheMgr
      * true为将要过期（可以刷新了）
      *
      * @param cacheName 缓存名称
-     * @param id        数据id
+     * @param id 数据id
+     * @param saveTime 储存时间
      * @return
      */
     @Override
-    public boolean isApproachExpire(String cacheName, Object id, ConcurrentHashMap<Object, Timestamp> saveTimeMap) throws NoSuchAlgorithmException {
+    public boolean isApproachExpire(String cacheName, Object id, Timestamp saveTime) throws NoSuchAlgorithmException {
         long ttl = -1;
 
         RedisCacheConfiguration configuration = this.getCacheConfigurations().get(cacheName);
         ttl = configuration.getTtl().getSeconds();
 
-        if (ttl != -1 && saveTimeMap!=null) {
-            Timestamp saveTimestamp = saveTimeMap.get(id);
-            if(saveTimeMap!=null){
+        if (ttl != -1 && saveTime!=null) {
                 int random = Tool.getSecureRandom(SystemStaticValue.CACHE_MIN_EXPIRE, SystemStaticValue.CACHE_MAX_EXPIRE);
                 Date date = new Date();
-                long nowTime = date.getTime() / 1000;
-                long saveTime = saveTimestamp.getTime() / 1000;
-                if (ttl - (nowTime - saveTime) <= random) {
+                long theNowTime = date.getTime() / 1000;
+                long theSaveTime = saveTime.getTime() / 1000;
+                if (ttl - (theNowTime - theSaveTime) <= random) {
                     return true;
                 }
-            }
         }
         return false;
     }
