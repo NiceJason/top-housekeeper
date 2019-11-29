@@ -1,5 +1,7 @@
 package com.tophousekeeper.system;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author NiceBin
  * @description: 记录着共同的系统常量
@@ -13,9 +15,15 @@ public class SystemStaticValue {
     public static final String REDIRECT_URL = "redirect_url";
 
     //以下为线程池的配置（THREAD开头）
-    //线程池的核心大小
+    //核心（能一起执行）的线程数
     public static int THREAD_CORE_POOL_SIZE = 20;
+    //最大线程数
     public static int THREAD_MAXIMUM_POOL_SIZE = 40;
+    //非核心线程的存活时间
+    public static long THREAD_KEEP_ALIVE_TIME = 2;
+    //KEEP_ALIVE_TIME的单位
+    public static TimeUnit THREAD_UNIT = TimeUnit.MINUTES;
+
     //以下为缓存信息的配置(CACHE开头)--------------------------------------------------------
     //系统缓存名称及过期时间（秒）
     public enum SystemCache{

@@ -20,6 +20,8 @@ public class CacheInvocation {
         this.key = key;
         this.targetBean = targetBean;
         this.targetMethod = targetMethod;
+        //反射时不用检查修饰符，略微提高性能
+        this.targetMethod.setAccessible(true);
         if (arguments != null && arguments.length != 0) {
             this.arguments = Arrays.copyOf(arguments, arguments.length);
         }

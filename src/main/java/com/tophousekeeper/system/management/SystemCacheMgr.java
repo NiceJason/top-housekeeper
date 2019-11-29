@@ -1,20 +1,24 @@
 package com.tophousekeeper.system.management;
 
+import com.tophousekeeper.system.SystemException;
+import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.running.SystemThreadPool;
 import com.tophousekeeper.system.running.cache.CacheInvocation;
 import com.tophousekeeper.system.running.cache.I_SystemCacheMgr;
+import com.tophousekeeper.system.running.cache.UpdateDataTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
+import com.tophousekeeper.system.annotation.UpdateCache;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author NiceBin
  * @description: 本系统的缓存管理器
- * 数据自动刷新功能，要配合@SystemCache才能实现
+ * 数据自动刷新功能，要配合 {@link UpdateCache}才能实现
  * 目前没办法实现缓存纯自动更新，必须要使用到该缓存拿数据进行触发
  * 纯自动更新没有意义，假设一个数据放了半小时没人访问要过期了，那就过期吧
  * 因为缓存前提是一段时间频繁访问的数据，如果都没人访问了，就不能称之为缓存
@@ -27,6 +31,9 @@ public class SystemCacheMgr {
     //必须有一个I_SystemCache的实现类，多个实现类用@Primary注解，类似于Spring的缓存管理器
     @Autowired
     private I_SystemCacheMgr defaultCacheMgr;
+    //系统的线程池类
+    @Autowired
+    private SystemThreadPool systemThreadPool;
     //所有缓存的所有数据记录Map
     //外部Map中，key为缓存名称，value为该缓存内的数据储存信息Map
     //内部Map中，key为数据的id，value为记录该数据的储存信息
@@ -55,6 +62,7 @@ public class SystemCacheMgr {
                 if(dateInfoMap == null){
                     dateInfoMap = new ConcurrentHashMap<>();
                     dataInfo = new DataInfo();
+                    dataInfo.lock = new ReentrantLock(true);
                     dateInfoMap.put(id,dataInfo);
                     dataInfoMaps.put(cacheName, dateInfoMap);
                 }
@@ -92,7 +100,7 @@ public class SystemCacheMgr {
     }
 
     /**
-     * 自动刷新，要配合@SystemCache注解一起使用才有效果
+     * 数据自动刷新功能，要配合 {@link UpdateCache}才能实现
      * 原理：先判断数据是否过期，如果数据过期则从缓存删除。
      *
      * @param cacheName 缓存名称
@@ -101,13 +109,38 @@ public class SystemCacheMgr {
      */
     public synchronized void autoUpdate(String cacheName, Object id) throws Exception {
         DataInfo dataInfo = getDataInfo(cacheName,id);
+        //如果没有保存的时间，说明该数据还从未载入过，将给@Cacheable来完成第一次载入
+        if(dataInfo.saveTime == null){
+            return;
+        }
         if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
-            if(dataInfo.lock.tryLock())
-            defaultCacheMgr.remove(cacheName, id);
+            if(dataInfo.lock.tryLock()){
+                //获取锁后再次判断数据是否过期
+                if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)){
+                    return;
+                }
+                ThreadPoolExecutor threadPoolExecutor=systemThreadPool.getThreadPoolExecutor();
+                UpdateDataTask updateDataTask = new UpdateDataTask(dataInfo.cacheInvocation,defaultCacheMgr.getCache(cacheName),id);
+                FutureTask futureTask = new FutureTask(updateDataTask);
+
+                try{
+                threadPoolExecutor.submit(futureTask);
+                futureTask.get(1,TimeUnit.MINUTES);
+
+                }catch (TimeoutException ex){
+                    //如果访问数据库超时
+                    throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"系统繁忙，稍后再试");
+                }catch(RejectedExecutionException ex){
+                    //如果被线程池拒绝了
+                    throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"系统繁忙，稍后再试");
+                }finally {
+                    dataInfo.lock.unlock();
+                }
+
+            }
+            return ;
         }
     }
-
-
 
     /**
      * 清楚所有缓存内容

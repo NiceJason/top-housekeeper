@@ -1,6 +1,10 @@
 package com.tophousekeeper.system.running;
 
+import com.tophousekeeper.system.SystemStaticValue;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * @author NiceBin
@@ -9,6 +13,25 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class SystemThreadPool {
+    private ThreadPoolExecutor threadPoolExecutor;
 
+    public SystemThreadPool(){
+        threadPoolExecutor = new ThreadPoolExecutor(
+                SystemStaticValue.THREAD_CORE_POOL_SIZE,
+                SystemStaticValue.THREAD_MAXIMUM_POOL_SIZE,
+                SystemStaticValue.THREAD_KEEP_ALIVE_TIME,
+                SystemStaticValue.THREAD_UNIT,
+                new ArrayBlockingQueue<Runnable>(SystemStaticValue.THREAD_MAXIMUM_POOL_SIZE,true)
+        );
+        //允许核心线程也受KeepAliveTime的影响
+        threadPoolExecutor.allowCoreThreadTimeOut(true);
+    }
 
+    public ThreadPoolExecutor getThreadPoolExecutor() {
+        return threadPoolExecutor;
+    }
+
+    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
+        this.threadPoolExecutor = threadPoolExecutor;
+    }
 }

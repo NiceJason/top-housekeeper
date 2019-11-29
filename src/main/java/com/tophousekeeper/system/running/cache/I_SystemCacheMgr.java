@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentMap;
  *   这种写好的类，需要子类继承，并重写get方法
  *   然后在get方法上加@UpdateCache
  */
-public interface I_SystemCacheMgr {
+public interface I_SystemCacheMgr extends CacheManager{
     /**
      * 该数据是否过期
      * true为已经过期
