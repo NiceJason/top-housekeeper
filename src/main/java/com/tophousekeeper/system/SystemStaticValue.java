@@ -28,7 +28,7 @@ public class SystemStaticValue {
     //系统缓存名称及过期时间（秒）
     public enum SystemCache{
         //每日缓存,有效时间24小时
-        DAY("dailyCache",24*60*60),
+        DAY("dailyCache",60),
         //半日缓存，有效时间12小时
         HALF_DAY("halfDayCache",12*60*60),
         //1小时缓存

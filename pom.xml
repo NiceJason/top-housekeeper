@@ -177,6 +177,7 @@
 				</dependencies>
 			</plugin>
 		</plugins>
+
 		<!--为了部署项目时，打包方式不同来控制启动方式不同-->
 		<filters>
 			<filter>src/main/resources/application-${env}.properties</filter>

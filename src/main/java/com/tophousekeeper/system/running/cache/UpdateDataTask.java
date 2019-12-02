@@ -29,6 +29,7 @@ public class UpdateDataTask implements Callable {
     public UpdateDataTask(CacheInvocation cacheInvocation,Cache cache,Object id){
         this.cacheInvocation = cacheInvocation;
         this.cache = cache;
+        this.id = id;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class UpdateDataTask implements Callable {
             throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"更新数据线程方法信息不能为null");
         }
         cache.put(id,methodInvoke());
-        return null;
+        return true;
     }
 
     /**
@@ -49,6 +50,7 @@ public class UpdateDataTask implements Callable {
         methodInvoker.setArguments(cacheInvocation.getArguments());
         methodInvoker.setTargetMethod(cacheInvocation.getTargetMethod().getName());
         methodInvoker.setTargetObject(cacheInvocation.getTargetBean());
+        methodInvoker.prepare();
         return methodInvoker.invoke();
     }
 }

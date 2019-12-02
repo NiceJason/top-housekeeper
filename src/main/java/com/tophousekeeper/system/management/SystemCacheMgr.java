@@ -2,13 +2,15 @@ package com.tophousekeeper.system.management;
 
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
+import com.tophousekeeper.system.annotation.UpdateCache;
 import com.tophousekeeper.system.running.SystemThreadPool;
 import com.tophousekeeper.system.running.cache.CacheInvocation;
 import com.tophousekeeper.system.running.cache.I_SystemCacheMgr;
 import com.tophousekeeper.system.running.cache.UpdateDataTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
-import com.tophousekeeper.system.annotation.UpdateCache;
+
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -19,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author NiceBin
  * @description: 本系统的缓存管理器
  * 数据自动刷新功能，要配合 {@link UpdateCache}才能实现
+ *
  * 目前没办法实现缓存纯自动更新，必须要使用到该缓存拿数据进行触发
  * 纯自动更新没有意义，假设一个数据放了半小时没人访问要过期了，那就过期吧
  * 因为缓存前提是一段时间频繁访问的数据，如果都没人访问了，就不能称之为缓存
@@ -41,29 +44,49 @@ public class SystemCacheMgr {
 
     /**
      * 储存信息内部类，用于记录
+     * 获取要调用获取方法，因为加锁了线程才安全
      */
-    class DataInfo{
+    class DataInfo {
         //记录该数据的时间
-        public Timestamp saveTime;
+        private Timestamp saveTime;
         //获得此数据的方法信息
-        public CacheInvocation cacheInvocation;
+        private CacheInvocation cacheInvocation;
         //保证只有一个线程提前更新此数据
-        public ReentrantLock lock;
+        private ReentrantLock lock;
+
+        public synchronized void setSaveTime(Timestamp saveTime) {
+            this.saveTime = saveTime;
+        }
+
+
+        public synchronized void setCacheInvocation(CacheInvocation cacheInvocation) {
+            this.cacheInvocation = cacheInvocation;
+        }
+
+        public synchronized void setLock(ReentrantLock lock) {
+            this.lock = lock;
+        }
     }
 
-    private DataInfo getDataInfo(String cacheName, Object id){
+    /**
+     * 获得DataInfo类，如果为空则创建一个
+     * @param cacheName
+     * @param id
+     * @return
+     */
+    private DataInfo getDataInfo(String cacheName, Object id) {
         ConcurrentHashMap<Object, DataInfo> dateInfoMap = dataInfoMaps.get((cacheName));
-        DataInfo dataInfo ;
+        DataInfo dataInfo;
         if (dateInfoMap == null) {
             //简单的锁住了，因为创建这个对象挺快的
-            synchronized (this){
-                //重新获取一次进行判断，因为dateInfoMap是局部变量
+            synchronized (this) {
+                //重新获取一次进行判断，因为dateInfoMap是局部变量，不能保证同步
                 dateInfoMap = dataInfoMaps.get((cacheName));
-                if(dateInfoMap == null){
+                if (dateInfoMap == null) {
                     dateInfoMap = new ConcurrentHashMap<>();
                     dataInfo = new DataInfo();
-                    dataInfo.lock = new ReentrantLock(true);
-                    dateInfoMap.put(id,dataInfo);
+                    dataInfo.setLock(new ReentrantLock(true));
+                    dateInfoMap.put(id, dataInfo);
                     dataInfoMaps.put(cacheName, dateInfoMap);
                 }
             }
@@ -76,27 +99,30 @@ public class SystemCacheMgr {
 
     /**
      * 为该数据放入缓存的时间记录
+     *
      * @param id 数据id
      */
     public void recordDataSaveTime(String cacheName, Object id) {
         Date date = new Date();
         Timestamp nowtime = new Timestamp(date.getTime());
-        DataInfo dataInfo = getDataInfo(cacheName,id);
-        dataInfo.saveTime = nowtime;
+        DataInfo dataInfo = getDataInfo(cacheName, id);
+        dataInfo.setSaveTime(nowtime);
     }
 
     /**
      * 记录获得此数据的方法信息，为了主动更新缓存时的调用
-     * @param cacheName 缓存名称
-     * @param id 数据id
-     * @param targetBean 目标类
+     *
+     * @param cacheName    缓存名称
+     * @param id           数据id
+     * @param targetBean   目标类
      * @param targetMethod 目标方法
-     * @param arguments 目标方法的参数
+     * @param arguments    目标方法的参数
      */
-    public synchronized void recordCacheInvocation(String cacheName,String id, Object targetBean, Method targetMethod, Object[] arguments){
-        CacheInvocation cacheInvocation = new CacheInvocation(id,targetBean,targetMethod,arguments);
-        DataInfo dataInfo = getDataInfo(cacheName,id);
-        dataInfo.cacheInvocation = cacheInvocation;
+    public void recordCacheInvocation(String cacheName, String id, Object targetBean, Method targetMethod, Object[] arguments) {
+        DataInfo dataInfo = getDataInfo(cacheName, id);
+        CacheInvocation cacheInvocation = new CacheInvocation(id, targetBean, targetMethod, arguments);
+        //锁在这方法里面有
+        dataInfo.setCacheInvocation(cacheInvocation);
     }
 
     /**
@@ -107,43 +133,44 @@ public class SystemCacheMgr {
      * @param id        数据id
      * @return
      */
-    public synchronized void autoUpdate(String cacheName, Object id) throws Exception {
-        DataInfo dataInfo = getDataInfo(cacheName,id);
-        //如果没有保存的时间，说明该数据还从未载入过，将给@Cacheable来完成第一次载入
-        if(dataInfo.saveTime == null){
+    public void autoUpdate(String cacheName, Object id) throws Exception {
+        DataInfo dataInfo = getDataInfo(cacheName, id);
+        Cache cache = defaultCacheMgr.getCache(cacheName);
+
+
+        //如果没有保存的时间，说明该数据还从未载入过
+        if (dataInfo.saveTime == null) {
             return;
         }
         if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
-            if(dataInfo.lock.tryLock()){
+            if (dataInfo.lock.tryLock()) {
                 //获取锁后再次判断数据是否过期
-                if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)){
-                    return;
+                if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
+                    ThreadPoolExecutor threadPoolExecutor = systemThreadPool.getThreadPoolExecutor();
+                    UpdateDataTask updateDataTask = new UpdateDataTask(dataInfo.cacheInvocation, cache, id);
+                    FutureTask futureTask = new FutureTask(updateDataTask);
+
+                    try {
+                        threadPoolExecutor.submit(futureTask);
+                        futureTask.get(1, TimeUnit.MINUTES);
+                        //如果上一步执行完成没报错，那么重新记录保存时间
+                        recordDataSaveTime(cacheName,id);
+                    } catch (TimeoutException ex) {
+                        //如果访问数据库超时
+                        throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE, "系统繁忙，稍后再试");
+                    } catch (RejectedExecutionException ex) {
+                        //如果被线程池拒绝了
+                        throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE, "系统繁忙，稍后再试");
+                    } finally {
+                        dataInfo.lock.unlock();
+                    }
                 }
-                ThreadPoolExecutor threadPoolExecutor=systemThreadPool.getThreadPoolExecutor();
-                UpdateDataTask updateDataTask = new UpdateDataTask(dataInfo.cacheInvocation,defaultCacheMgr.getCache(cacheName),id);
-                FutureTask futureTask = new FutureTask(updateDataTask);
-
-                try{
-                threadPoolExecutor.submit(futureTask);
-                futureTask.get(1,TimeUnit.MINUTES);
-
-                }catch (TimeoutException ex){
-                    //如果访问数据库超时
-                    throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"系统繁忙，稍后再试");
-                }catch(RejectedExecutionException ex){
-                    //如果被线程池拒绝了
-                    throw new SystemException(SystemStaticValue.CACHE_EXCEPTION_CODE,"系统繁忙，稍后再试");
-                }finally {
-                    dataInfo.lock.unlock();
-                }
-
             }
-            return ;
         }
     }
 
     /**
-     * 清楚所有缓存内容
+     * 清除所有缓存内容
      */
     public void clearAll() throws Exception {
         defaultCacheMgr.clearAll();
