@@ -11,10 +11,9 @@ import java.util.concurrent.Callable;
 /**
  * @author NiceBin
  * @description:    增强RedisCache
- *                  为了能写上@Update注解，实现自动刷新
+ *                  为了能在get方法写上@Update注解，实现自动刷新
  * @date 2019/7/4 13:24
  */
-
 public class RedisCacheEnhance extends RedisCache {
 
     /**

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentMap;
  * 本系统的缓存接口，SystemCacheMgr统一保存数据记录的时间和控制缓存自动刷新流程
  *
  * 为了实现数据快过期前的自动刷新，需要以下操作：
- * 1.实现 {@link CacheManager} 接口的类必须也要实现此接口
+ * 1.实现此接口
  *   如果用如RedisCacheManager这种写好的类，需要子类继承再实现此接口
  *   如果Cache是CacheManager内部生成的，还需要重写createCache方法
  *   使生成的Cache走一遍Spring初始化Bean的过程，交给Spring管理
