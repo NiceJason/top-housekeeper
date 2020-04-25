@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 /**
  * @author NiceBin
- * @description: 被 {@link Cacheable} 注解过的方法信息，为了主动更新缓存去调用对应方法
+ * @description: 记录被 {@link Cacheable} 注解过的方法信息，为了主动更新缓存去调用对应方法
  * @date 2019/11/26 16:28
  */
 public class CacheInvocation {

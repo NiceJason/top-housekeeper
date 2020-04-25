@@ -16,7 +16,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 public class SystemDailyJob extends QuartzJobBean {
 
     SystemTimingMgr systemTimingMgr;
-
+   
     public SystemDailyJob(){
         systemTimingMgr = SystemContext.getSystemContext().getAppBean(SystemTimingMgr.class);
     }
