@@ -6,7 +6,7 @@ import com.tophousekeeper.system.annotation.UpdateCache;
 import com.tophousekeeper.system.running.SystemThreadPool;
 import com.tophousekeeper.system.running.cache.CacheInvocation;
 import com.tophousekeeper.system.running.cache.I_SystemCacheMgr;
-import com.tophousekeeper.system.running.cache.UpdateDataTask;
+import com.tophousekeeper.system.running.cache.UpdateCacheTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
@@ -143,12 +143,12 @@ public class SystemCacheMgr {
             return;
         }
         if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
-            if (dataInfo.lock.tryLock()) {
+            if (dataInfo.lock.tryLock()) { //这里用非阻塞的tryLock，有一个用户进来触发缓存过期判断即可，其他用户继续获得当时的缓存值
                 //获取锁后再次判断数据是否过期
                 if (defaultCacheMgr.isApproachExpire(cacheName, id, dataInfo.saveTime)) {
                     ThreadPoolExecutor threadPoolExecutor = systemThreadPool.getThreadPoolExecutor();
-                    UpdateDataTask updateDataTask = new UpdateDataTask(dataInfo.cacheInvocation, cache, id);
-                    FutureTask futureTask = new FutureTask(updateDataTask);
+                    UpdateCacheTask updateCacheTask = new UpdateCacheTask(dataInfo.cacheInvocation, cache, id);
+                    FutureTask futureTask = new FutureTask(updateCacheTask);
 
                     try {
                         threadPoolExecutor.submit(futureTask);

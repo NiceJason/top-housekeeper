@@ -22,7 +22,7 @@ public class NavegationController {
            String src = request.getParameter("src");
            //因为是form表单来提交跳转的，所以不抛出异常了，不然不会跳转到异常界面
            if(!Tool.isWebURL(src)){
-               modelAndView.setViewName("error");
+               modelAndView.setViewName("error_page");
                modelAndView.addObject("code",SystemStaticValue.WEBURL_EXCEPTION_CODE);
                modelAndView.addObject("msg","WebURL无效");
            }else{

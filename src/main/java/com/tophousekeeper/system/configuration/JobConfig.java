@@ -5,10 +5,10 @@ import org.springframework.context.annotation.ImportResource;
 
 /**
  * @author NiceBin
- * @description: TODO
+ * @description: 读取计划任务job的配置
  * @date 2019/10/30 17:10
  */
 @Configuration
-@ImportResource(locations= {"classpath:bean/quarz-bean.xml"})
-public class QuartzConfig {
+@ImportResource(locations= {"classpath:xml-configuration/job-config.xml"})
+public class JobConfig {
 }

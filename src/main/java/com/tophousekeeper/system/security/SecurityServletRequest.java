@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @date 2019/7/24 13:17
  */
 public class SecurityServletRequest extends HttpServletRequestWrapper {
+
     private HttpServletRequest request;
 
     public SecurityServletRequest(HttpServletRequest request) {

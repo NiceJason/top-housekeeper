@@ -8,11 +8,13 @@ import java.util.concurrent.TimeUnit;
  * @date 2019/6/24 8:43
  */
 public class SystemStaticValue {
-    //以下为一些系统的固定值
+    //以下为一些系统的固定值---------------------------------
+    //系统常用错误页面路径（这里指Controller处理路径）
+    public static final String ERROR_PAGE_PATH = "/system/error";
     //ajax请求返回操作Key值
-    public static final String ACTION_RESULT = "action_result";
+    public static final String ACTION_RESULT = "ACTION_RESULT";
     //ajax需要跳转的界面
-    public static final String REDIRECT_URL = "redirect_url";
+    public static final String REDIRECT_URL = "REDIRECT_URL";
 
     //以下为线程池的配置（THREAD开头）
     //核心（能一起执行）的线程数
@@ -28,7 +30,7 @@ public class SystemStaticValue {
     //系统缓存名称及过期时间（秒）
     public enum SystemCache{
         //每日缓存,有效时间24小时
-        DAY("dailyCache",60),
+        DAY("dailyCache",24*60*60),
         //半日缓存，有效时间12小时
         HALF_DAY("halfDayCache",12*60*60),
         //1小时缓存
@@ -82,11 +84,14 @@ public class SystemStaticValue {
     public static final int IDENTIFYING_ILLEGAL_STANDARD = 3;
     //非法验证封禁的时间（分钟）
     public static final int IDENTIFYING_ILLEGAL_BAN = 1;
-    //以下为验证码业务
-    //登录业务
-    public static final String IDENTIFYING_FUNC_LOGIN = "login";
-    //注册业务
-    public static final String IDENTIFYING_FUNC_REGISTERED = "register";
+
+    //以下为用户登录状态相关-------------------------------------------------
+    //Token存活时间，30分钟
+    public static final long TOKEN_LIVE_TIME = TimeUnit.MINUTES.toSeconds(30);
+    //Session存活时间，30分钟
+    public static final long  SESSION_LIVE_TIME = TimeUnit.MINUTES.toSeconds(30);
+    //Cookie存活时间，3天
+    public static final long COOKIE_LIVE_TIME = TimeUnit.DAYS.toSeconds(3);
 
     //以下为异常状态码，600开始，EXCEPTION_CODE结尾----------------------------------------------------------
     //系统异常
@@ -110,7 +115,7 @@ public class SystemStaticValue {
     //Web地址异常
     public static final String WEBURL_EXCEPTION_CODE = "644";
     //非法访问异常
-    public static final String Illegal_EXCEPTION_CODE = "645";
+    public static final String ILLEGAL_EXCEPTION_CODE = "645";
     //内存异常
     public static final String CACHE_EXCEPTION_CODE = "646";
 }

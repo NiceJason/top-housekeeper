@@ -1,35 +1,42 @@
-/*
- * 以下为程序错误码
- */
-//通用的请求失败，包括未知原因
-var EXPECTATION_FAILED = 417;
-var EXPECTATION_QUERY = 404;
-
 /**
  * 访问后台的对象，为ajax封装
+ * @param url 后台资源路径
+ * @param param Map参数
+ * @param contentType 传输类型
+ * @param success   成功回调函数
+ * @param error 失败回调函数
+ * @param requestType 请求类型（get.post,put,delete）
  * @constructor
  */
-var Query = function (url, param, callback, contentType) {
+var Query = function (url, param, contentType, successFunc, errorFunc, requestType) {
     this.url = url;
 
-    //先确认参数存在，如果不存在则创建空map
-    if (!param) {
-        param = new Map();
-    }
-    //注意，要根据不同的传输格式来确定传输的值的类型
-    if (contentType == Query.NOMAL_TYPE) {
-        this.param = JSON.parse(this._convertParam(param));
+    //先确认参数存在
+    if (param) {
+        //如果是get请求类型，则将参数拼接到url后面
+        if (requestType == Query.GET_TYPE) {
+            this.param = this._concatParamToURL(param, url);
+        } else {
+            //其他请求类型，要根据不同的传输格式来确定传输的值的类型
+            if (contentType == Query.NOMAL_TYPE) {
+                this.param = JSON.parse(this._convertParamToJson(param));
+            } else {
+                this.param = this._convertParamToJson(param);
+            }
+        }
     } else {
-        this.param = this._convertParam(param);
+        this.param = null;
     }
 
 
-    this.callback = callback;
     this.contentType = contentType;
-    //请求超时，默认5秒
-    this.timeout = 5000;
+    this.successFunc = successFunc;
+    this.errorFunc = errorFunc;
+    //请求超时，默认10秒
+    this.timeout = 10000;
     //是否异步请求，默认异步
     this.async = true;
+    this.requestType = requestType;
 }
 
 Query.JSON_TYPE = 'application/json';
@@ -37,68 +44,211 @@ Query.NOMAL_TYPE = 'application/x-www-form-urlencoded';
 
 /**
  * ajax请求的访问
+ * 默认是post
  * @param url 要访问的地址
  * @param paramMap 传给后台的Map参数，key为字符串类型
  * @param callback 回调函数
  * @param contentType 传输数据的格式  默认传输application/x-www-form-urlencoded格式
  */
-Query.create = function (url, paramMap, callback) {
-    return new Query(url, paramMap, callback, Query.NOMAL_TYPE);
+Query.create = function (url, paramMap, successFunc, errorFunc) {
+    return new Query(url, paramMap, Query.NOMAL_TYPE, successFunc, errorFunc, Query.GET_TYPE);
 }
 
-Query.createJsonType = function (url, paramMap, callback) {
-    return new Query(url, paramMap, callback, Query.JSON_TYPE);
+//-----------------------以下为RESTFul方法---------------------------
+//ajax请求类型
+Query.GET_TYPE = "get";
+Query.POST_TYPE = "post";
+Query.PUT_TYPE = "put";
+Query.DELETE_TYPE = "delete";
+
+//get方法默认是Query.NOMAL_TYPE
+Query.createGetType = function (url, paramMap, successFunc, errorFunc) {
+    return new Query(url, paramMap, Query.NOMAL_TYPE, successFunc, errorFunc, Query.GET_TYPE);
+}
+Query.createPostType = function (url, paramMap, successFunc, errorFunc) {
+    return new Query(url, paramMap, Query.JSON_TYPE, successFunc, errorFunc, Query.POST_TYPE);
+}
+Query.createPutType = function (url, paramMap, successFunc, errorFunc) {
+    return new Query(url, paramMap, Query.JSON_TYPE, successFunc, errorFunc, Query.PUT_TYPE);
+}
+Query.createDeleteType = function (url, paramMap, successFunc, errorFunc) {
+    return new Query(url, paramMap, Query.JSON_TYPE, successFunc, errorFunc, Query.DELETE_TYPE);
 }
 
 /**
- * 将ParamMap转为json格式，目前只支持Map对象，以后会扩展
+ * 将paramMap参数转为json格式
  * @param paramMap
  * @private
  */
-Query.prototype._convertParam = function (param) {
+Query.prototype._convertParamToJson = function (paramMap) {
 
-    if (param instanceof Map) {
-        return strMap2Json(param);
+    return window.tool.strMap2Json(paramMap);
+
+}
+
+/**
+ * 将参数拼接至URL尾部
+ * @param paramMap
+ * @param url
+ * @private
+ */
+Query.prototype._concatParamToURL = function (paramMap, url) {
+    let size = paramMap.size;
+
+    if (size > 0) {
+        let count = 0;
+        url = url + "?";
+        let urlParam = "";
+
+        for (let [k, v] of paramMap) {
+            urlParam = urlParam + encodeURIComponent(k) + "=" + encodeURIComponent(v);
+            if (count < size-1) {
+                urlParam = urlParam + " && ";
+                count++;
+            }
+        }
+        url = url + urlParam;
+    }
+    return url;
+}
+
+//ajax需要跳转的界面
+Query.REDIRECT_URL = "REDIRECT_URL";
+
+/**
+ * ajax成功返回时调用的方法
+ * 会根据ajax的ContentType类型，转换Response对象的data给回调的成功函数
+ * 如application/json格式类型，data会转成json类型传递
+ * @param queryResult 返回的值，通常为后台的Response对象
+ * @private
+ */
+Query.prototype._successFunc = function (queryResult) {
+    var data = this.__afterSuccessComplete(queryResult);
+    if (this.successFunc) {
+        this.successFunc(data);
+    }
+
+    //如果有需要跳转的页面，则自动跳转
+    if (data && data.REDIRECT_URL != null) {
+        window.location = data.REDIRECT_URL;
     }
 }
 
 /**
- * 对ajax回调函数的封装
- * @param callBack
+ * 会根据ajax的ContentType类型，转换Response对象的data给回调的失败函数
+ * 如application/json格式类型，data会转成json类型传递
+ * 如果对获得的参数不满意，可以用this.getMsg或this.getJsonMsg来进行获取（this指Query对象）
+ *
+ * 这里错误分3种
+ * 1.是Web容器出错
+ * 2.是Filter过滤器主动报错（如一些校验失败后主动抛出，会有错误提示）
+ * 3.是Spring抛出，Spring异常会全局捕捉进行封装
+ * @param queryResult 返回的值，通常为后台的Response对象
  * @private
  */
-Query.prototype._callback = function (queryResult) {
+Query.prototype._errorFunc = function (queryResult) {
 
+    //返回的信息
+    var data = this.__afterErrorComplete(queryResult);
+    //如果data里面没东西
+    if (!data) {
+        data = queryResult.statusText;
+    }
+
+    //是否调用者自身已解决了错误
+    var handleError = false;
+
+    //调用回调函数，如果返回结果为true，则不会默认错误处理
+    if (this.errorFunc instanceof Function) {
+        handleError = this.errorFunc(data);
+    }
+
+    //错误编号
+    var code;
+    //错误信息
+    var msg;
+
+    //没有取消对错误的后续处理，那么进行跳转
+    if (!handleError) {
+
+        //如果data成功转为Json对象
+        if (data) {
+            //Filter过滤器主动报错（如一些校验失败后主动抛出，会有错误提示）
+            if (data.status) {
+                code = data.status;
+            }
+            if (data.message) {
+                msg = data.message;
+            }
+        }
+
+        //最终跳转至错误页面
+        var path = "/system/error";
+        if (code && msg) {
+            path = path + "/" + error.code + "/" + error.msg;
+        }
+        window.location.href = path;
+    }
+}
+
+Query.SUCCESS_TYPE = "SUCCESS_TYPE";
+Query.ERROR_TYPE = "ERROR_TYPE";
+/**
+ * 当一个请求完成时，无论成功或失败，都要调用此函数做一些处理
+ * @param queryResult 服务端返回的数据
+ * @returns {*}
+ * @private
+ */
+Query.prototype._afterComplete = function (queryResult) {
+    this._cancleLoadDom();
+}
+
+/**
+ * 成功的返回处理，会将data部分转为对象
+ * 默认application/json会进行单引号转双引号
+ * @param queryResult 服务端返回的数据
+ * @param queryResult
+ * @returns {*}
+ * @private
+ */
+Query.prototype.__afterSuccessComplete = function (queryResult) {
+    this._afterComplete();
+    this.response = queryResult;
+
+    var data = queryResult.data;
+    //data必须要有内容，且不是对象才有转换的意义
+    if (data && !(data instanceof Object)) {
+            data = this.getJsonMsg();
+    }
+    return data;
+}
+
+/**
+ * 失败的返回处理
+ * 最终会根据ajax的contentType来进行data相应类型转换
+ * 默认application/json会进行单引号转双引号
+ * @param queryResult 服务端返回的数据
+ * @private
+ */
+Query.prototype.__afterErrorComplete = function (queryResult) {
+    this._afterComplete();
+    this.response = queryResult;
+    var data = queryResult.responseJSON;
+    if (!data) {
+        data = queryResult.responseText;
+    }
+
+    return data;
+}
+
+/**
+ * 取消请求时的等待框
+ * @private
+ */
+Query.prototype._cancleLoadDom = function () {
     //取消加载框
     if (this.loadDom) {
         $(this.loadDom).remove("#loadingDiv");
-    }
-
-    //Query对象
-    var self = queryResult.queryObj;
-    var data = $.parseJSON(queryResult.responseText);
-    //记录请求是否有错误
-    self.queryException = false;
-    var handleError;
-
-    if (queryResult.status == EXPECTATION_FAILED || queryResult.status == EXPECTATION_QUERY) {
-        var error = queryResult.responseText;
-        self.queryException = true;
-    }
-
-    //调用回调函数，如果返回结果为true，则对于出错不会默认错误处理
-    if (self.callback instanceof Function) {
-        handleError = self.callback(data);
-    }
-
-    //如果出现了异常并且没有被处理，那么将进行默认错误处理
-    if (self.queryException && !handleError) {
-        window.location.href = "/system/error/" + error.code + "/" + error.msg;
-    }
-
-    //如果需要跳转，则进行跳转
-    if (data.redirect_url) {
-        window.location.href = data.redirect_url;
     }
 }
 
@@ -110,13 +260,19 @@ Query.prototype.sendMessage = function () {
     var self = this;
     var xhr = $.ajax(
         {
-            type: "post",
             url: this.url,
+            type: this.requestType,
             contentType: this.contentType,
             data: this.param,
             // ajax发送前调用的方法，初始化等待动画
             // @param XHR  XMLHttpRequest对象
             beforeSend: function (XHR) {
+                //试图从Cookie中获得token放入http头部
+                var token = window.tool.getCookieMap().get(window.commonStaticValue.TOKEN);
+                if(token){
+                    XHR.setRequestHeader(window.commonStaticValue.TOKEN,token);
+                }
+
                 //绑定本次请求的queryObj
                 XHR.queryObj = self;
                 if (self.beforeSendFunc instanceof Function) {
@@ -131,19 +287,50 @@ Query.prototype.sendMessage = function () {
                     self.loadDom.append("<div id='loadingDiv' class='loading'><img src='/image/loading.gif'/></div>");
                 }
             },
-            complete: this._callback,
-            timeout:this.timeout,
-            async:this.async
+            //将QueryObj设置为上下文
+            context: self,
+            success: this._successFunc,
+            error: this._errorFunc,
+            complete:function(){
+              console.log("ajax完成");
+            },
+            timeout: this.timeout,
+            async: this.async
         }
     );
+}
 
+//-----------------------------------下面提供了获取后台返回信息方法（帮忙封装了）
+/**
+ * 获取返回信息Response的Meta头
+ */
+Query.prototype.getMeta = function () {
+    return this.response.meta;
 }
 
 /**
- * 检测是否有错误,返回ture有错误，或者false
+ * 获得返回值里的data部分
+ * @returns {*}
  */
-Query.prototype.checkEception = function () {
-    return this.queryException;
+Query.prototype.getMsg = function () {
+    return this.response.data;
+}
+
+/**
+ * 获得返回值里的data部分，尝试将其转为Json对象
+ */
+Query.prototype.getJsonMsg = function () {
+    var data = this.response.data;
+    if (data) {
+            //先将字符串里的&quot;转为双引号
+            var data = window.tool.replaceAll(data, "&quot;", "\"");
+            try{
+                var jsonData = JSON.parse(data);
+                return jsonData;
+            }catch (e) {
+                return data;
+            }
+    }
 }
 
 //------------------------以下为对Query的参数设置---------------------------

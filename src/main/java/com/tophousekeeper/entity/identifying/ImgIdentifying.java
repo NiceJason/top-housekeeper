@@ -1,24 +1,25 @@
-package com.tophousekeeper.entity;
+package com.tophousekeeper.entity.identifying;
 
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
-import com.tophousekeeper.util.Tool;
 import com.tophousekeeper.system.security.I_Identifying;
+import com.tophousekeeper.util.Tool;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * @author NiceBin
  * @description: 验证码类，前端需要生成验证码的信息
  * @date 2019/7/12 16:04
  */
-public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializable {
+public class ImgIdentifying implements I_Identifying<ImgIdentifying,ImgIdentifyInfo>,Serializable {
     //此次验证码的id
     private String identifyingId;
     //此次验证码的业务类型
@@ -48,11 +49,11 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
     }
 
     @Override
-    public ImgIdentifying getInstance(HttpServletRequest request) throws NoSuchAlgorithmException {
-        String min_X = request.getParameter("min_X");
-        String max_X = request.getParameter("max_X");
-        String min_Y = request.getParameter("min_Y");
-        String max_Y = request.getParameter("max_Y");
+    public ImgIdentifying getInstance(ImgIdentifyInfo imgIdentifyInfo) throws NoSuchAlgorithmException {
+        String min_X = imgIdentifyInfo.getMin_X();
+        String max_X = imgIdentifyInfo.getMax_X();
+        String min_Y = imgIdentifyInfo.getMin_Y();
+        String max_Y = imgIdentifyInfo.getMax_Y();
 
         int imgPoolLength = SystemStaticValue.IDENTIFYING_IMG_POOL.length;
         String imgSrc = SystemStaticValue.IDENTIFYING_IMG_POOL[Tool.getSecureRandom(0, imgPoolLength - 1)];
@@ -65,15 +66,15 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         identifying.setY(Y);
         Calendar calendar = Calendar.getInstance();
         identifying.setCalendar(calendar);
-        identifying.setIdentifyingType(request.getParameter("identifyingType"));
+        identifying.setIdentifyingType(imgIdentifyInfo.getIdentifyingType());
         return identifying;
     }
 
     @Override
-    public void checkIdentifying(HttpServletRequest request) {
-        String identifyingId = request.getParameter("identifyingId");
-        String moveEnd_X = request.getParameter("moveEnd_X");
-        String identifyingType = request.getParameter("identifyingType");
+    public void checkIdentifying(HashMap<String, String> params,HttpSession session) throws SystemException{
+        String identifyingId = params.get("identifyingId");
+        String moveEnd_X = params.get("moveEnd_X");
+        String identifyingType = params.get("identifyingType");
 
         //检查验证参数
         if(identifyingId==null||identifyingType==null||!Tool.isInteger(moveEnd_X)){
@@ -81,7 +82,6 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
             throw new SystemException(EXCEPTION_CODE,checkResult);
         }
 
-        HttpSession session = request.getSession();
         ImgIdentifying identifying = (ImgIdentifying) session.getAttribute(I_Identifying.IDENTIFYING);
 
         //开始验证
@@ -167,6 +167,7 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         this.deviation = deviation;
     }
 
+    @JsonIgnore
     public Calendar getCalendar() {
         return calendar;
     }
@@ -175,6 +176,7 @@ public class ImgIdentifying implements I_Identifying<ImgIdentifying>,Serializabl
         this.calendar = calendar;
     }
 
+    @JsonIgnore
     @Override
     public String getCheckResult() {
         return checkResult;

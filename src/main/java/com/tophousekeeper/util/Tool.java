@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * @author NiceBin
  * @description: 工具类
- * 1.快速搭建Json字符串
+ * 1.根据输入参数，快速搭建Json对象
  * 2.给定范围出随机数
  * 3.判断字符串是否为整数
  * 4.判断字符串是否为数字或字母
@@ -37,6 +37,8 @@ import java.util.regex.Pattern;
  * 12.beanToString
  * 13.获取ip地址
  * 14.获得代理类方法中真实的方法
+ * 15.String转义字符的转换，为了Json数据传输，“”转''
+ * 16.根据key从http头部获取value
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -47,7 +49,7 @@ public class Tool {
      * @param keyAndValues 更多的key和value，必须成对出现
      * @return
      */
-    public static String quickJson(String... keyAndValues) {
+    public static JSONObject quickJson(String... keyAndValues) {
         JSONObject jsonObject = new JSONObject();
         if (keyAndValues != null) {
             //不是大于等于2的偶数则格式错误
@@ -58,7 +60,7 @@ public class Tool {
                 jsonObject.put(keyAndValues[i], keyAndValues[i + 1]);
             }
         }
-        return jsonObject.toJSONString();
+        return jsonObject;
     }
 
     /**
@@ -214,15 +216,13 @@ public class Tool {
      * @param response
      * @param key
      * @param value
-     * @param aliveTime cookie最大存活时间，秒为单位
      * @return
      */
-    public static void setCookie(HttpServletResponse response, String key, String value,int aliveTime) {
+    public static void setCookie(HttpServletResponse response, String key, String value) {
         Cookie cookie = new Cookie(key, value);
         //需要重新设置属性，因为它不会按原来的属性存的，需要把一切设置好，再addCookie，不然设置无效
         cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(aliveTime);
+        cookie.setMaxAge((int)SystemStaticValue.COOKIE_LIVE_TIME);
         response.addCookie(cookie);
     }
 
@@ -349,4 +349,15 @@ public class Tool {
         Class targetClass = AopProxyUtils.ultimateTargetClass(joinPoint.getTarget());
         return Tool.getSpecificMethod(poxyMethod,targetClass);
     }
+
+    /**
+     * String转义字符的转换，为了Json数据传输，“”转''
+     * @param str
+     * @return
+     */
+    public static String changeStrForJson(String str){
+        str = str.replaceAll("\"","'");
+        return str;
+    }
+
 }

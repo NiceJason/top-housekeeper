@@ -1,8 +1,9 @@
 <#--导航栏模板-->
-<script>
-    var userName = '${userName!}';
-</script>
 <script src="/js/system/navegation.js"></script>
+<script>
+    //需要外面加层双引号，不然123@qq这种值就会报错，不知道是个字符串
+    <#--var userName = "${userName!'null'}";-->
+</script>
 <#include "/welcome/access.ftl" encoding="UTF-8">
 <div>
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -19,14 +20,16 @@
                 <ul id="noLogin" class="nav navbar-nav navbar-right">
                     <li><a href="#" onclick="openLoginModal();return false;"><span
                                     class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-<#--                    <li><a href="#" onclick="openRegisterModal();return false;"><span-->
-<#--                                    class="glyphicon glyphicon-user"></span> 注册</a></li>-->
+                    <li><a href="#" onclick="openRegisterModal();return false;"><span
+                                    class="glyphicon glyphicon-user"></span> 注册</a></li>
                 </ul>
 
                 <ul id="alreadyLogin" class="nav navbar-nav navbar-right">
+                    <#--可爱的头像&ndash;&gt;-->
+                    <li><span style="margin-top: 17px;" class="glyphicon glyphicon-user"></span></li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                        ><span class="glyphicon glyphicon-user"></span>${userName!}</a>
+                        <a id="nav-userName" href="#" class="dropdown-toggle" data-toggle="dropdown"
+                        ></a>
                         <ul class="dropdown-menu">
                             <li><a href="#" onclick="return false;">个人主页</a></li>
                             <li class="divider"></li>
@@ -41,7 +44,6 @@
                     </div>
                     <button type="submit" class="btn btn-default">提交</button>
                 </form>
-
             </div>
     </nav>
 </div>

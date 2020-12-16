@@ -36,8 +36,8 @@ Navegation.getNavegation = function () {
  */
 Navegation.prototype.getURLs = function () {
 
-    var query = Query.create("/resources/getNavegationURLs", null, function (data) {
-        if (!query.checkEception()) {
+    var query = Query.createGetType("/resources/getNavegationURLs", null, function (data) {
+
             //当前插入位置
             var index = 3;
             //获取导航栏
@@ -88,10 +88,9 @@ Navegation.prototype.getURLs = function () {
                 // catalog_li.insertAfter(navBar_li[index]);
                 catalog_li.appendTo(navBar);
             }
-        } else {
-            prompt("获取目录信息失败", prompt.danger);
-            return true;
-        }
+    },function (data) {
+        window.tool.prompt("获取目录信息失败", prompt.danger);
+        return true;
     });
     query.setAsync(false);
     query.sendMessage();
@@ -116,7 +115,7 @@ var jumpURL = function (e) {
     //获取跳转属性
     var src = e.getAttribute("url");
     if(src == "#"){
-       prompt("该模块敬请期待",prompt.info);
+       window.tool.prompt("该模块敬请期待",windw.tool.prompt_warning,1);
        return;
     }
     var paramMap = new Map();
@@ -159,13 +158,22 @@ var openLoginModal = function () {
  * 判断导航栏是否已经登录，显示登录信息
  */
 $(document).ready(function () {
-    if (userName.length != 0) {
+
+    //判断是否已经登录
+    var userInfo = window.systemInfo.getUserInfo();
+    var userName = null;
+    if(userInfo){
+        userName = userInfo.getUserName();
+    }
+    if (userName && userName != "null" && userName.length > 0) {
+        $("#nav-userName").html(userName);
         $("#noLogin").hide();
         $("#alreadyLogin").show();
     } else {
         $("#alreadyLogin").hide();
         $("#noLogin").show();
     }
+
     navegation = Navegation.getNavegation();
     if (navegation.isPrepared == false) {
         navegation.getURLs();

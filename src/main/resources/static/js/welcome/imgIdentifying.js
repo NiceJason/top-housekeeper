@@ -11,7 +11,7 @@ var ImgIdentifying = function(config) {
 }
 
 //继承父类
-extendClass(Identifying, ImgIdentifying);
+window.tool.extendClass(Identifying, ImgIdentifying);
 
 /**
  * 销毁函数

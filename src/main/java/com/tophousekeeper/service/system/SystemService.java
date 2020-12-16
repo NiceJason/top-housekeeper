@@ -47,7 +47,7 @@ public class SystemService {
      * @return
      */
     @Cacheable(value = "dailyCache",key = SystemStaticValue.CACHE_ID_WELCOMENAVEGATION)
-    public String getNavegationURLs() {
+    public String getNavegationURLs() throws Exception {
 
         String navegationJson ;
 
@@ -101,6 +101,7 @@ public class SystemService {
             catalogsArray.add(jsonCatalog);
         }
         navegationJson = catalogsArray.toString();
+
         return navegationJson;
     }
 }

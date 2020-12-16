@@ -3,6 +3,7 @@ package com.tophousekeeper.system;
 /**
  * @auther: NiceBin
  * @description: 自定义异常类
+ *                  注意：在过滤器Filter里抛出的错误这里捕捉不到的
  * @date: 2019/6/13 21:13
  */
 public class SystemException extends RuntimeException{

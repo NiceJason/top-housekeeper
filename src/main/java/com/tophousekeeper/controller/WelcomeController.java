@@ -11,9 +11,7 @@ public class WelcomeController {
 
     @RequestMapping(value={"/welcome","/"})
     public ModelAndView welcome(HttpServletRequest request,ModelAndView modelAndView){
-
         modelAndView.setViewName("/welcome/welcome");
         return modelAndView;
     }
-
 }

@@ -1,23 +1,22 @@
 package com.tophousekeeper.controller.system;
 
-import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @auther: NiceBin
  * @description: Controller增强，包括
- *               1.异常统一收集，若不是自定义异常，则状态码为600（系统异常）
- *               2.ajax异常页面重定向
+ *               ajax异常页面重定向
  * @date: 2019/6/13 21:00
  */
 @ControllerAdvice
@@ -32,7 +31,10 @@ public class SystemControllerAdvice {
      */
       @InitBinder
       public void initBinder(WebDataBinder binder){
-
+          //将String转为Date
+          DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          CustomDateEditor dateEditor = new CustomDateEditor(df, true);
+          binder.registerCustomEditor(Date.class,dateEditor);
       }
 
     /**
@@ -44,40 +46,12 @@ public class SystemControllerAdvice {
         model.addAttribute("author", "djb");
     }
 
-    /**
-     * 全局异常捕捉处理
-     * @param ex
-     * @return
-     */
-    @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<Map<String,Object>> errorHandler(Exception ex){
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("code", SystemStaticValue.SYSTEM_EXCEPTION_CODE);
-        map.put("msg", ex.getMessage());
-        logger.error(ex.getLocalizedMessage()+" 错误:"+ex.getMessage());
-        return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
-    }
-
-    /**
-     * 拦截捕捉自定义异常 MyException.class
-     * @param ex
-     * @return
-     */
-    @ExceptionHandler(value = SystemException.class)
-    public ResponseEntity<Map<String,Object>> myErrorHandler(SystemException ex){
-        Map<String,Object> map = new HashMap<String,Object>();
-        map.put("code", ex.getCode());
-        map.put("msg", ex.getMsg());
-        logger.error(ex.getMsg());
-        return new ResponseEntity<>(map,HttpStatus.EXPECTATION_FAILED);
-    }
-
-    @RequestMapping("/error/{code}/{msg}")
+    @RequestMapping(value = {"/error/{code}/{msg}","/error"})
     public ModelAndView errorPage(@PathVariable(value="code",required = false) String code,
                                   @PathVariable(value="msg",required = false) String msg){
 
            ModelAndView modelAndView=new ModelAndView();
-           modelAndView.setViewName("error");
+           modelAndView.setViewName("/error_page");
            modelAndView.addObject("code",code);
            //如果系统出错误了
            if(SystemStaticValue.SYSTEM_EXCEPTION_CODE.equals(code)){

@@ -14,12 +14,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
-import java.security.Key;
-
 /**
  * @author NiceBin
  * @description: 系统启动时，数据加载
@@ -45,22 +39,9 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent>, 
             systemCacheMgr.clearAll();
             logger.info("系统数据开始加载");
             //获取欢迎页的导航地址
-            String welcomeNavegation = systemService.getNavegationURLs();
-
+           systemService.getNavegationURLs();
             //生成秘钥
-            KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
-            keyGenerator.init(56);
-            // 产生密钥
-            SecretKey secretKey = keyGenerator.generateKey();
-            // 获取密钥
-            byte[] bytesKey = secretKey.getEncoded();
-
-            // KEY转换
-            DESKeySpec desKeySpec = new DESKeySpec(bytesKey);
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
-            Key convertSecretKey = factory.generateSecret(desKeySpec);
-
-            EncrypRSA.convertSecretKey = convertSecretKey;
+            EncrypRSA.init();
 
         } catch (Exception e) {
             logger.error(e.getMessage());

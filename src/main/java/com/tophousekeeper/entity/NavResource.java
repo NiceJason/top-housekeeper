@@ -1,6 +1,7 @@
 package com.tophousekeeper.entity;
 
 import com.tophousekeeper.system.resource.SystemResource;
+import com.tophousekeeper.util.Tool;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Table;
@@ -14,7 +15,9 @@ import javax.persistence.Table;
 public class NavResource extends SystemResource implements Comparable<NavResource>{
 
     //------------以下为导航类型
+    //导航目录
     public static final String TYPE_NAV_CATALOG = "Nav-catalog";
+    //目录下的内容
     public static final String TYPE_NAV_ITEM = "Nav-item";
     //------------以下为细分资源的key值
     //目录位置
@@ -28,7 +31,7 @@ public class NavResource extends SystemResource implements Comparable<NavResourc
 
     @Override
     public void initParsingMap() {
-        if(content!=null){
+        if(!Tool.isNull(content)){
             String[] subdivision = content.split(";");
 
             //目录的解析

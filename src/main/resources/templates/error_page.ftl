@@ -12,13 +12,12 @@
         <#include "/navegation.ftl" encoding="UTF-8">
         <div class="center-block" style="position: relative;margin-top:120px;width:720px;height:400px;background:url('/image/error.png') no-repeat">
             <div class="col-lg-6">
-                <p class="text-left">${code!"404"}</p>
+                <p id="errorCode" style="padding-left: 60px" class="text-left">${code!"500"}</p>
             </div>
 
             <div class="col-lg-6">
-                <p class="text-right">${msg!"页面全靠想"}</p>
+                <p id="errorMsg" class="text-right">${msg!"出错啦"}</p>
             </div>
         </div>
-
     </@comm.body>
 </@comm.page>
