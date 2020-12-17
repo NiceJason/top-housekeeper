@@ -53,14 +53,14 @@ relpath 是页面相对于“/”的路径,值为../或者../../或者空等等
 <#--            crossorigin="anonymous"></script>-->
     <#--在这里插入需要引用的样式或者脚本-->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="/js/system/CommonStaticValue.js"></script>
+    <script src="/js/system/commonStaticValue.js"></script>
     <script src="/js/Tool.js"></script>
     <script src="/js/system/queryObj.js"></script>
     <script src="/js/system/queryForm.js"></script>
     <script src="/js/user/userInfo.js"></script>
-    <script src="/js/system/systemStart.js"></script>
     <script src="/js/system/identifying.js"></script>
     <script src="/js/system/systemInfo.js"></script>
+    <script src="/js/system/systemStart.js"></script>
     <#nested>
     <#--在这里插入页面主体内容-->
     </body>
