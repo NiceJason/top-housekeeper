@@ -1,69 +1,56 @@
 <@comm.page>
     <@comm.head>
-    <link href="/css/welcome.css" rel="stylesheet" type="text/css"/>
+        <link href="/css/welcome.css" rel="stylesheet" type="text/css"/>
 
     </@comm.head>
     <@comm.body>
-        <#include "/navegation.ftl" encoding="UTF-8">
-        <div id="myCarousel" class="carousel slide">
-            <!-- 轮播（Carousel）指标 -->
-<#--            <ol class="carousel-indicators">-->
-<#--                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>-->
-<#--                <li data-target="#myCarousel" data-slide-to="1"></li>-->
-<#--                <li data-target="#myCarousel" data-slide-to="2"></li>-->
-<#--            </ol>-->
-            <!-- 轮播（Carousel）项目 -->
-            <div class="carousel-inner myCarouselCss">
-                <div class="item active">
-                    <img src="/image/bootstrap.png" alt="First slide">
-                </div>
-                <div class="item">
-                    <img src="/image/jquery.png" alt="Second slide">
-                </div>
-                <div class="item">
-                    <img src="/image/springboot.png" alt="Third slide">
-                </div>
-            </div>
-            <!-- 轮播（Carousel）导航 -->
-            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>
-            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                <span class="sr-only">Next</span>
-            </a>
+        <div class="welcome-navegation">
+            <#include "/navegation.ftl" encoding="UTF-8">
         </div>
 
-        <div class="tab-content">
-            <div id="home" class="tab-pane fade in active">
-                <h3>哈哈哈，你是怎么点到这的</h3>
-                <p>欢迎来到试验场，这里是本人一系列的Web知识点练手的地方。</p>
-                <p>会有一些心得记录在内，如果对你有帮助那再好不过了~</p>
+        <div class="welcome-body">
+            <div id="myCarousel" class="carousel slide">
+                <!-- 轮播（Carousel）指标 -->
+                <#--            <ol class="carousel-indicators">-->
+                <#--                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>-->
+                <#--                <li data-target="#myCarousel" data-slide-to="1"></li>-->
+                <#--                <li data-target="#myCarousel" data-slide-to="2"></li>-->
+                <#--            </ol>-->
+                <!-- 轮播（Carousel）项目 -->
+                <div class="myCarouselCss carousel-inner ">
+                    <div class="item active">
+                        <img src="/image/bootstrap.png" alt="First slide">
+                    </div>
+                    <div class="item">
+                        <img src="/image/jquery.jpg" alt="Second slide">
+                    </div>
+                    <div class="item">
+                        <img src="/image/springboot.jpg" alt="Third slide">
+                    </div>
+                </div>
+                <!-- 轮播（Carousel）导航 -->
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </div>
+
+            <div style="text-align: center">
+                <h3>欢迎来到我的个人网站</h3>
+                <p>搭建网站时的知识分享于：<a
+                            href="https://www.cnblogs.com/top-housekeeper/">https://www.cnblogs.com/top-housekeeper/</a>
+                </p>
+                <p>本项目Github地址：<a href="https://github.com/NiceJason/top-housekeeper">https://github.com/NiceJason/top-housekeeper</a>
+                </p>
                 <p>本网站持续更新中...</p>
             </div>
-            <div id="menu1" class="tab-pane fade">
-                <h3>菜单 1</h3>
-                <p>这是菜单 1 显示的内容。这是菜单 1 显示的内容。这是菜单 1 显示的内容。</p>
-            </div>
-            <div id="menu2" class="tab-pane fade">
-                <h3>菜单 2</h3>
-                <p>这是菜单 2 显示的内容。这是菜单 2 显示的内容。这是菜单 2 显示的内容。</p>
-            </div>
-            <div id="menu3" class="tab-pane fade">
-                <h3>菜单 3</h3>
-                <p>这是菜单 3 显示的内容。这是菜单 3 显示的内容。这是菜单 3 显示的内容。</p>
-            </div>
         </div>
-
-<#--        <object type="application/x-shockwave-flash" style="outline:none;" data="https://files.cnblogs.com/files/zcw-ios/hamster.swf" width="185" height="185"></object>-->
-        <script type="text/javascript">
-
-            // $(function(){
-            //     $(".modal-dialog").draggable();
-            // })
-        </script>
-
-        <#include "/footer.ftl" encoding="UTF-8">
+        <div class="welcome-footer">
+            <#include "/footer.ftl" encoding="UTF-8">
+        </div>
     </@comm.body>
 </@comm.page>

@@ -3,7 +3,21 @@
 }
 
 .myCarouselCss>div>img{
+    height: inherit!important ;
     width:100%;
 }
-/*body{ overflow: auto !important;}*/
-/*.modal{ overflow: auto !important;}*/
+
+.welcome-navegation{
+    height: 8%;
+    width: 100%;
+}
+
+.welcome-body{
+    height: 82%;
+    width: 100%;
+}
+
+.welcome-footer{
+    height: 10%;
+    width: 100%;
+}
