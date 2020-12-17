@@ -1,0 +1,17 @@
+#服务器环境配置
+
+#该项目完整的路径是多少，防止CSRF攻击
+server.host-path =
+
+#关闭缓存，及时刷新，上线生产环境需要修改为true
+spring.freemarker.cache= true
+
+#数据库连接配置信息
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+#自定义连接池
+#spring.datasource.dbcp2.driver-class-name=org.apache.commons.dbcp2.BasicDataSource
+
+#日志配置地点
+logging.config=classpath:xml-configuration/log4j2-spring-prod.xml

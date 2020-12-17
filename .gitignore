@@ -1,5 +1,8 @@
 HELP.md
 /target/
+
+/src/test/
+
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -27,3 +30,4 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+

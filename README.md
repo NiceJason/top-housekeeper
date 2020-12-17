@@ -4,7 +4,9 @@
 
 >这是实践Web知识的地方，眼过千遍不如手过一遍，很多时候在动手时会碰到新问题，发现以前从未关注过的点。再加上工作中，很多框架底层都是大佬们搭建好的，我们大多数时刻只能关注业务逻辑，无法更上一层  楼，所以就有了这个试验地，让自己成为一次上帝，建造自己的代码世界~
 
-本项目是基于Springboot搭建的，里面使用到的知识，有些会分享在<a href='https://www.cnblogs.com/top-housekeeper/'>我的博客</a>，有任何疑问欢迎`留言和讨论`，如果想使用本项目，需要安装`Redis`，`Mysql`，修改src/resources/下的application配置文件
+本项目是基于Springboot搭建的，里面使用到的知识，有些会分享在<a href='https://www.cnblogs.com/top-housekeeper/'>我的博客</a>，有任何疑问欢迎`留言和讨论`
+
+如果想使用本项目，需要安装`Redis`，`Mysql`，将src/resources/下的application配置文件格式从.txt改为.properties并填写好内容
 
 >咳咳，如果有收获的话记得给个赞哦！
 
