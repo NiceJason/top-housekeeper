@@ -8,6 +8,7 @@
  *      5.智能判断错误信息弹出
  *      6.增强js的字符串replace方法，可以替换所有的字符
  *      7.将cookie转换成map
+ *      8.根据name返回Cookie里的值
  * @constructor
  */
 (function () {
@@ -156,6 +157,14 @@
                 }
             }
             return cookieMap;
+        },
+
+        /**
+         * 根据name返回Cookie里的值
+         * @param name
+         */
+        getCookieValue : function (name){
+            return this.getCookieMap().get(name);
         }
     }
 })();

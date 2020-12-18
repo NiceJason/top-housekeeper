@@ -54,7 +54,6 @@ public class CacheAspect {
      */
     @Before(value = "@annotation(com.tophousekeeper.system.annotation.UpdateCache)&&args(id)")
     public void checkExpire(JoinPoint joinPoint,String id) throws Exception {
-        System.out.println("拦截了@UpdateCache");
         RedisCacheEnhance redisCacheEnhance = (RedisCacheEnhance) joinPoint.getTarget();
         systemCacheMgr.autoUpdate(redisCacheEnhance.getName(),id);
     }

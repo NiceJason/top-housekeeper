@@ -31,7 +31,7 @@
                         <a id="nav-userName" href="#" class="dropdown-toggle" data-toggle="dropdown"
                         ></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#" onclick="return false;">个人主页</a></li>
+                            <li><a id = "userHome">个人主页</a></li>
                             <li class="divider"></li>
                             <li><a href="/access/logout">注销</a></li>
                         </ul>

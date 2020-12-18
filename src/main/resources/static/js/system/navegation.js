@@ -169,6 +169,10 @@ $(document).ready(function () {
         $("#nav-userName").html(userName);
         $("#noLogin").hide();
         $("#alreadyLogin").show();
+
+        //先简单的处理下用户主页以此来实现这个功能
+        //向URL拼接Token
+        $("#userHome").attr("href","/user/home?"+window.commonStaticValue.TOKEN+"="+window.tool.getCookieValue(window.commonStaticValue.TOKEN));
     } else {
         $("#alreadyLogin").hide();
         $("#noLogin").show();

@@ -2,6 +2,7 @@ package com.tophousekeeper.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.tophousekeeper.system.CommonStaticValue;
 import com.tophousekeeper.system.SystemException;
 import com.tophousekeeper.system.SystemStaticValue;
 import org.aspectj.lang.JoinPoint;
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
  * 13.获取ip地址
  * 14.获得代理类方法中真实的方法
  * 15.String转义字符的转换，为了Json数据传输，“”转''
- * 16.根据key从http头部获取value
+ * 16.判断Token是否有效
  * @date 2019/6/24 18:49
  */
 public class Tool {
@@ -358,6 +359,22 @@ public class Tool {
     public static String changeStrForJson(String str){
         str = str.replaceAll("\"","'");
         return str;
+    }
+
+    /**
+     * 判断Token是否还有效
+     * 1.优先从http头部获取
+     * 2.从URL参数获取，key为CommonValue.Token （因为可能是直接URL跳转）
+     * @param request
+     * @return true为有效
+     */
+    public static boolean isTokenAlive(HttpServletRequest request){
+        String token = request.getHeader(CommonStaticValue.TOKEN);
+        if(token == null){
+            token = request.getParameter(CommonStaticValue.TOKEN);
+            return JwtTool.isAlive(token);
+        }
+        return false;
     }
 
 }

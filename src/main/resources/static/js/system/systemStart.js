@@ -14,11 +14,13 @@
          * 询问登录状态
          */
         getAlive : function () {
-            Query.createGetType("/access/getAliveUser",null,function (data)
+            var query = Query.createGetType("/access/getAliveUser",null,function (data)
             {
                 var userInfo = UserInfo.getUserInfo(data);
                 window.systemInfo.setUserInfo(userInfo);
-            }).sendMessage();
+            });
+            query.setAsync(false);
+            query.sendMessage();
         }
     }
 

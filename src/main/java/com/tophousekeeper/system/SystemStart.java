@@ -52,7 +52,7 @@ public class SystemStart implements ApplicationListener<ContextRefreshedEvent>, 
     }
 
     /**
-     * 向Spring手动注册的Bean
+     * 向Spring手动注册的Bean，目前没什么用
      * @param importingClassMetadata
      * @param registry
      */

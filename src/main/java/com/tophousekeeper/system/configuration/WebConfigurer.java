@@ -50,7 +50,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         System.out.println("执行了addInterceptors");
         registry.addInterceptor(normalInterceptor).addPathPatterns("/**").excludePathPatterns(resources);
-        registry.addInterceptor(loginInterceptor).addPathPatterns("/user");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/user/*");
         registry.addInterceptor(identifyingInterceptor).addPathPatterns("/access/login", "/access/registered");
     }
 }

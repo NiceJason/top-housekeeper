@@ -268,7 +268,7 @@ Query.prototype.sendMessage = function () {
             // @param XHR  XMLHttpRequest对象
             beforeSend: function (XHR) {
                 //试图从Cookie中获得token放入http头部
-                var token = window.tool.getCookieMap().get(window.commonStaticValue.TOKEN);
+                var token = window.tool.getCookieValue(window.commonStaticValue.TOKEN);
                 if(token){
                     XHR.setRequestHeader(window.commonStaticValue.TOKEN,token);
                 }

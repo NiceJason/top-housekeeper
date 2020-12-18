@@ -133,8 +133,8 @@ public class JwtTool {
             String tokenString = map.get(EXPIRATION);
 
             if (!Tool.isNull(tokenString)) {
-                long expiration = Long.valueOf(tokenString) / 1000;
-                long now = System.currentTimeMillis();
+                long expiration = Long.valueOf(tokenString);
+                long now = System.currentTimeMillis()/ 1000;
                 if (expiration > now) {
                     return true;
                 } else {

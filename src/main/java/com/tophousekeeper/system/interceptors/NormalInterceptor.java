@@ -2,7 +2,7 @@ package com.tophousekeeper.system.interceptors;
 
 import com.tophousekeeper.service.LoginService;
 import com.tophousekeeper.system.CommonStaticValue;
-import com.tophousekeeper.util.JwtTool;
+import com.tophousekeeper.util.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -28,10 +28,9 @@ public class NormalInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        System.out.println("此次请求来源于："+request.getRequestURL());
         String token = request.getHeader(CommonStaticValue.TOKEN);
 
-        if(!JwtTool.isAlive(token)){
+        if(!Tool.isTokenAlive(request)){
             //检测是否是自动登录
             loginService.checkAutoLogin(request,response);
         }

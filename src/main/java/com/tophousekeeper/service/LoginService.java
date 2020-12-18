@@ -38,13 +38,13 @@ public class LoginService {
     private LoginDao loginDao;
 
     //账户
-    public final String USER_EMAIL = "userEmail";
+    public final static String USER_EMAIL = "userEmail";
     //密码
-    public final String USER_PASSWORD = "userPassword";
+    public final static String USER_PASSWORD = "userPassword";
     //用来设置cookie，自动登录标记，主要是自动登录的时候用
-    public final String AUTOLOGIN = "autoLogin";
+    public final static String AUTOLOGIN = "autoLogin";
     //session存放user对象
-    public final String USER_OBJ = "userObj";
+    public final static String USER_OBJ = "userObj";
 
     @Transactional
     public void registered(RegisterInfo registerInfo) {

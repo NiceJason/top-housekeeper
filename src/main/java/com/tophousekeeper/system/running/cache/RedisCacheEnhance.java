@@ -29,7 +29,6 @@ public class RedisCacheEnhance extends RedisCache {
 
     @UpdateCache
     public ValueWrapper get(Object key){
-        System.out.println("进入get方法");
         return super.get(key);
     }
 
