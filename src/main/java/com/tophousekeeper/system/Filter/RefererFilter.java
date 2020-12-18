@@ -1,9 +1,9 @@
 package com.tophousekeeper.system.Filter;
 
+import com.tophousekeeper.system.running.SystemContext;
 import com.tophousekeeper.util.Tool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 
@@ -16,14 +16,12 @@ import java.io.IOException;
 /**
  * @auther: NiceBin
  * @description: 对需要检测http头部Referer字段的路径进行检测
- * 因为并不是所有访问都需要防止CSRF攻击的
+ *               因为并不是所有访问都需要防止CSRF攻击的
+ *               Filter在外置Tomcat时，@Autowrite是无效的
  * @date: 2020/12/18 16:17
  */
 @WebFilter(filterName = "RefererFilter", urlPatterns = "/user/*", asyncSupported = true)
 public class RefererFilter implements Filter {
-
-    @Autowired
-    private Environment environment;
 
     private final Logger log = LoggerFactory.getLogger(RefererFilter.class);
 
@@ -34,6 +32,7 @@ public class RefererFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        Environment environment = SystemContext.getSystemContext().getAppBean(Environment.class);
         //检测http的Referer字段，不允许跨域访问
         String hostPath = environment.getProperty("server.host-path");
         String referer = ((HttpServletRequest)request).getHeader("Referer");

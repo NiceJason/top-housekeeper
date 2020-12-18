@@ -10,7 +10,7 @@
 
 >咳咳，如果有收获的话记得给个赞哦！
 
-项目演示地址：<a href='https://www.top-housekeeper.xyz/welcome'>顶上管家</a>
+项目演示地址：<a href='https://www.top-housekeeper.xyz/welcome' target = '_blank'>顶上管家</a>
 
 以下编辑更新于：2020/12/17
 
