@@ -52,6 +52,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
+            <!--provided表明只在编译和测试时使用-->
             <scope>provided</scope>
         </dependency>
 
