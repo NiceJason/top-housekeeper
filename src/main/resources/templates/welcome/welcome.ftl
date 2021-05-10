@@ -45,6 +45,7 @@
                             href="https://www.cnblogs.com/top-housekeeper/">https://www.cnblogs.com/top-housekeeper/</a>
                 </p>
                 <p>本项目Github地址：<a href="https://github.com/NiceJason/top-housekeeper">https://github.com/NiceJason/top-housekeeper</a>
+                <p>微服务Github地址：<a href="https://github.com/NiceJason/SpringCloudDemo">https://github.com/NiceJason/SpringCloudDemo</a>
                 </p>
                 <p>本网站持续更新中...</p>
             </div>
