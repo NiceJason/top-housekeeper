@@ -30,7 +30,10 @@ public class SystemHttpServletRequestWrapper extends HttpServletRequestWrapper {
         super(request);
         //打印属性
         //printRequestAll(request);
-        body = HttpHelper.getBodyString(request).getBytes(Charset.forName("UTF-8"));
+        //过滤一下，json字符串转换会调用此方法
+        String bodyStr = StringEscapeUtils.escapeHtml4(HttpHelper.getBodyString(request));
+        body = bodyStr.getBytes(Charset.forName("UTF-8"));
+
         this.request = request;
     }
 
@@ -79,6 +82,11 @@ public class SystemHttpServletRequestWrapper extends HttpServletRequestWrapper {
     }
 
     //以下为XSS预防
+    /**
+     * 直接用request去获取参数会用此方法
+     * @param name
+     * @return
+     */
     @Override
     public String getParameter(String name) {
         String value = request.getParameter(name);
@@ -88,6 +96,11 @@ public class SystemHttpServletRequestWrapper extends HttpServletRequestWrapper {
         return value;
     }
 
+    /**
+     * 用SpringMVC注解获取参数会走此方法
+     * @param name
+     * @return
+     */
     @Override
     public String[] getParameterValues(String name) {
         String[] parameterValues = super.getParameterValues(name);
