@@ -1,0 +1,27 @@
+CREATE TABLE `t_system_daily` (
+  `login_count` int(10) DEFAULT NULL,
+  `online_count` int(10) DEFAULT NULL,
+  `date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_system_resource` (
+  `id` varchar(10) NOT NULL COMMENT '资源id',
+  `name` varchar(255) DEFAULT NULL COMMENT '资源名称',
+  `content` varchar(255) DEFAULT NULL COMMENT '资源内容',
+  `type` varchar(255) DEFAULT NULL COMMENT '资源类型',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `t_user` (
+  `email` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱账号',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_welcome` (
+  `id` varchar(20) NOT NULL,
+  `info` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
