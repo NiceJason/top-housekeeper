@@ -1,4 +1,4 @@
-<footer class="footer" style="height:100%;background-color: black;margin-top: 8px">
+<footer class="footer" style="height:100%;background-color: black;margin-top: 70px">
 <#--    <div class="container">-->
 <#--        <div class="row footer-top">-->
 <#--            <div class="col-md-6 col-lg-2 col-lg-offset-2">-->
@@ -39,7 +39,7 @@
 <#--        <hr>-->
         <div class="row footer-bottom">
             <ul class="list-inline text-center" style="margin-top: 20px">
-                <li><a href="http://www.miit.gov.cn/">粤ICP备19086162号-1</a></li>
+                <li><a href="https://beian.miit.gov.cn/">粤ICP备19086162号-1</a></li>
                 <li style="color: white">个人网站</li>
             </ul>
         </div>
